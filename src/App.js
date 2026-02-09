@@ -1,9 +1,9 @@
 import logo from './logo.svg';
 import './App.scss';
-
+import Settings from './pages/Settings/Settings';
 function App() {
   return (
-    <div className="container bg-primary"><i class="bi bi-0-square-fill"></i>Test</div>
+    <Settings/>
   );
 }
 
