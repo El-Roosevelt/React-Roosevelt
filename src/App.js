@@ -1,13 +1,13 @@
 import logo from "./logo.svg";
 import "./App.scss";
 import Header from "./components/Header/Header";
+import SideBar from "./components/SideBar/SideBar";
 
 function App() {
   return (
     <>
       <Header />
-      <div className="container bg-primary">
-      </div>
+      <SideBar />
     </>
   );
 }
