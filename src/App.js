@@ -1,9 +1,14 @@
-import logo from './logo.svg';
-import './App.scss';
+import logo from "./logo.svg";
+import "./App.scss";
+import Header from "./components/Header/Header";
 
 function App() {
   return (
-    <div className="container bg-primary"><i class="bi bi-0-square-fill"></i>Test</div>
+    <>
+      <Header />
+      <div className="container bg-primary">
+      </div>
+    </>
   );
 }
 
