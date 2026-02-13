@@ -38,6 +38,10 @@
 
         tr {
             background: #494949;
+            transition: all 160ms ease;
+        }
+        tr:hover{
+            transform: translateX(3px) translateY(3px) ;
         }
 
         td {
