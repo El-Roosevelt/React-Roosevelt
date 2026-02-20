@@ -9,7 +9,7 @@ function SideBar() {
     <div className="d-lg-flex w-100 justify-content-center">
         <ul className="container-fluid nav nav-pills nav-fill justify-content-between p-1 bg-secondary">
           <li className="nav-item col-2"><NavLink to="/" className={link}>
-          <i class="bi bi-house-door pe-1"></i>
+          <i class="bi bi-house-door pe-1" width="60"></i>
            <span className="d-none d-lg-inline">Inicio</span></NavLink></li>
           <li className="nav-item col-2"><NavLink to="/map" className={link}>
           <i class="bi bi-pin-map pe-1"></i>
