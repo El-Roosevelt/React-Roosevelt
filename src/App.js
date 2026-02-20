@@ -1,13 +1,18 @@
-import logo from "./logo.svg";
 import "./App.scss";
 import Header from "./components/Header/Header";
-import SideBar from "./components/SideBar/SideBar";
+import NavBar from "./components/NavBar/NavBar";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
   return (
     <>
-      <Header />
-      <SideBar />
+      <BrowserRouter>
+        <div className="d-flex vh-100 flex-column justify-content-between justify-content-lg-start">
+          <Header />
+
+          <NavBar />
+        </div>
+      </BrowserRouter>
     </>
   );
 }

@@ -1,59 +1,65 @@
-#btnProfile {
-  height: 60px;
-  width: 60px;
-  margin: 3px;
-  transition: all 0.5s;
+*{
+  display: flexbox;
+  padding: 0px;
+  margin: 0px;
 }
 
-#btnProfile:hover {
-  transform: scale(1.1);
-  color: black;
-}
+// #btnProfile {
+//   height: 60px;
+//   width: 60px;
+//   margin: 3px;
+//   transition: all 0.5s;
+// }
 
-#menu-button {
-  height: 60px;
-  width: 60px;
-  margin: 5px;
-  transition: all 0.5s;
-}
+// #btnProfile:hover {
+//   transform: scale(1.1);
+//   color: black;
+// }
 
-.profile-menu-container {
-  position: relative;
-  /* importante para que el menú se posicione relativo al icono */
-  display: inline-block;
-}
+// #menu-button {
+//   height: 60px;
+//   width: 60px;
+//   margin: 5px;
+//   transition: all 0.5s;
+// }
 
-.profile-menu {
-  display: flex;
-  /* oculto por defecto */
-  flex-direction: column;
-  /* los enlaces en columna */
-  position: absolute;
-  /* se “despliega” sobre otros elementos */
-  top: 100%;
-  /* justo debajo del icono */
-  right: 0;
-  /* alineado a la derecha del contenedor */
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);  
-  width: 22vh;
-  font-size: 15px;
-}
-@media (min-width: 1600px) {
-  .profile-menu {
-    width: 26vh;
-  }
-}
+// .profile-menu-container {
+//   position: relative;
+//   /* importante para que el menú se posicione relativo al icono */
+//   display: inline-block;
+// }
 
-.profile-menu a {
-  display: block;
-  padding: 10px;
-  text-decoration: none;
-  color: black;
-}
+// .profile-menu {
+//   display: flex;
+//   /* oculto por defecto */
+//   flex-direction: column;
+//   /* los enlaces en columna */
+//   position: absolute;
+//   /* se “despliega” sobre otros elementos */
+//   top: 100%;
+//   /* justo debajo del icono */
+//   right: 0;
+//   /* alineado a la derecha del contenedor */
+//   background: white;
+//   border: 1px solid #ccc;
+//   border-radius: 5px;
+//   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);  
+//   width: 22vh;
+//   font-size: 15px;
+// }
+// @media (min-width: 1600px) {
+//   .profile-menu {
+//     width: 26vh;
+//   }
+// }
 
-.profile-menu a:hover {
-  background-color: #f0f0f0;
-}
+// .profile-menu a {
+//   display: block;
+//   padding: 10px;
+//   text-decoration: none;
+//   color: black;
+// }
+
+// .profile-menu a:hover {
+//   background-color: #f0f0f0;
+// }
