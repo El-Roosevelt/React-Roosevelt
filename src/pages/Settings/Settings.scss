@@ -7,9 +7,6 @@
         max-height: 120px;
     }
 }
-.container-private-info{
-
-}
 
 .config-data-user {
     opacity: 0;
@@ -17,16 +14,17 @@
     transition: all 0.4s ease;
     background-color: rgb(102, 102, 102);
     position: absolute;
+    visibility: hidden;
 }
 
 .config-data-user.show {
     position: relative;
     opacity: 1;
     transform: translateY(0);
+    visibility: visible;
 }
 
 .user-goals {
-    background-color: rgb(146, 146, 146);
     color: white;
 
     .status-title {

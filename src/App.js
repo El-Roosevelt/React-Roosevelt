@@ -3,7 +3,10 @@ import './App.scss';
 import Settings from './pages/Settings/Settings';
 function App() {
   return (
-    <Settings/>
+    <> 
+      <Settings/>
+    </>
+   
   );
 }
 
