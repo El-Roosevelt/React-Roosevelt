@@ -1,5 +1,5 @@
 import "./HeroSection.scss";
-import videoBG from "./fondo.mp4";
+import videoBG from "../../assets/fondo.mp4";
 
 export default function HeroSection() {
   return (
