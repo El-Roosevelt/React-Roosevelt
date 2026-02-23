@@ -1,9 +1,13 @@
 import logo from './logo.svg';
 import './App.scss';
+import Footer from  "./components/Footer/Footer"
 
 function App() {
   return (
-    <div className="container bg-primary"><i class="bi bi-0-square-fill"></i>Test</div>
+    < >
+          <Footer/>
+    </>
+    
   );
 }
 
