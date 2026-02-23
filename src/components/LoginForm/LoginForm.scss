@@ -1,4 +1,5 @@
 $primary: #3C1053;
+$color_title: #7744d9;
 $secondary: #9d5baf;
 
 $color_form_background: #eff2f7;
@@ -17,6 +18,14 @@ $color_texto: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  & h2 {
+    color:$color_title;
+  }
+
+  & .btn_link {
+    color:$color_title;
+  }
 }
 
 /* FORM CARD */

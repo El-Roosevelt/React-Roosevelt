@@ -42,7 +42,7 @@ export default function LoginForm() {
     <div className="contact-section d-flex justify-content-center align-items-center vh-100">
       <div className="contact-form col-11 col-sm-8 col-md-6 col-lg-5">
 
-        <h2 className="text-center mb-4">Formulario de Registro</h2>
+        <h2 className="text-center mb-4 ">Formulario de Registro</h2>
 
         <form onSubmit={handleSubmitForm}>
 
@@ -123,10 +123,10 @@ export default function LoginForm() {
           </div>
 
           <div className="text-center mt-3">
-            <button type="button" className="btn btn-link">
+            <button type="button" className="btn  btn_link link-underline link-underline-opacity-0 ">
               Recuperar contraseña
             </button>
-            <button type="button" className="btn btn-link">
+            <button type="button" className="btn btn-link btn_link link-underline link-underline-opacity-0">
               Login
             </button>
           </div>
