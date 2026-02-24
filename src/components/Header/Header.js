@@ -1,7 +1,7 @@
 import "./Header.scss";
-import logo from "../../assets/logo.png";
 
 function Header() {
+  const logo = "/assets/logo.png";
   return (
     <header className="row bg-primary py-3">
       <div className="col-12 col-lg-6  align-content-center">

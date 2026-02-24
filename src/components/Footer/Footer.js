@@ -1,8 +1,9 @@
 import React from 'react';
 import './Footer.scss';
-import logo from "../../assets/marcador-de-posicion.png";
 
 const Footer = () => {
+  const logo = "/assets/marcador-de-posicion.png";
+
   return (
     <footer 
       className="d-none d-md-flex footer-section text-secondary pt-5 pb-4" >

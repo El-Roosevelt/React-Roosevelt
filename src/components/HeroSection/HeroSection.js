@@ -1,7 +1,7 @@
 import "./HeroSection.scss";
-import videoBG from "../../assets/fondo.mp4";
 
 export default function HeroSection() {
+  const videoBG = "/assets/fondo.mp4";
   return (
     <>
       <div className="d-flex justify-content-center align-items-center mx-5 my-3 bg-dark rounded rounded-5">
