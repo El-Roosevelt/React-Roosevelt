@@ -6,7 +6,7 @@ export default function NavBar() {
     "nav-link text-light fs-5" + (isActive ? " active fw-bold" : "");
 
   return (
-    <div className="order-last d-lg-flex w-100 justify-content-center ">
+    <div className="order-last order-md-0 d-lg-flex w-100 justify-content-center ">
         <ul className="container-fluid nav nav-pills nav-fill justify-content-between p-1 bg-secondary">
           <li className="d-none d-lg-inline nav-item col-2"><NavLink to="/" className={link}>
           <i class="bi bi-house-door pe-1"></i>
