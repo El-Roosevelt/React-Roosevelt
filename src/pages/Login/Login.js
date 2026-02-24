@@ -1,12 +1,12 @@
 import React from "react";
-import LoginForm from "../components/LoginForm";
+import LoginForm from "../../components/LoginForm/LoginForm";
+import RecuperarContrasena from "../../components/Recuperacion/RecuperarContrasena";
 
-const Login = () => {
+export default function LoginContainer() {
   return (
     <>
       <LoginForm />
+      <RecuperarContrasena />
     </>
   );
-};
-
-export default Login;
+}

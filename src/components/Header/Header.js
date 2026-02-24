@@ -41,7 +41,7 @@ function Header() {
               </li>
               <li>
                 <NavLink
-                  to="/RegForm"
+                  to="/LoginForm"
                   className="text-decoration-none dropdown-item"
                 >
                   Registrarse
