@@ -2,13 +2,16 @@ import React from "react";
 import "./Settings.scss";
 export default function Settings() {
   const [persona, setPersona] = React.useState({
+    img: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     name: "Roberto Gomez",
     email: "roberto.gomez@example.com",
     birth: "1980-05-15",
   });
+  const [avatarEdit, setAvatarEdit] = React.useState("");
   const [nameEdit, setNameEdit] = React.useState(persona.name);
   const [emailEdit, setEmailEdit] = React.useState(persona.email);
   const [birthEdit, setBirthEdit] = React.useState(persona.birth);
+  const [phoneEdit, setPhoneEdit] = React.useState("");
   const [showConfig, setShowConfig] = React.useState(false);
 
   const [recoverEmail, setRecoverEmail] = React.useState("");
@@ -18,16 +21,36 @@ export default function Settings() {
     setShowConfig(!showConfig);
   };
 
-  const BirthToAge = (birthDate) => {
-    const hoy = new Date();
-    const anoActual = hoy.getFullYear();
-    return anoActual - birthDate;
+  const handleCancelEdit = () => {
+    setNameEdit(persona.name);
+    setEmailEdit(persona.email);
+    setBirthEdit(persona.birth);
+    setShowConfig(false);
+  }
+
+  const BirthToAge = (years) => {
+    const birthDate = new Date(years);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
   };
+
+  const HideEmail=(email)=>{
+    
+    const emailHidden=email.replace(/(.{2}).+(.{2}@.+)/, '$1****$2');
+    return emailHidden;
+  }
+  
 
   const handleSubmitEdit = (e) => {
     e.preventDefault();
     if (nameEdit != null && emailEdit != null && birthEdit != null) {
       setPersona({
+        img: avatarEdit ? URL.createObjectURL(avatarEdit) : persona.img,
         name: nameEdit,
         email: emailEdit,
         birth: birthEdit,
@@ -44,6 +67,7 @@ export default function Settings() {
     e.preventDefault();
     if (recoverEmail != null) {
       setRecoverEmail(recoverEmail);
+      alert("Correo de recuperación enviado");
     } else {
       alert(
         "Por favor, complete todos los campos antes de guardar los cambios.",
@@ -55,6 +79,7 @@ export default function Settings() {
     e.preventDefault();
     if (emailSecondary != null) {
       setEmailSecondary(emailSecondary);
+      alert("Correo secundario guardado");
     } else {
       alert(
         "Por favor, complete todos los campos antes de guardar los cambios.",
@@ -87,14 +112,14 @@ export default function Settings() {
           <div className="d-flex flex-row mt-2 p-2">
             <div className="foto-container">
               <img
-                src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                src={persona.img}
                 alt="Foto de perfil"
                 className="foto"
               />
             </div>
             <div className="d-flex flex-column justify-content-center ms-4">
               <h2>{persona.name}</h2>
-              <p>{BirthToAge(persona.birth)}</p>
+              <p>De {BirthToAge(persona.birth)} años</p>
             </div>
           </div>
           <div>
@@ -185,6 +210,17 @@ export default function Settings() {
         >
           <div>
             <label>
+              Avatar de usuario:
+              <input
+              type="file"
+                className=" form-control"
+                onChange={(e) => setAvatarEdit(e.target.files[0])}
+                required
+              ></input>
+            </label>
+          </div>
+          <div>
+            <label>
               Nombre de usuario:
               <input
                 className=" form-control"
@@ -220,8 +256,11 @@ export default function Settings() {
             </label>
           </div>
           <div>
-            <button className="btn btn-success mt-3" type="submit">
+            <button className="btn btn-success mt-3 m-2" type="submit">
               Guardar cambios
+            </button>
+            <button className="btn btn-danger mt-3 m-2" type="button" onClick={handleCancelEdit}>
+              Cancelar cambios
             </button>
           </div>
         </form>
@@ -237,7 +276,7 @@ export default function Settings() {
             <label>Correo Electronico</label>
             <input
               className="form-control w-50"
-              value={persona.email}              
+              value={HideEmail(persona.email)}              
               required
             disabled></input>
             <button className="btn btn-outline-primary mt-2">
@@ -270,11 +309,21 @@ export default function Settings() {
           <hr className="border-0 bg-black my-4" style={{ height: "2px" }}></hr>
         </div>
         <div className="  p-3 rounded-3 m-1">
-          <p></p>
-        </div>
-        <div>
-            
-        </div>
+          <p>Agregar un numero de Telefono</p>
+          <input
+              type="tel"
+              name="phone"
+              pattern="\+?\d{9,15}" 
+              placeholder="+34 612345678"
+              className="form-control w-50"
+              value={phoneEdit}
+              onChange={(e) => setPhoneEdit(e.target.value)}
+              required
+            ></input>
+            <button className="btn btn-outline-primary mt-2">
+              Agregar numero de telefono
+            </button>
+        </div>        
       </div>
     </div>
   );
