@@ -71,7 +71,7 @@ export default function ContactoForm() {
     validateField(name, value);
   };
 
-  // reviso form cuando hago submit
+  // Проверка всей формы при submit
   const onSubmit = (e) => {
     e.preventDefault();
 

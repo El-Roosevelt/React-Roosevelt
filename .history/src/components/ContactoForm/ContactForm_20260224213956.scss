@@ -3,10 +3,10 @@ $secondary: #9d5baf;
 $warning: #b75e00;
 $color_texto_oscuro: black;
 $color_fondo: #f3f2f1;
-$color_form_background: #eff2f1;
-$link-color: #1d7bbf; // call to action
+$color_form_background: #eff2f7;
+$link-color: #1d7bbf; //call to action
 
-$btn-form: #c216db;
+$btn-form:#c216db;
 $btn-bg: $primary;
 $btn-hover-bg: darken($primary, 8%);
 
@@ -18,33 +18,14 @@ $color_texto: #FFFFFF;
 $color_txt_botones: rgb(60, 16, 83);
 $font-weight_enlace: bold;
 
-// Bootstrap
+
+//example
+
+//@import "../../node_modules/bootstrap/scss/bootstrap";
 @import "~bootstrap/scss/bootstrap";
 
-/*  CONTACT SECTION */
-.contact-section {
-  background-color: $color_form_background !important;
 
-  h2 {
-    color: $Color_Acc_ClaroINFORMATION;
-    font-size: 14px;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-bottom: 10px;
-    letter-spacing: 2px;
-  }
-
-  p {
-    color: $color_texto_oscuro;
-    font-size: 14px;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-bottom: 10px;
-    letter-spacing: 2px;
-  }
-}
-
-/*  FORM */
+/*  FORM  */
 .contact-form {
   background-color: $color_form_background !important;
   padding: 40px;
@@ -72,7 +53,7 @@ $font-weight_enlace: bold;
   }
 }
 
-/*  BUTTON*/
+/*  BUTTON */
 .btn-custom {
   background-color: $btn-bg;
   color: $color_texto;
