@@ -1,5 +1,6 @@
 import React from 'react';
-import './Footer.scss'; 
+import './Footer.scss';
+import logo from "../../assets/marcador-de-posicion.png";
 
 const Footer = () => {
   return (
@@ -12,7 +13,7 @@ const Footer = () => {
           
           <div className="col-md-6 col-lg-3 mb-4">
              
-            <img className="footer-logo"  src="/assets/marcador-de-posicion.png" alt="Logo" />
+            <img className="footer-logo"  src={logo} alt="Logo" />
             <h3 className="fw-bold mb-3" style={{ color: '#3C1053' }}>
               Roosevelt
             </h3>
