@@ -105,7 +105,7 @@ export default function Settings() {
     .split("T")[0];
 
   return (
-    <div className="container-fluid bg-secondary vh-100 p-4">
+    <div className="container-fluid bg-secondary p-4">
       <div className="row bg-light rounded-2 p-4 mb-2">
         <div className="col-6 container-private-info p-2">
           <h2>Datos personales</h2>
@@ -136,14 +136,15 @@ export default function Settings() {
           <h2 className=" status-title text-black">Datos Interesantes</h2>
           <table className=" table-striped table-bordered mt-3 w-100">
             <tr>
-              <td className="fw-bold">
+              <td className="fw-bold goal">
                 Metros Recorridos
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
+                  width="30"
+                  height="30"
+                  
                   fill="currentColor"
-                  class="bi bi-person-walking"
+                  class="bi bi-person-walking m-1"
                   viewBox="0 0 16 16"
                 >
                   <path d="M9.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0M6.44 3.752A.75.75 0 0 1 7 3.5h1.445c.742 0 1.32.643 1.243 1.38l-.43 4.083a1.8 1.8 0 0 1-.088.395l-.318.906.213.242a.8.8 0 0 1 .114.175l2 4.25a.75.75 0 1 1-1.357.638l-1.956-4.154-1.68-1.921A.75.75 0 0 1 6 8.96l.138-2.613-.435.489-.464 2.786a.75.75 0 1 1-1.48-.246l.5-3a.75.75 0 0 1 .18-.375l2-2.25Z" />
@@ -153,14 +154,14 @@ export default function Settings() {
               <td>5km</td>
             </tr>
             <tr>
-              <td className="fw-bold">
+              <td className="fw-bold goal">
                 Ruta recurrente
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
+                  width="30"
+                  height="30"
                   fill="currentColor"
-                  class="bi bi-compass"
+                  class="bi bi-compass m-1"
                   viewBox="0 0 16 16"
                 >
                   <path d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016m6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0" />
@@ -170,16 +171,16 @@ export default function Settings() {
               <td>Parque Central</td>
             </tr>
             <tr>
-              <td className="fw-bold">
+              <td className="fw-bold goal">
                 Medio de movilidad recurrente
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="white"
-                  class="bi bi-universal-access-circle"
+                  class="bi bi-universal-access-circle m-1"
                   viewBox="0 0 16 16"
                   id="Universal-Access-Circle--Streamline-Bootstrap"
-                  height="20"
-                  width="20"
+                  height="30"
+                  width="30"
                 >
                   <desc>
                     Universal Access Circle Streamline Icon:
@@ -202,8 +203,7 @@ export default function Settings() {
       </div>
       <div
         className={` config-data-user ${showConfig ? "show" : ""} text-light rounded-3 w-50`}
-      >
-        <h2 className="m-2">Edicion de datos personales</h2>
+      >        
         <form
           onSubmit={handleSubmitEdit}
           className="form d-flex flex-column gap-2 p-3"
@@ -215,7 +215,6 @@ export default function Settings() {
               type="file"
                 className=" form-control"
                 onChange={(e) => setAvatarEdit(e.target.files[0])}
-                required
               ></input>
             </label>
           </div>
@@ -315,7 +314,7 @@ export default function Settings() {
               name="phone"
               pattern="\+?\d{9,15}" 
               placeholder="+34 612345678"
-              className="form-control w-50"
+              className="form-control w-25"
               value={phoneEdit}
               onChange={(e) => setPhoneEdit(e.target.value)}
               required
@@ -323,7 +322,13 @@ export default function Settings() {
             <button className="btn btn-outline-primary mt-2">
               Agregar numero de telefono
             </button>
-        </div>        
+        </div> 
+        <div>
+          <hr className="border-0 bg-black my-4" style={{ height: "2px" }}></hr>
+        </div> 
+        <div>
+          
+        </div>      
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import "./App.scss";
-import './../node_modules/bootstrap/dist/js/bootstrap.min.js'
+import "./../node_modules/bootstrap/dist/js/bootstrap.min.js";
 import { BrowserRouter } from "react-router-dom";
 import Header from "./components/Header/Header";
 import NavBar from "./components/NavBar/NavBar";
@@ -9,13 +9,13 @@ import AppRouter from "./pages/router/AppRouter";
 function App() {
   return (
     <>
-    <div className="d-flex flex-column vh-100 justify-content-between justify-content-lg-start">
-      <BrowserRouter>
-          <Header /> 
+      <div className="d-flex flex-column vh-100 justify-content-between justify-content-lg-start">
+        <BrowserRouter>
+          <Header />
           <NavBar />
-          <AppRouter/>
+          <AppRouter />
           <Footer />
-      </BrowserRouter>      
+        </BrowserRouter>
       </div>
     </>
   );
