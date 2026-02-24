@@ -5,7 +5,7 @@ function Header() {
     <header className="row bg-primary py-3">
       <div className="col-12 col-lg-6  align-content-center">
         <div className="d-flex h-lg-100 w-lg-50 justify-content-center justify-content-lg-start px-3">
-          <img className="image-thumbnail" src="./logo.png" alt="logo"></img>
+          <img className="image-thumbnail" src="../../assets/logo.png" alt="logo"></img>
         </div>
       </div>
       <div className="col-lg-6 align-self-stretch">
