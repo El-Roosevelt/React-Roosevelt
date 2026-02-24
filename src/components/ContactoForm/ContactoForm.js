@@ -22,12 +22,16 @@ export default function ContactoForm() {
             setError("El email es obligatorio")
         } else if (!emailValido) {
             setError("El email no es válido")
+        } else if (!surname) {
+            setError("El apellido es obligatorio")
         } else {
             setError("")
         }
     }
     const manejarCambio = (e) => {
         setName(e.target.value);
+        setEmail(e.target.value);
+        setSurname(e.target.value);
     };
     return (
         <section class="contact-section py-5">
@@ -55,12 +59,14 @@ export default function ContactoForm() {
                             </div>
 
                             <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="Surname" required />
+                                <input type="text"  onChange={manejarCambio} class="form-control" placeholder="Surname" required />
                                 <div class="invalid-feedback">Please enter your surname.</div>
                             </div>
 
                             <div class="col-md-6">
-                                <input type="email" class="form-control" placeholder="Email" required />
+                                <input type="email" class="form-control" 
+                                 onChange={manejarCambio}
+                                 placeholder="Email" required />
                                 <div class="invalid-feedback">Please enter a valid email.</div>
                             </div>
 
