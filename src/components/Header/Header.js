@@ -1,5 +1,6 @@
 import "./Header.scss";
 import logo from "../../assets/logo.png";
+import { NavLink } from "react-router-dom";
 
 function Header() {
   return (
@@ -31,19 +32,29 @@ function Header() {
             </svg>
             <ul class="dropdown-menu">
               <li>
-                <a class="dropdown-item" href="#">
+                <NavLink
+                  to="/Login"
+                  className="text-decoration-none dropdown-item"
+                >
                   Login
-                </a>
+                </NavLink>
+                Login
               </li>
               <li>
-                <a class="dropdown-item" href="#">
+                <NavLink
+                  to="/RegForm"
+                  className="text-decoration-none dropdown-item"
+                >
                   Registrarse
-                </a>
+                </NavLink>
               </li>
               <li>
-                <a class="dropdown-item" href="#">
-                  Recuperar
-                </a>
+                <NavLink
+                  to="/RecuperarContrasena"
+                  className="text-decoration-none dropdown-item"
+                >
+                  Recuperar contraseña
+                </NavLink>
               </li>
             </ul>
           </div>
