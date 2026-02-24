@@ -6,7 +6,7 @@ export default function RecuperarContrasena() {
   const [formData, setFormData] = useState({
 
     email: "",
-   
+
   });
   const [errors, setErrors] = useState({});
 
@@ -18,9 +18,9 @@ export default function RecuperarContrasena() {
   const handleSubmitForm = (e) => {
     e.preventDefault();
     const newErrors = {};
-  
+
     if (!formData.email) newErrors.email = true;
-    
+
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
@@ -29,9 +29,9 @@ export default function RecuperarContrasena() {
   };
 
   const onSubmit = (data) => {
-    
-      console.log("Las contraseña fue enviado al email registrado");
-      return;
+
+    console.log("Las contraseña fue enviado al email registrado");
+    return;
   };
 
   return (

@@ -38,7 +38,6 @@ function Header() {
                 >
                   Login
                 </NavLink>
-                Login
               </li>
               <li>
                 <NavLink
