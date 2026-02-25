@@ -1,8 +1,10 @@
-export default function Ruta({titulo, imagen, fecha, data}) {
+export default function Ruta({id, titulo, imagen, fecha, eliminarRuta}) {
+
+
 
     return (
         <div class="card">
-            <button className="position-absolute top-0 end-0 rounded rounded-4">X</button>
+            <button className="position-absolute top-0 end-0 rounded rounded-4" onClick={() => eliminarRuta(id)}>X</button>
             <img src={imagen} class="card-img-top" alt={titulo} />
 
             <div class="card-body">
