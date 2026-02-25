@@ -5,8 +5,8 @@ const Footer = () => {
   const logo = "/assets/marcador-de-posicion.png";
 
   return (
-    <footer className="d-none d-md-block footer-section text-secondary pt-5 pb-4">
-      <div className="container">
+<footer className="footer-section text-secondary pt-5 pb-4"> 
+       <div className="container">
         <div className="row">
           
           <div className="col-md-6 col-lg-3 mb-4">
