@@ -1,65 +1,48 @@
-import React, { useState, useEffect } from 'react'
-// import { GeoapifyGeocoderAutocomplete, GeoapifyContext } from '@geoapify/react-geocoder-autocomplete'
-// import '@geoapify/geocoder-autocomplete/styles/minimal.css'
-import "./Mapa.scss";
+// import React, { useState, useEffect } from 'react';
+// import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
+// import { createRoot } from 'react-dom/client';
+
+// export default function Mapa() {
+
+//     const position = [51.505, -0.09]
+//     const domNode = document.getElementById('root');
+//     const root = createRoot(domNode);
+//     root.render(
+//         <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
+//             <TileLayer
+//                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+//                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+//             />
+//             <Marker position={position}>
+//                 <Popup>
+//                     A pretty CSS3 popup. <br /> Easily customizable.
+//                 </Popup>
+//             </Marker>
+//         </MapContainer>,
+//     )
+// }
+
+
+import { useEffect, useRef } from "react";
+import leaflet from "leaflet";
 
 export default function Mapa() {
+    const mapRef = useRef();
 
-    // function onPlaceSelect(value) {
-    //     console.log(value);
-    // }
+    useEffect(() => {
+        mapRef.current = leaflet.map("map").setView([51.505, -0.09], 13);
+        leaflet.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 
-    // function onSuggectionChange(value) {
-    //     console.log(value);
-    // }
-    // const onPlaceSelected = (feature) => {
-    //     console.log('Selected:', feature?.properties?.formatted);
-    // };
+            }
+        ).addTo(mapRef.current);
+    }, []);
 
-    // const onSuggestionsChange = (list) => {
-    //     console.log('Suggestions:', list);
-    // };
+    return (
+        <div id="map" ref={mapRef}>
 
-    // return (
-    //     <GeoapifyContext apiKey="21b07e2c13234dee83122652436caad2">
-    //         <GeoapifyGeocoderAutocomplete
-    //             placeholder="Search for an address"
-    //             lang="en"
-    //             limit={8}
-    //             addDetails={true}
-    //             placeSelect={onPlaceSelected}
-    //             suggestionsChange={onSuggestionsChange}
-    //         />
-    //     </GeoapifyContext>
-    // )
-
-    function MyMap() {
-        let mapContainer;
-
-        useEffect(() => {
-            const initialState = {
-                lng: 11,
-                lat: 49,
-                zoom: 4
-            };
-
-            const map = L.map(mapContainer).setView([initialState.lat, initialState.lng], initialState.zoom);
-
-            // the attribution is required for the Geoapify Free tariff plan
-            map.attributionControl.setPrefix('').addAttribution('Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | © OpenStreetMap <a href="https://www.openstreetmap.org/copyright" target="_blank">contributors</a>');
-
-            var myAPIKey = 'YOUR_API_KEY_HERE';
-            const mapStyle = 'https://maps.geoapify.com/v1/styles/osm-carto/style.json';
-
-            const gl = L.mapboxGL({
-                style: `${mapStyle}?apiKey=${myAPIKey}`,
-                accessToken: 'no-token'
-            }).addTo(map);
-        }, [mapContainer]);
-
-        return (
-            <div className="map-container" ref={el => mapContainer = el}>
-            </div>
-        )
-    }
+        </div>
+    )
 }

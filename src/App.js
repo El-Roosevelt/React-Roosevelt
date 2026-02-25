@@ -5,18 +5,20 @@ import Header from "./components/Header/Header";
 import NavBar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
 import AppRouter from "./pages/Router/AppRouter";
+import Map from "./components/Map/Map"
 
 function App() {
   return (
     <>
-    <div className="d-flex flex-column vh-100 justify-content-between justify-content-lg-start">
+    {/* <div className="d-flex flex-column vh-100 justify-content-between justify-content-lg-start">
       <BrowserRouter>
           <Header /> 
           <NavBar />
           <AppRouter/>
           <Footer />
       </BrowserRouter>      
-      </div>
+      </div> */}
+      <Map />
     </>
   );
 }
