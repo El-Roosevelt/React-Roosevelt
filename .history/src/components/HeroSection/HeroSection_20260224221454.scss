@@ -104,8 +104,8 @@ $font-weight_enlace: bold;
 .hero-btn {
   background-color: $btn-bg;
   color: $color_texto;
-  border-radius: 30px; 
-  padding: 18px 50px; 
+  border-radius: 50px; // Más redondeado (píldora)
+  padding: 18px 50px; // Botón más grande y fácil de clicar
   font-size: 1.1rem;
   border: 2px solid transparent;
   font-weight: bold;
