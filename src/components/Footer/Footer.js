@@ -6,7 +6,7 @@ const Footer = () => {
 
   return (
     <footer 
-      className="d-none d-md-flex footer-section text-secondary pt-5 pb-4" >
+      className="d-flex footer-section text-secondary pt-5 pb-4" >
         
       <div className="container">
         <div className="row">
