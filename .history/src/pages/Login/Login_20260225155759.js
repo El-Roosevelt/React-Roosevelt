@@ -45,15 +45,15 @@ export default function Login({ view }) {
 
               {/* Si pulsas entrar */}
               {activeTab === "iniciar" && (
-                <LoginIniciar onSwitch={setActiveTab}/>
+                <LoginIniciar />
               )}
 
-              {/* Si pulsas registro -> componente LoginForm */}
+              {/* Si pulsas registro -> componente LoginForm (el que acabas de pasar) */}
               {activeTab === "registro" && (
-                <LoginForm onSwitch={setActiveTab} />
+                <LoginForm />
               )}
 
-              {/* Si pulsas Ayuda -> componente de Recuperar */}
+              {/* Si pulsas Ayuda -> Tu componente de Recuperar */}
               {activeTab === "recuperar" && (
                 <RecuperarContrasena />
               )}

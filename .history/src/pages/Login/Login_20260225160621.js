@@ -45,12 +45,12 @@ export default function Login({ view }) {
 
               {/* Si pulsas entrar */}
               {activeTab === "iniciar" && (
-                <LoginIniciar onSwitch={setActiveTab}/>
+                <LoginIniciar onSwitch=/>
               )}
 
               {/* Si pulsas registro -> componente LoginForm */}
               {activeTab === "registro" && (
-                <LoginForm onSwitch={setActiveTab} />
+                <LoginForm />
               )}
 
               {/* Si pulsas Ayuda -> componente de Recuperar */}

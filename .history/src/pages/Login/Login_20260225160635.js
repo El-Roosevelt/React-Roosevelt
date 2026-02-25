@@ -50,7 +50,7 @@ export default function Login({ view }) {
 
               {/* Si pulsas registro -> componente LoginForm */}
               {activeTab === "registro" && (
-                <LoginForm onSwitch={setActiveTab} />
+                <LoginForm />
               )}
 
               {/* Si pulsas Ayuda -> componente de Recuperar */}
