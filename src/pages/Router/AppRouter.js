@@ -10,9 +10,9 @@ export default function AppRouter() {
         <>
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/login/iniciar" element={<Login view="iniciar" />} />
-                <Route path="/registro" element={<Login view="registro" />} />
-                <Route path="/recuperar" element={<Login view="recuperar" />} />
+                <Route path="/login" element={<Login view="iniciar" />} />
+                <Route path="/login/registro" element={<Login view="registro" />} />
+                <Route path="/login/recuperar" element={<Login view="recuperar" />} />
                 <Route path="/my-routes" element={<MisRutas />} />
                 <Route path="/settings" element={<Settings />} />
             </Routes>
