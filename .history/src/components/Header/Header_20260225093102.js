@@ -1,6 +1,9 @@
 import "./Header.scss";
+<<<<<<< HEAD
 import logo from "../../assets/logo.png";
 import { NavLink } from "react-router-dom";
+=======
+>>>>>>> contactoForm-feature
 
 function Header() {
   const logo = "/assets/logo.png";

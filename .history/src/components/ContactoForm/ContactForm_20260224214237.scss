@@ -44,7 +44,7 @@ $font-weight_enlace: bold;
   }
 }
 
-/*  FORM */
+/* ===== FORM */
 .contact-form {
   background-color: $color_form_background !important;
   padding: 40px;
@@ -72,7 +72,7 @@ $font-weight_enlace: bold;
   }
 }
 
-/*  BUTTON*/
+/* ===== BUTTON ===== */
 .btn-custom {
   background-color: $btn-bg;
   color: $color_texto;
@@ -88,7 +88,7 @@ $font-weight_enlace: bold;
   }
 }
 
-/*  LINKS */
+/* ===== LINKS ===== */
 a {
   color: $link-color;
   font-weight: $font-weight_enlace;
