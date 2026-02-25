@@ -44,7 +44,7 @@ export default function Login({ view }) {
           )}
 
           {activeTab === "registro" && (
-            <LoginIniciar isRegister={true} />
+            <Logininiciar isRegister={true} />
           )}
 
           {activeTab === "recuperar" && (

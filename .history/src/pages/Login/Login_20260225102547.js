@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import LoginIniciar from "../../components/LoginIniciar/LoginIniciar";
-
+imporе Logininiciar from "../../components/LoginForm/LoginForm";
 
 export default function Login({ view }) {
   // 
@@ -40,11 +39,11 @@ export default function Login({ view }) {
         <div className="card-body p-4">
           {/* RENDERIZADO SEGÚN EL BOTÓN PULSADO */}
           {activeTab === "iniciar" && (
-            <LoginIniciar isRegister={false} />
+            <LoginForm isRegister={false} />
           )}
 
           {activeTab === "registro" && (
-            <LoginIniciar isRegister={true} />
+            <LoginForm isRegister={true} />
           )}
 
           {activeTab === "recuperar" && (

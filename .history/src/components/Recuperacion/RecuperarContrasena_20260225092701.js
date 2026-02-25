@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../index.css";
-import "../LoginForm/LoginForm.scss";
+import "..LoginForm/";
 
 export default function RecuperarContrasena() {
   const [formData, setFormData] = useState({

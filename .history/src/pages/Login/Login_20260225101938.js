@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import LoginIniciar from "../../components/LoginIniciar/LoginIniciar";
-
+import LoginForm from "../../components/LoginForm/LoginForm";
 
 export default function Login({ view }) {
-  // 
+  // Usamos un estado interno para que los botones cambien la forma sin recargar
   const [activeTab, setActiveTab] = useState(view || "iniciar");
 
-  // Si el usuario llega desde el Header, actualizamos 
+  // Si el usuario llega desde el Header, actualizamos la pestaña activa
   useEffect(() => {
     setActiveTab(view);
   }, [view]);
@@ -40,11 +39,11 @@ export default function Login({ view }) {
         <div className="card-body p-4">
           {/* RENDERIZADO SEGÚN EL BOTÓN PULSADO */}
           {activeTab === "iniciar" && (
-            <LoginIniciar isRegister={false} />
+            <LoginForm isRegister={false} />
           )}
 
           {activeTab === "registro" && (
-            <LoginIniciar isRegister={true} />
+            <LoginForm isRegister={true} />
           )}
 
           {activeTab === "recuperar" && (

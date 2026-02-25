@@ -34,7 +34,7 @@ function Header() {
             <ul class="dropdown-menu">
               <li>
                 <NavLink
-                  to="/login/iniciar"
+                  to="/Login"
                   className="text-decoration-none dropdown-item"
                 >
                   Login

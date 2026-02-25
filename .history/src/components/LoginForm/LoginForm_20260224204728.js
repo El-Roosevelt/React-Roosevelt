@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "../../index.css";
 import "./LoginForm.scss";
-
 export default function LoginForm() {
   const [formData, setFormData] = useState({
     nombre: "",
@@ -13,22 +12,9 @@ export default function LoginForm() {
 
   const [errors, setErrors] = useState({});
 
-  const emailRegex =
-    /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // borro erro
-    setErrors((prev) => ({
-      ...prev,
-      [name]: false,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmitForm = (e) => {
@@ -37,37 +23,26 @@ export default function LoginForm() {
 
     if (!formData.nombre) newErrors.nombre = true;
     if (!formData.apellido) newErrors.apellido = true;
-
-    if (!formData.email) newErrors.email = "required";
-    else if (!emailRegex.test(formData.email)) newErrors.email = "invalid";
-
+    if (!formData.email) newErrors.email = true;
     if (!formData.contrasena) newErrors.contrasena = true;
+    if (!formData.confirmarContrasena) newErrors.confirmarContrasena = true;
 
-    if (!formData.confirmarContrasena) {
-      newErrors.confirmarContrasena = true;
-    } else if (formData.contrasena !== formData.confirmarContrasena) {
+    if (
+      formData.contrasena &&
+      formData.confirmarContrasena &&
+      formData.contrasena !== formData.confirmarContrasena
+    ) {
       newErrors.confirmarContrasena = "no_match";
     }
 
     setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      console.log("Formulario enviado");
-      setFormData({
-        nombre: "",
-        apellido: "",
-        email: "",
-        contrasena: "",
-        confirmarContrasena: "",
-      });
-    }
   };
 
   return (
     <div className="contact-section d-flex justify-content-center align-items-center vh-100">
       <div className="contact-form col-11 col-sm-8 col-md-6 col-lg-5">
 
-        <h2 className="text-center mb-4">Formulario de Registro</h2>
+        <h2 className="text-center mb-4 ">Formulario de Registro</h2>
 
         <form onSubmit={handleSubmitForm}>
 
@@ -108,11 +83,8 @@ export default function LoginForm() {
               placeholder="Email"
               className="form-control"
             />
-            {errors.email === "required" && (
+            {errors.email && (
               <small className="text-danger">Email es obligatorio</small>
-            )}
-            {errors.email === "invalid" && (
-              <small className="text-danger">Email no es válido</small>
             )}
           </div>
 
@@ -139,9 +111,6 @@ export default function LoginForm() {
               placeholder="Confirmar contraseña"
               className="form-control"
             />
-            {errors.confirmarContrasena === true && (
-              <small className="text-danger">Confirmación es obligatoria</small>
-            )}
             {errors.confirmarContrasena === "no_match" && (
               <small className="text-danger">Las contraseñas no coinciden</small>
             )}
@@ -154,16 +123,10 @@ export default function LoginForm() {
           </div>
 
           <div className="text-center mt-3">
-            <button
-              type="button"
-              className="btn btn_link link-underline-opacity-0"
-            >
+            <button type="button" className="btn  btn_link link-underline link-underline-opacity-0 ">
               Recuperar contraseña
             </button>
-            <button
-              type="button"
-              className="btn btn-link btn_link link-underline-opacity-0"
-            >
+            <button type="button" className="btn btn-link btn_link link-underline link-underline-opacity-0">
               Login
             </button>
           </div>
