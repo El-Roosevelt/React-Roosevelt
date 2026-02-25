@@ -278,7 +278,7 @@ export default function Settings() {
       </div>
       <div className="row rounded-1 bg-light">
         <div className="  p-3 rounded-3 m-1">
-          <h2 className=" border border-1 rounded-1 bg-dark text-light p-1">Ajustes de Seguridad</h2>
+          <h2 className=" border border-1 rounded-1 bg-dark text-light p-2">Ajustes de Seguridad</h2>
           <p className=" w-75">
             Para poder cambiar tu contraseña, porfavor contacta con nosostros o
             si tienes acceso a tu correo electronico, ingresalo aqui para
@@ -339,14 +339,12 @@ export default function Settings() {
         <div>
           <hr className=" border-0 bg-black my-4" style={{ height: "2px" }}></hr>
         </div> 
-        <div className="p-3 m-1">
-          <h2>Ajustes de Notificaciones</h2>
+        <div className="p-3 m-1 mb-3">
+          <h2 className=" bg-dark text-light rounded-1 p-2">Ajustes de Notificaciones</h2>
           <p>Configura tus preferencias de notificaciones para mantenerte informado sobre tus actividades y actualizaciones importantes.</p> 
-          <div className=" d-flex flex-column gap-1">
-            <form>
+          <div className=" d-flex flex-column gap-1">            
               <label><input type="checkbox" value={notifyEmailActive} onChange={onNotifyEmail} className=" form-check-input m-1"></input>Notificaciones por correo electrónico</label>
-              <label><input type="checkbox" value={notifySmsActive} onChange={onNotifySms} className=" form-check-input m-1"></input>Notificaciones por SMS</label>            
-            </form>
+              <label><input type="checkbox" value={notifySmsActive} onChange={onNotifySms} className=" form-check-input m-1"></input>Notificaciones por SMS</label>                        
           </div>
         </div>      
       </div>
