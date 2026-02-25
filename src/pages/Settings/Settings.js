@@ -6,6 +6,8 @@ export default function Settings() {
     name: "Roberto Gomez",
     email: "roberto.gomez@example.com",
     birth: "1980-05-15",
+    phone: "+34 612345678",
+    secondaryEmail: "roberto.gomez.recover@example.com"
   });
   const [avatarEdit, setAvatarEdit] = React.useState("");
   const [nameEdit, setNameEdit] = React.useState(persona.name);
@@ -17,9 +19,20 @@ export default function Settings() {
   const [recoverEmail, setRecoverEmail] = React.useState("");
   const [emailSecondary, setEmailSecondary] = React.useState("");
 
+  const [notifyEmailActive, setNotifyEmailActive] = React.useState(false);
+  const [notifySmsActive, setNotifySmsActive] = React.useState(false);
+
   const OnClickConfigUser = () => {
     setShowConfig(!showConfig);
   };
+
+  const onNotifyEmail = () => {
+    setNotifyEmailActive(!notifyEmailActive);
+  }
+
+  const onNotifySms = () => {
+    setNotifySmsActive(!notifySmsActive);
+  }
 
   const handleCancelEdit = () => {
     setNameEdit(persona.name);
@@ -39,8 +52,7 @@ export default function Settings() {
     return age;
   };
 
-  const HideEmail=(email)=>{
-    
+  const HideEmail=(email)=>{    
     const emailHidden=email.replace(/(.{2}).+(.{2}@.+)/, '$1****$2');
     return emailHidden;
   }
@@ -331,8 +343,10 @@ export default function Settings() {
           <h2>Ajustes de Notificaciones</h2>
           <p>Configura tus preferencias de notificaciones para mantenerte informado sobre tus actividades y actualizaciones importantes.</p> 
           <div className=" d-flex flex-column gap-1">
-            <label><input type="checkbox" className=" form-check-input m-1"></input>Notificaciones por correo electrónico</label>
-            <label><input type="checkbox" className=" form-check-input m-1"></input>Notificaciones por SMS</label>
+            <form>
+              <label><input type="checkbox" value={notifyEmailActive} onChange={onNotifyEmail} className=" form-check-input m-1"></input>Notificaciones por correo electrónico</label>
+              <label><input type="checkbox" value={notifySmsActive} onChange={onNotifySms} className=" form-check-input m-1"></input>Notificaciones por SMS</label>            
+            </form>
           </div>
         </div>      
       </div>
