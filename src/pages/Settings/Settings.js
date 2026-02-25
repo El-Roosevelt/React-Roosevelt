@@ -118,8 +118,8 @@ export default function Settings() {
 
   return (
     <div className="container-fluid bg-secondary p-4">
-      <div className="row bg-light rounded-2 p-4 mb-2">
-        <div className="col-6 container-private-info p-2">
+      <div className="row shadow-lg bg-light rounded-2 p-4 mb-2">
+        <div className=" col-6 container-private-info p-2">
           <h2>Datos personales</h2>
           <div className="d-flex flex-row mt-2 p-2">
             <div className="foto-container">
@@ -136,7 +136,7 @@ export default function Settings() {
           </div>
           <div>
             <button
-              className="btn btn-primary mt-3"
+              className="btn btn-primary m-3"
               onClick={OnClickConfigUser}
             >
               Editar perfil
@@ -153,8 +153,7 @@ export default function Settings() {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="30"
-                  height="30"
-                  
+                  height="30"                  
                   fill="currentColor"
                   class="bi bi-person-walking m-1"
                   viewBox="0 0 16 16"
@@ -163,7 +162,7 @@ export default function Settings() {
                   <path d="M6.25 11.745v-1.418l1.204 1.375.261.524a.8.8 0 0 1-.12.231l-2.5 3.25a.75.75 0 1 1-1.19-.914zm4.22-4.215-.494-.494.205-1.843.006-.067 1.124 1.124h1.44a.75.75 0 0 1 0 1.5H11a.75.75 0 0 1-.531-.22Z" />
                 </svg>
               </td>
-              <td>5km</td>
+              <td className=" p-2">5km</td>
             </tr>
             <tr>
               <td className="fw-bold goal">
@@ -180,7 +179,7 @@ export default function Settings() {
                   <path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z" />
                 </svg>
               </td>
-              <td>Parque Central</td>
+              <td className=" p-2">Parque Central</td>
             </tr>
             <tr>
               <td className="fw-bold goal">
@@ -208,7 +207,7 @@ export default function Settings() {
                   ></path>
                 </svg>
               </td>
-              <td>Ascensor</td>
+              <td className=" p-2">Ascensor</td>
             </tr>
           </table>
         </div>
