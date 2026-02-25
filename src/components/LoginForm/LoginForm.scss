@@ -1,17 +1,7 @@
-$primary: #3C1053;
-$color_title: #7744d9;
-$secondary: #9d5baf;
-
-$color_form_background: #eff2f7;
-$color_error: #D4351C;
-
-$btn-bg: $primary;
-$btn-hover-bg: darken($primary, 8%);
-
-$color_texto: #FFFFFF;
-
+@import "../../variables.scss";
 
 /* SECTION */
+
 .contact-section {
   background-color: $color_form_background !important;
   min-height: 100vh;
