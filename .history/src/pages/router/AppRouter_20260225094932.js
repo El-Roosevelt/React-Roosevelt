@@ -1,16 +1,17 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "../Home/Home";
+import Login from "../Login/Login";
 import Settings from "../Settings/Settings";
 import MisRutas from "../MisRutas/MisRutas";
 
-import Login from "../../pages/Login/Login";
+import LoginForm from "../../components/LoginForm/LoginForm";
 
 export default function AppRouter() {
     return (
         <>
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/login/iniciar" element={<Login view="iniciar" />} />
+                <Route path="/login" element={<Login view="login" />} />
                 <Route path="/registro" element={<Login view="registro" />} />
                 <Route path="/recuperar" element={<Login view="recuperar" />} />
                 <Route path="/my-routes" element={<MisRutas />} />
