@@ -42,18 +42,19 @@ export default function Login({ view }) {
             </div>
 
             <div className="card-body p-5">
+              {/* RENDERIZADO CONDICIONAL */}
 
-              {/* Si pulsas entrar */}
+              {/* Si pulsas Entrar -> Tu componente de Login rápido */}
               {activeTab === "iniciar" && (
-                <LoginIniciar onSwitch={setActiveTab}/>
+                <LoginIniciar />
               )}
 
-              {/* Si pulsas registro -> componente LoginForm */}
+              {/* Si pulsas Registro -> TU COMPONENTE LoginForm (el que acabas de pasar) */}
               {activeTab === "registro" && (
-                <LoginForm onSwitch={setActiveTab} />
+                <LoginForm />
               )}
 
-              {/* Si pulsas Ayuda -> componente de Recuperar */}
+              {/* Si pulsas Ayuda -> Tu componente de Recuperar */}
               {activeTab === "recuperar" && (
                 <RecuperarContrasena />
               )}

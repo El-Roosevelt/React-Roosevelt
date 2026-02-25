@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+// Importamos tus tres componentes
 import LoginIniciar from "../../components/LoginIniciar/LoginIniciar";
 import LoginForm from "../../components/LoginForm/LoginForm";
 import RecuperarContrasena from "../../components/Recuperacion/RecuperarContrasena";
@@ -7,7 +8,7 @@ export default function Login({ view }) {
   // Estado para controlar qué pestaña está activa
   const [activeTab, setActiveTab] = useState(view || "iniciar");
 
-  // Si vienes desde el menú del рeader, actualizamos la pestaña
+  // Si vienes desde el menú del Header, actualizamos la pestaña
   useEffect(() => {
     if (view) setActiveTab(view);
   }, [view]);
@@ -15,11 +16,11 @@ export default function Login({ view }) {
   return (
     <div className="container-fluid mt-5 animate-fade">
       <div className="row justify-content-center">
-        {/*  col-md-10 para anchura */}
+        {/* Usamos col-md-10 para que sea ancho como pediste */}
         <div className="col-12 col-md-10">
           <div className="card shadow-lg border-0">
             
-            {/* BOTONES DE NAVEGACIÓN  */}
+            {/* BOTONES DE NAVEGACIÓN INTERNA */}
             <div className="d-flex btn-group bg-light">
               <button 
                 className={`flex-fill btn p-3 border-0 rounded-0 ${activeTab === 'iniciar' ? 'btn-primary' : 'btn-outline-secondary'}`}
@@ -42,18 +43,19 @@ export default function Login({ view }) {
             </div>
 
             <div className="card-body p-5">
+              {/* RENDERIZADO CONDICIONAL */}
 
-              {/* Si pulsas entrar */}
+              {/* Si pulsas Entrar -> Tu componente de Login rápido */}
               {activeTab === "iniciar" && (
-                <LoginIniciar onSwitch={setActiveTab}/>
+                <LoginIniciar />
               )}
 
-              {/* Si pulsas registro -> componente LoginForm */}
+              {/* Si pulsas Registro -> TU COMPONENTE LoginForm (el que acabas de pasar) */}
               {activeTab === "registro" && (
-                <LoginForm onSwitch={setActiveTab} />
+                <LoginForm />
               )}
 
-              {/* Si pulsas Ayuda -> componente de Recuperar */}
+              {/* Si pulsas Ayuda -> Tu componente de Recuperar */}
               {activeTab === "recuperar" && (
                 <RecuperarContrasena />
               )}

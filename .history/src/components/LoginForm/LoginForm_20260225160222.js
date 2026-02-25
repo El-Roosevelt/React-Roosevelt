@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../../index.css";
 import "./LoginForm.scss";
 
-export default function LoginForm({onSwitch}) {
+export default function LoginForm(Х) {
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
