@@ -5,14 +5,20 @@ export default function HeroSection() {
 
   return (
     <section className="hero-section">
-      <video className="hero-video" src={videoBG} autoPlay loop muted />
+      <video
+        className="hero-video"
+        src={videoBG}
+        autoPlay
+        loop
+        muted
+      />
 
-      <div className="hero-overlay animate-fade">
-        <h3 className="hero-title">
+      <div className="hero-overlay">
+        <h3 className="text-light display-6 mb-3 text-center fw-bold">
           Tu compañero indispensable
         </h3>
 
-        <p className="hero-text">
+        <p className="lead text-light text-center fs-4">
           Roosevelt es una aplicación de mapas creada para ayudar a las
           personas mayores o con discapacidades a desplazarse por zonas de
           difícil acceso en una ciudad o pueblo. ¡Os ayudaremos a orientaros
@@ -20,7 +26,7 @@ export default function HeroSection() {
           interesantes! Puedes navegarte y guardar tus rutas favoritas!
         </p>
 
-        <button className="btn btn-custom hero-btn">
+        <button className="btn btn-custom rounded-pill px-4 py-2 fs-5">
           Ir al mapa
         </button>
       </div>
