@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // redirect despues de la entrada
-import "./LoginIniciar.scss"
 
 export default function LoginIniciar() {
 
@@ -41,7 +40,7 @@ export default function LoginIniciar() {
       
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label small">Correo electrónico</label>
+          <label className="form-label">Correo electrónico</label>
           <input
             type="email"
             name="email"
@@ -54,7 +53,7 @@ export default function LoginIniciar() {
         </div>
 
         <div className="mb-3">
-          <label className="form-label small">Contraseña</label>
+          <label className="form-label">Contraseña</label>
           <input
             type="password"
             name="password"
@@ -65,11 +64,10 @@ export default function LoginIniciar() {
             required
           />
         </div>
-        <div className="d-flex justify-content-center mt-4">
-        <button type="submit" className="btn btn-custom px-5 py-2">
+
+        <button type="submit" className="btn btn-primary w-100 py-2">
           Iniciar Sesión
         </button>
-        </div>
       </form>
 
       <div className="text-center mt-3">

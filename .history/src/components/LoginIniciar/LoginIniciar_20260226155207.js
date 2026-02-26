@@ -65,11 +65,11 @@ export default function LoginIniciar() {
             required
           />
         </div>
-        <div className="d-flex justify-content-center mt-4">
+        <div className="d-flex justify-content-center mt-4"></div>
         <button type="submit" className="btn btn-custom px-5 py-2">
           Iniciar Sesión
         </button>
-        </div>
+        
       </form>
 
       <div className="text-center mt-3">

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "../../index.css";
 import "./LoginForm.scss";
 
-
 export default function LoginForm({onSwitch}) {
   const [formData, setFormData] = useState({
     nombre: "",
@@ -148,8 +147,8 @@ export default function LoginForm({onSwitch}) {
             )}
           </div>
 
-          <div className="d-flex justify-content-center mt-4">
-            <button type="submit" className="btn btn-custom px-5 py-2 ">
+          <div className="d-grid">
+            <button type="submit" className="btn btn-custom">
               Registrarme
             </button>
           </div>

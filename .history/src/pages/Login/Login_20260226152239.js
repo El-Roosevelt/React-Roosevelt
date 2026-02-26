@@ -13,9 +13,10 @@ export default function Login({ view }) {
   }, [view]);
 
   return (
-    <div className="container mt-5 animate-fade">
+    <div className="container-fluid mt-5 animate-fade">
       <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6 container-formularios">
+        {/*  col-md-10 para anchura */}
+        <div className="col-12 col-md-10">
           <div className="card shadow-lg border-0">
             
             {/* BOTONES DE NAVEGACIÓN  */}
@@ -52,7 +53,7 @@ export default function Login({ view }) {
                 <LoginForm onSwitch={setActiveTab} />
               )}
 
-              {/* Si pulsas Ayuda - componente de Recuperar */}
+              {/* Si pulsas Ayuda -> componente de Recuperar */}
               {activeTab === "recuperar" && (
                 <RecuperarContrasena />
               )}
