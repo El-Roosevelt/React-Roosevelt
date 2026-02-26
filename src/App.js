@@ -11,14 +11,13 @@ import AppRouter from "./pages/Router/AppRouter";
 function App() {
   return (
     <>
-    <div className="d-flex flex-column vh-100 justify-content-start">
+
       <BrowserRouter>
-          <Header /> 
-          <NavBar />
-          <AppRouter/>
-          <Footer />
-      </BrowserRouter>      
-      </div>
+        <Header />
+        <NavBar />
+        <AppRouter />
+        <Footer />
+      </BrowserRouter>
     </>
   );
 }

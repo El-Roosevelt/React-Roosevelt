@@ -6,6 +6,8 @@ export default function Settings() {
     name: "Roberto Gomez",
     email: "roberto.gomez@example.com",
     birth: "1980-05-15",
+    phone: "+34 612345678",
+    secondaryEmail: "roberto.gomez.recover@example.com"
   });
   const [avatarEdit, setAvatarEdit] = React.useState("");
   const [nameEdit, setNameEdit] = React.useState(persona.name);
@@ -17,9 +19,20 @@ export default function Settings() {
   const [recoverEmail, setRecoverEmail] = React.useState("");
   const [emailSecondary, setEmailSecondary] = React.useState("");
 
+  const [notifyEmailActive, setNotifyEmailActive] = React.useState(false);
+  const [notifySmsActive, setNotifySmsActive] = React.useState(false);
+
   const OnClickConfigUser = () => {
     setShowConfig(!showConfig);
   };
+
+  const onNotifyEmail = () => {
+    setNotifyEmailActive(!notifyEmailActive);
+  }
+
+  const onNotifySms = () => {
+    setNotifySmsActive(!notifySmsActive);
+  }
 
   const handleCancelEdit = () => {
     setNameEdit(persona.name);
@@ -39,8 +52,7 @@ export default function Settings() {
     return age;
   };
 
-  const HideEmail=(email)=>{
-    
+  const HideEmail=(email)=>{    
     const emailHidden=email.replace(/(.{2}).+(.{2}@.+)/, '$1****$2');
     return emailHidden;
   }
@@ -105,9 +117,9 @@ export default function Settings() {
     .split("T")[0];
 
   return (
-    <div className="container-fluid bg-secondary vh-100 p-4">
-      <div className="row bg-light rounded-2 p-4 mb-2">
-        <div className="col-6 container-private-info p-2">
+    <div className="container-fluid bg-secondary p-4">
+      <div className="row shadow-lg bg-light rounded-2 p-4 mb-2">
+        <div className=" col-6 container-private-info p-2">
           <h2>Datos personales</h2>
           <div className="d-flex flex-row mt-2 p-2">
             <div className="foto-container">
@@ -124,7 +136,7 @@ export default function Settings() {
           </div>
           <div>
             <button
-              className="btn btn-primary mt-3"
+              className="btn btn-primary m-3"
               onClick={OnClickConfigUser}
             >
               Editar perfil
@@ -136,50 +148,50 @@ export default function Settings() {
           <h2 className=" status-title text-black">Datos Interesantes</h2>
           <table className=" table-striped table-bordered mt-3 w-100">
             <tr>
-              <td className="fw-bold">
+              <td className="fw-bold goal">
                 Metros Recorridos
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
+                  width="30"
+                  height="30"                  
                   fill="currentColor"
-                  class="bi bi-person-walking"
+                  class="bi bi-person-walking m-1"
                   viewBox="0 0 16 16"
                 >
                   <path d="M9.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0M6.44 3.752A.75.75 0 0 1 7 3.5h1.445c.742 0 1.32.643 1.243 1.38l-.43 4.083a1.8 1.8 0 0 1-.088.395l-.318.906.213.242a.8.8 0 0 1 .114.175l2 4.25a.75.75 0 1 1-1.357.638l-1.956-4.154-1.68-1.921A.75.75 0 0 1 6 8.96l.138-2.613-.435.489-.464 2.786a.75.75 0 1 1-1.48-.246l.5-3a.75.75 0 0 1 .18-.375l2-2.25Z" />
                   <path d="M6.25 11.745v-1.418l1.204 1.375.261.524a.8.8 0 0 1-.12.231l-2.5 3.25a.75.75 0 1 1-1.19-.914zm4.22-4.215-.494-.494.205-1.843.006-.067 1.124 1.124h1.44a.75.75 0 0 1 0 1.5H11a.75.75 0 0 1-.531-.22Z" />
                 </svg>
               </td>
-              <td>5km</td>
+              <td className=" p-2">5km</td>
             </tr>
             <tr>
-              <td className="fw-bold">
+              <td className="fw-bold goal">
                 Ruta recurrente
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
+                  width="30"
+                  height="30"
                   fill="currentColor"
-                  class="bi bi-compass"
+                  class="bi bi-compass m-1"
                   viewBox="0 0 16 16"
                 >
                   <path d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016m6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0" />
                   <path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z" />
                 </svg>
               </td>
-              <td>Parque Central</td>
+              <td className=" p-2">Parque Central</td>
             </tr>
             <tr>
-              <td className="fw-bold">
+              <td className="fw-bold goal">
                 Medio de movilidad recurrente
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="white"
-                  class="bi bi-universal-access-circle"
+                  class="bi bi-universal-access-circle m-1"
                   viewBox="0 0 16 16"
                   id="Universal-Access-Circle--Streamline-Bootstrap"
-                  height="20"
-                  width="20"
+                  height="30"
+                  width="30"
                 >
                   <desc>
                     Universal Access Circle Streamline Icon:
@@ -195,15 +207,14 @@ export default function Settings() {
                   ></path>
                 </svg>
               </td>
-              <td>Ascensor</td>
+              <td className=" p-2">Ascensor</td>
             </tr>
           </table>
         </div>
       </div>
       <div
         className={` config-data-user ${showConfig ? "show" : ""} text-light rounded-3 w-50`}
-      >
-        <h2 className="m-2">Edicion de datos personales</h2>
+      >        
         <form
           onSubmit={handleSubmitEdit}
           className="form d-flex flex-column gap-2 p-3"
@@ -215,7 +226,6 @@ export default function Settings() {
               type="file"
                 className=" form-control"
                 onChange={(e) => setAvatarEdit(e.target.files[0])}
-                required
               ></input>
             </label>
           </div>
@@ -267,6 +277,7 @@ export default function Settings() {
       </div>
       <div className="row rounded-1 bg-light">
         <div className="  p-3 rounded-3 m-1">
+          <h2 className=" border border-1 rounded-1 bg-dark text-light p-2">Ajustes de Seguridad</h2>
           <p className=" w-75">
             Para poder cambiar tu contraseña, porfavor contacta con nosostros o
             si tienes acceso a tu correo electronico, ingresalo aqui para
@@ -308,22 +319,33 @@ export default function Settings() {
         <div>
           <hr className="border-0 bg-black my-4" style={{ height: "2px" }}></hr>
         </div>
-        <div className="  p-3 rounded-3 m-1">
+        <div className="  p-3 m-1">
           <p>Agregar un numero de Telefono</p>
           <input
               type="tel"
               name="phone"
               pattern="\+?\d{9,15}" 
               placeholder="+34 612345678"
-              className="form-control w-50"
+              className="form-control w-25"
               value={phoneEdit}
               onChange={(e) => setPhoneEdit(e.target.value)}
               required
             ></input>
             <button className="btn btn-outline-primary mt-2">
-              Agregar numero de telefono
+              Agregar telefono
             </button>
-        </div>        
+        </div> 
+        <div>
+          <hr className=" border-0 bg-black my-4" style={{ height: "2px" }}></hr>
+        </div> 
+        <div className="p-3 m-1 mb-3">
+          <h2 className=" bg-dark text-light rounded-1 p-2">Ajustes de Notificaciones</h2>
+          <p>Configura tus preferencias de notificaciones para mantenerte informado sobre tus actividades y actualizaciones importantes.</p> 
+          <div className=" d-flex flex-column gap-1">            
+              <label><input type="checkbox" value={notifyEmailActive} onChange={onNotifyEmail} className=" form-check-input m-1"></input>Notificaciones por correo electrónico</label>
+              <label><input type="checkbox" value={notifySmsActive} onChange={onNotifySms} className=" form-check-input m-1"></input>Notificaciones por SMS</label>                        
+          </div>
+        </div>      
       </div>
     </div>
   );
