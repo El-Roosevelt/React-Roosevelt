@@ -13,7 +13,7 @@ export default function LoginForm({onSwitch}) {
   });
 
   const [errors, setErrors] = useState({});
-
+npm 
   const emailRegex =
     /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
@@ -66,7 +66,7 @@ export default function LoginForm({onSwitch}) {
 
   return (
     <div className=" d-flex justify-content-center align-items-center animate-fade">
-      <div className="col-12 col-sm-8 col-md-6 col-lg-7">
+      <div className=" w-100 col-11 col-sm-8 col-md-6 col-lg-5">
 
         <h2 className="text-center mb-4">Formulario de Registro</h2>
 
