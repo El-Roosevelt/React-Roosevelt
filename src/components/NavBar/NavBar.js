@@ -1,82 +1,208 @@
-import "./NavBar.scss";
+// import "./NavBar.scss";
+// import { NavLink } from "react-router-dom";
+
+
+
+// export default function NavBar() {
+//   const link = ({ isActive }) =>
+//     "nav-link text-light fs-5" + (isActive ? " active fw-bold" : "");
+
+
+//   return (
+
+//     <>
+//       <div className="d-none d-md-flex w-100 justify-content-center ">
+//         <ul className="container-fluid nav nav-pills nav-fill justify-content-between p-1 bg-secondary">
+
+//           <li className="nav-item col-2"><NavLink to="/" className={link}>
+//             <i className="bi bi-house-door pe-1"></i>
+//             <span className="d-none d-lg-inline">Inicio</span></NavLink></li>
+
+//           <li className="nav-item col-2"><NavLink to="/map" className={link}>
+//             <i className="bi bi-globe-americas pe-1"></i>
+//             <span className="d-none d-lg-inline">Mapa</span></NavLink></li>
+
+//           <li className="nav-item col-2"><NavLink to="/my-routes" className={link}>
+//             <i className="bi bi-geo-alt pe-1"></i>
+//             <span className="d-none d-lg-inline">Mis Rutas</span></NavLink></li>
+
+//           <li className="nav-item col-2"><NavLink to="/fav-routes" className={link}>
+//             <i className="bi bi-heart pe-1"></i>
+//             <span className="d-none d-lg-inline">Rutas Favoritas</span></NavLink></li>
+
+//           <li className="nav-item col-2"><NavLink to="/settings" className={link}>
+//             <i className="bi bi-gear pe-1"></i>
+//             <span className="d-none d-lg-inline">Configuración</span></NavLink></li>
+
+//         </ul>
+//       </div>
+//       <div className="d-flex w-100 d-md-none">
+//         <nav className="w-100 navbar navbar-expand-lg bg-body-tertiary">
+//           <div className="container-fluid">
+//             <a className="navbar-brand" href="#">Navbar</a>
+//             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+//               <span className="navbar-toggler-icon"></span>
+//             </button>
+//             <div className="collapse navbar-collapse" id="navbarNav">
+//               <ul className="navbar-nav">
+//                 <li className="nav-item">
+//                   <NavLink to="/" className="nav-link">
+//                     <i className="bi bi-house-door pe-1"></i>
+//                     <span className="d-lg-inline">Inicio</span></NavLink>
+//                 </li>
+//                 <li className="nav-item">
+//                   <NavLink to="/map" className="nav-link">
+//                     <i className="bi bi-globe-americas pe-1"></i>
+//                     <span className="d-lg-inline">Mapa</span></NavLink>
+//                 </li>
+//                 <li className="nav-item">
+//                   <NavLink to="/my-routes" className="nav-link">
+//                     <i className="bi bi-geo-alt pe-1"></i>
+//                     <span className="d-lg-inline">Mis Rutas</span></NavLink>
+//                 </li>
+//                 <li className="nav-item">
+//                   <NavLink to="/fav-routes" className="nav-link">
+//                     <i className="bi bi-heart pe-1"></i>
+//                     <span className="d-lg-inline">Rutas Favoritas</span></NavLink>
+//                 </li>
+//                 <li className="nav-item">
+//                   <NavLink to="/settings" className="nav-link">
+//                     <i className="bi bi-gear pe-1"></i>
+//                     <span className="d-lg-inline">Configuración</span></NavLink>
+//                 </li>
+//               </ul>
+//             </div>
+//           </div>
+//         </nav>
+//       </div>
+//     </>
+
+//   );
+// }
+
+
+
+
+
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import "./NavBar.scss";
 
 export default function NavBar() {
-  // const link = ({ isActive }) =>
-  //   "nav-link text-light fs-5" + (isActive ? " active fw-bold" : "");
 
-  return (
-    // <div classNameNameName="d-lg-flex w-100 justify-content-center ">
-    //     <ul classNameNameName="container-fluid nav nav-pills nav-fill justify-content-between p-1 bg-secondary">
-    //       <li classNameNameName="d-none d-lg-inline nav-item col-2"><NavLink to="/" classNameNameName={link}>
-    //       <i classNameName="bi bi-house-door pe-1"></i>
-    //        <span classNameNameName="d-none d-lg-inline">Inicio</span></NavLink></li>
+    const link = ({ isActive }) =>
+        "nav-link text-light fs-5" + (isActive ? " active fw-bold" : "");
 
-    //       <li classNameNameName="d-none d-lg-inline nav-item col-2"><NavLink to="/map" classNameNameName={link}>
-    //       <i classNameName="bi bi-globe-americas pe-1"></i>
-    //       <span classNameNameName="d-none d-lg-inline">Mapa</span></NavLink></li>
+    const [click, setClick] = useState(false);
 
-    //       <li classNameNameName="nav-item col-2"><NavLink to="/my-routes" classNameNameName={link}>
-    //       <i classNameName="bi bi-geo-alt pe-1"></i>
-    //       <span classNameNameName="d-none d-lg-inline">Mis Rutas</span></NavLink></li>
+    const handleClick = () => setClick(!click);
+    return (
+        <>
+            <div className="d-none d-md-flex w-100 justify-content-center ">
+                <ul className="container-fluid nav nav-pills nav-fill justify-content-between p-1 bg-secondary">
+                    <li className="nav-item col-2"><NavLink to="/" className={link}>
+                        <i className="bi bi-house-door pe-1"></i>
+                        <span className="d-none d-lg-inline">Inicio</span></NavLink></li>
 
-    //       <li classNameNameName="nav-item col-2 text-light"><NavLink to="/fav-routes" classNameNameName={link}>
-    //       <i classNameName="bi bi-heart pe-1"></i>
-    //       <span classNameNameName="d-none d-lg-inline">Rutas Favoritas</span></NavLink></li>
+                    <li className="nav-item col-2"><NavLink to="/map" className={link}>
+                        <i className="bi bi-globe-americas pe-1"></i>
+                        <span className="d-none d-lg-inline">Mapa</span></NavLink></li>
 
-    //       <li classNameNameName="d-lg-none nav-item col-2"><NavLink to="/map" classNameNameName={link}>
-    //       <i classNameName="bi bi-globe-americas pe-1"></i>
-    //       <span classNameNameName="d-none d-lg-inline">Mapa</span></NavLink></li>
+                    <li className="nav-item col-2"><NavLink to="/my-routes" className={link}>
+                        <i className="bi bi-geo-alt pe-1"></i>
+                        <span className="d-none d-lg-inline">Mis Rutas</span></NavLink></li>
 
-    //       <li classNameNameName="nav-item col-2 d-lg-none"><NavLink to="/profile" classNameNameName={link}>
-    //       <i classNameName="bi bi-person-circle pe-1"></i>
-    //       <span classNameNameName="d-none d-lg-inline">Profile</span></NavLink></li>
+                    <li className="nav-item col-2"><NavLink to="/fav-routes" className={link}>
+                        <i className="bi bi-heart pe-1"></i>
+                        <span className="d-none d-lg-inline">Rutas Favoritas</span></NavLink></li>
 
-    //       <li classNameNameName="nav-item d-lg-inline  col-2"><NavLink to="/settings" classNameNameName={link}>
-    //       <i classNameName="bi bi-gear pe-1"></i>
-    //       <span classNameNameName="d-none d-lg-inline">Configuración</span></NavLink></li>
-    //     </ul>
-    // </div>
-    <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#">
-            Navbar
-          </a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNavAltMarkup"
-            aria-controls="navbarNavAltMarkup"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div className="navbar-nav">
-              <a className="nav-link active" aria-current="page" href="#">
-                Home
-              </a>
-              <a className="nav-link" href="#">
-                Features
-              </a>
-              <a className="nav-link" href="#">
-                Pricing
-              </a>
-              <a
-                className="nav-link disabled"
-                href="#"
-                tabindex="-1"
-                aria-disabled="true"
-              >
-                Disabled
-              </a>
+                    <li className="nav-item col-2"><NavLink to="/settings" className={link}>
+                        <i className="bi bi-gear pe-1"></i>
+                        <span className="d-none d-lg-inline">Configuración</span></NavLink></li>
+
+                </ul>
             </div>
-          </div>
-        </div>
-      </nav>
-    </>
-  );
+
+            <nav className="d-md-none navbar bg-primary">
+                <div className="nav-container">
+                    <NavLink exact to="/" className="nav-logo">
+                        <span>El Roosevelt</span>
+                    </NavLink>
+
+                    <ul className={click ? "nav-menu active bg-primary" : "nav-menu"}>
+                        <li className="nav-item">
+                            <NavLink
+                                exact
+                                to="/"
+                                activeClassName="active"
+                                className="nav-links"
+                                onClick={handleClick}
+                            >
+                                Home
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink
+                                exact
+                                to="/map"
+                                activeClassName="active"
+                                className="nav-links"
+                                onClick={handleClick}
+                            >
+                                Mapa
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink
+                                exact
+                                to="/my-routes"
+                                activeClassName="active"
+                                className="nav-links"
+                                onClick={handleClick}
+                            >
+                                Mis Rutas
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink
+                                exact
+                                to="/fav-routes"
+                                activeClassName="active"
+                                className="nav-links"
+                                onClick={handleClick}
+                            >
+                                Rutas Favoritas
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink
+                                exact
+                                to="/settings"
+                                activeClassName="active"
+                                className="nav-links"
+                                onClick={handleClick}
+                            >
+                                Configuración
+                            </NavLink>
+                        </li>
+                    </ul>
+                    <div className="nav-icon" onClick={handleClick}>
+                        {/* <i className={click ? "fas fa-times" : "fas fa-bars"}></i> */}
+
+                        {click ? (
+                            <span className="icon">
+
+                                <i class="bi bi-x-lg fs-1 fw-bold"></i>
+
+                            </span>
+                        ) : (
+                            <span className="icon">
+                                <i class="bi bi-list fs-1 fw-bold"></i>
+                            </span>
+                        )}
+                    </div>
+                </div>
+            </nav>
+        </>
+    );
 }

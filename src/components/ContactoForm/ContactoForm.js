@@ -34,53 +34,53 @@ export default function ContactoForm() {
         setSurname(e.target.value);
     };
     return (
-        <section class="contact-section py-5">
-            <div class="container">
+        <section className="contact-section py-5">
+            <div className="container">
 
-                <div class="text-center mb-5">
-                    <p class="text-uppercase">Contact Us</p>
-                    <h2 class="fw-bold">We are here for you</h2>
+                <div className="text-center mb-5">
+                    <p className="text-uppercase">Contact Us</p>
+                    <h2 className="fw-bold">We are here for you</h2>
 
                 </div>
 
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
+                <div className="row justify-content-center">
+                    <div className="col-lg-8">
 
-                        <form class="row g-4 contact-form p-4 rounded needs-validation" novalidate onSubmit={onSubmit}>
+                        <form className="row g-4 contact-form p-4 rounded needs-validation" noValidate onSubmit={onSubmit}>
 
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="Name"
+                            <div className="col-md-6">
+                                <input type="text" className="form-control" placeholder="Name"
                                     onChange={manejarCambio}
                                     required />
-                                <div class="invalid-feedback">Please enter your name.</div>
+                                <div className="invalid-feedback">Please enter your name.</div>
                                 {error && (
                                     <small className="text-danger">{error}</small>
                                 )}
                             </div>
 
-                            <div class="col-md-6">
-                                <input type="text"  onChange={manejarCambio} class="form-control" placeholder="Surname" required />
-                                <div class="invalid-feedback">Please enter your surname.</div>
+                            <div className="col-md-6">
+                                <input type="text"  onChange={manejarCambio} className="form-control" placeholder="Surname" required />
+                                <div className="invalid-feedback">Please enter your surname.</div>
                             </div>
 
-                            <div class="col-md-6">
-                                <input type="email" class="form-control" 
+                            <div className="col-md-6">
+                                <input type="email" className="form-control" 
                                  onChange={manejarCambio}
                                  placeholder="Email" required />
-                                <div class="invalid-feedback">Please enter a valid email.</div>
+                                <div className="invalid-feedback">Please enter a valid email.</div>
                             </div>
 
-                            <div class="col-md-6">
-                                <input type="tel" class="form-control" placeholder="Phone" required />
+                            <div className="col-md-6">
+                                <input type="tel" className="form-control" placeholder="Phone" required />
                             </div>
 
-                            <div class="col-12">
-                                <textarea class="form-control" rows="4" placeholder="Your Message" required></textarea>
-                                <div class="invalid-feedback">Please enter your message.</div>
+                            <div className="col-12">
+                                <textarea className="form-control" rows="4" placeholder="Your Message" required></textarea>
+                                <div className="invalid-feedback">Please enter your message.</div>
                             </div>
 
-                            <div class="col-12 text-center">
-                                <button type="submit" class="btn btn-custom px-5">
+                            <div className="col-12 text-center">
+                                <button type="submit" className="btn btn-custom px-5">
                                     Send Message
                                 </button>
                             </div>
