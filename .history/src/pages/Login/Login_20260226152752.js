@@ -13,7 +13,7 @@ export default function Login({ view }) {
   }, [view]);
 
   return (
-    <div className="container-fluid mt-5 animate-fade">
+    <div className="container-flui mt-5 animate-fade">
       <div className="row justify-content-center">
         {/*  col-md-10 para anchura */}
         <div className="col-12 col-md-10">

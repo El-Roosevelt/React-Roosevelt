@@ -48,12 +48,12 @@ export default function Login({ view }) {
                 <LoginIniciar onSwitch={setActiveTab}/>
               )}
 
-              {/* Si pulsas registro -componente LoginForm */}
+              {/* Si pulsas registro componente LoginForm */}
               {activeTab === "registro" && (
                 <LoginForm onSwitch={setActiveTab} />
               )}
 
-              {/* Si pulsas Ayuda - componente de Recuperar */}
+              {/* Si pulsas Ayuda -> componente de Recuperar */}
               {activeTab === "recuperar" && (
                 <RecuperarContrasena />
               )}

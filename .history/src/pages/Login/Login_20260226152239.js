@@ -53,7 +53,7 @@ export default function Login({ view }) {
                 <LoginForm onSwitch={setActiveTab} />
               )}
 
-              {/* Si pulsas Ayuda - componente de Recuperar */}
+              {/* Si pulsas Ayuda -> componente de Recuperar */}
               {activeTab === "recuperar" && (
                 <RecuperarContrasena />
               )}
