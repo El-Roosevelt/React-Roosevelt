@@ -100,23 +100,27 @@ export default function NavBar() {
         <>
             <div className="d-none d-md-flex w-100 justify-content-center ">
                 <ul className="container-fluid nav nav-pills nav-fill justify-content-between p-1 bg-secondary">
-                    <li className="nav-item col-2"><NavLink to="/" className={link}>
+                    <li className="d-md-none d-lg-inline nav-item col"><NavLink to="/" className={link}>
                         <i className="bi bi-house-door pe-1"></i>
                         <span className="d-none d-lg-inline">Inicio</span></NavLink></li>
 
-                    <li className="nav-item col-2"><NavLink to="/map" className={link}>
+                    <li className="nav-item col"><NavLink to="/map" className={link}>
                         <i className="bi bi-globe-americas pe-1"></i>
                         <span className="d-none d-lg-inline">Mapa</span></NavLink></li>
 
-                    <li className="nav-item col-2"><NavLink to="/my-routes" className={link}>
+                    <li className="nav-item col"><NavLink to="/my-routes" className={link}>
                         <i className="bi bi-geo-alt pe-1"></i>
                         <span className="d-none d-lg-inline">Mis Rutas</span></NavLink></li>
 
-                    <li className="nav-item col-2"><NavLink to="/fav-routes" className={link}>
+                    <li className="nav-item col"><NavLink to="/fav-routes" className={link}>
                         <i className="bi bi-heart pe-1"></i>
                         <span className="d-none d-lg-inline">Rutas Favoritas</span></NavLink></li>
-
-                    <li className="nav-item col-2"><NavLink to="/settings" className={link}>
+                        
+                    <li className="d-md-inline d-lg-none nav-item col"><NavLink to="/login" className={link}>
+                        <i class="bi bi-person-circle pe-1"></i>
+                        <span className="d-none d-lg-inline">Login</span></NavLink></li>
+                    
+                    <li className="nav-item col"><NavLink to="/settings" className={link}>
                         <i className="bi bi-gear pe-1"></i>
                         <span className="d-none d-lg-inline">Configuración</span></NavLink></li>
 
@@ -129,16 +133,17 @@ export default function NavBar() {
                         <span>El Roosevelt</span>
                     </NavLink>
 
-                    <ul className={click ? "nav-menu active bg-primary" : "nav-menu"}>
+                    <ul className={click ? "nav-menu active bg-primary " : "nav-menu"}>
                         <li className="nav-item">
                             <NavLink
                                 exact
-                                to="/"
+                                to="/login"
                                 activeClassName="active"
                                 className="nav-links"
                                 onClick={handleClick}
                             >
-                                Home
+                                <i class="bi bi-person-circle pe-1"></i>
+                                Login
                             </NavLink>
                         </li>
                         <li className="nav-item">
@@ -149,6 +154,7 @@ export default function NavBar() {
                                 className="nav-links"
                                 onClick={handleClick}
                             >
+                                <i className="bi bi-globe-americas pe-1"></i>
                                 Mapa
                             </NavLink>
                         </li>
@@ -160,6 +166,7 @@ export default function NavBar() {
                                 className="nav-links"
                                 onClick={handleClick}
                             >
+                                <i className="bi bi-geo-alt pe-1"></i>
                                 Mis Rutas
                             </NavLink>
                         </li>
@@ -171,6 +178,7 @@ export default function NavBar() {
                                 className="nav-links"
                                 onClick={handleClick}
                             >
+                                <i className="bi bi-heart pe-1"></i>
                                 Rutas Favoritas
                             </NavLink>
                         </li>
@@ -182,6 +190,7 @@ export default function NavBar() {
                                 className="nav-links"
                                 onClick={handleClick}
                             >
+                                <i className="bi bi-gear pe-1"></i>
                                 Configuración
                             </NavLink>
                         </li>

@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 function Header() {
   const logo = "/assets/logo.png";
   return (
-    <header className=" row bg-primary py-3">
+    <header className="d-none d-md-flex row bg-primary py-3">
       <div className="col-12 col-lg-6  align-content-center">
         <div className="d-flex h-lg-100 w-lg-50 justify-content-center justify-content-lg-start px-3">
           <img className="image-thumbnail" src={logo} alt="logo"></img>
