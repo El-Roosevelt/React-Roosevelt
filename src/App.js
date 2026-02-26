@@ -9,11 +9,15 @@ import AppRouter from "./pages/Router/AppRouter";
 function App() {
   return (
     <>
-    <div className="d-flex flex-column vh-100 justify-content-between justify-content-lg-start">
+    <div className="d-flex flex-column min-vh-100 justify-content-between justify-content-lg-start">
       <BrowserRouter>
           <Header /> 
           <NavBar />
-          <AppRouter/>
+          <main className="flex-grow-1">
+
+                      <AppRouter/>
+
+          </main>
           <Footer />
       </BrowserRouter>      
       </div>
