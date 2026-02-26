@@ -15,7 +15,8 @@ export default function Login({ view }) {
   return (
     <div className="container mt-5 animate-fade">
       <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6 container-formularios">
+        {/*  col-md-10 para anchura */}
+        <div className="col-12 col-12 col-md-8 col-lg-6">
           <div className="card shadow-lg border-0">
             
             {/* BOTONES DE NAVEGACIÓN  */}

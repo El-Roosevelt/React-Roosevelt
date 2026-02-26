@@ -65,7 +65,7 @@ export default function LoginIniciar() {
             required
           />
         </div>
-        <div className="d-flex justify-content-center mt-4">
+        < className="d-flex justify-content-center mt-4"></
         <button type="submit" className="btn btn-custom px-5 py-2">
           Iniciar Sesión
         </button>

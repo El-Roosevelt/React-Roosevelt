@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "../../index.css";
 import "./LoginForm.scss";
 
-
 export default function LoginForm({onSwitch}) {
   const [formData, setFormData] = useState({
     nombre: "",
@@ -65,7 +64,7 @@ export default function LoginForm({onSwitch}) {
   };
 
   return (
-    <div className=" d-flex justify-content-center align-items-center animate-fade">
+    <div className=" d-flex justify-content-center align-items-center vh-100">
       <div className=" w-100 col-11 col-sm-8 col-md-6 col-lg-5">
 
         <h2 className="text-center mb-4">Formulario de Registro</h2>
@@ -148,8 +147,8 @@ export default function LoginForm({onSwitch}) {
             )}
           </div>
 
-          <div className="d-flex justify-content-center mt-4">
-            <button type="submit" className="btn btn-custom px-5 py-2 ">
+          <div className="d-grid">
+            <button type="submit" className="btn btn-custom">
               Registrarme
             </button>
           </div>
