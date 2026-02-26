@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function RutasFavoritas() {
 
-    const [showModal, setShowModal] = useState(true);
+    const [showModal, setShowModal] = useState(false);
     const [id, setId] = useState(null);
     const [rutasFavoritas, setRutasFavoritas] = useState([
         {
