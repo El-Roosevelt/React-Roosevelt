@@ -47,9 +47,9 @@ export default function RecuperarContrasena() {
 
   return (
     <div className="d-flex justify-content-center align-items-center">
-      <div className="col-12 col-sm-8 col-md-6 col-lg-6">
+      <div className="col-11 col-sm-8 col-md-6 col-lg-5">
 
-        <h2 className="text-center mb-4 text-nowrap">
+        <h2 className=" тщ">
           Recuperar contraseña
         </h2>
 

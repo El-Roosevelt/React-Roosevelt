@@ -66,7 +66,7 @@ export default function LoginForm({onSwitch}) {
 
   return (
     <div className=" d-flex justify-content-center align-items-center animate-fade">
-      <div className="col-12 col-sm-8 col-md-6 col-lg-7">
+      <div className="col-12 col-sm-8 col-md-6 col-lg-5">
 
         <h2 className="text-center mb-4">Formulario de Registro</h2>
 

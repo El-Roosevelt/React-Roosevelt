@@ -47,9 +47,9 @@ export default function RecuperarContrasena() {
 
   return (
     <div className="d-flex justify-content-center align-items-center">
-      <div className="col-12 col-sm-8 col-md-6 col-lg-6">
+      <div className="col-11 col-sm-8 col-md-6 col-lg-5">
 
-        <h2 className="text-center mb-4 text-nowrap">
+        <h2 className="text-center mb-4">
           Recuperar contraseña
         </h2>
 
@@ -76,7 +76,7 @@ export default function RecuperarContrasena() {
             )}
           </div>
 
-          <div className="d-flex justify-content-center mt-4">
+          <div className="d-grid mb-3">
             <button type="submit" className="btn btn-custom">
               Enviar enlace
             </button>
