@@ -126,7 +126,7 @@ export default function ContactoForm() {
   };
 
   return (
-    <section className="contact-section py-5">
+    <section id="contacto" className="contact-section py-5">
       <div className="container">
         <div className="text-center mb-5">
           <p className="text-uppercase">Contact Us</p>

@@ -5,12 +5,14 @@ import Header from "./components/Header/Header";
 import NavBar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
 import AppRouter from "./pages/Router/AppRouter";
+import ScrollToTop from "./pages/Router/ScrollToTop";
 
 function App() {
   return (
     <>
     <div className="d-flex flex-column min-vh-100 justify-content-between justify-content-lg-start">
       <BrowserRouter>
+      <ScrollToTop />
           <Header /> 
           <NavBar />
           <main className="flex-grow-1">
