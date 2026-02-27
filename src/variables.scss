@@ -16,12 +16,23 @@ $btn-hover-bg: darken($primary, 8%);
 
 $Color_F_Claro: #F3F2F1;
 $Color_Acc_ClaroINFORMATION: #84329B;
-$font-family-sans-serif: 'MyFont', Arial, sans-serif;
+
 $color_error: #D4351C;
 $color_texto: #FFFFFF;
 $color_txt_botones: rgb(60, 16, 83);
 $font-weight_enlace: bold;
 
+//font
+//$font-family-sans-serif: 'RobotoSerif';
+
+//Typografia
+@font-face {
+    font-family: 'RobotoSerif';
+    src: url('./../public/assets/fonts/static/RobotoSerif-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
 // Bootstrap
-@import "~bootstrap/scss/bootstrap";
-@import "bootstrap-icons/font/bootstrap-icons.css";
+//@import "~bootstrap/scss/bootstrap";
+//@import "bootstrap-icons/font/bootstrap-icons.css";

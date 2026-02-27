@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-
+import "../node_modules/bootstrap/dist/js/bootstrap.bundle.min";
+import "../node_modules/bootstrap/dist/js/bootstrap";
+import "../node_modules/bootstrap/dist/js/bootstrap.bundle";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
