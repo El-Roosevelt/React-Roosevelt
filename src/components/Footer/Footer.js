@@ -14,7 +14,6 @@ const Footer = () => {
                 className="footer-logo me-2"
                 src={logo}
                 alt="Logo"
-                style={{ width: "40px" }}
               />
               <h3 className="fw-bold mb-0 text-primary">Roosevelt</h3>
             </div>
