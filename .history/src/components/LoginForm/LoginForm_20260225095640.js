@@ -24,7 +24,7 @@ export default function LoginForm() {
       [name]: value,
     }));
 
-    // borro erro
+    // убираем ошибку при вводе
     setErrors((prev) => ({
       ...prev,
       [name]: false,

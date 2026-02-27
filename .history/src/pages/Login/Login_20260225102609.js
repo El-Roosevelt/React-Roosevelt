@@ -40,11 +40,11 @@ export default function Login({ view }) {
         <div className="card-body p-4">
           {/* RENDERIZADO SEGÚN EL BOTÓN PULSADO */}
           {activeTab === "iniciar" && (
-            <LoginIniciar isRegister={false} />
+            <Login isRegister={false} />
           )}
 
           {activeTab === "registro" && (
-            <LoginIniciar isRegister={true} />
+            <LoginForm isRegister={true} />
           )}
 
           {activeTab === "recuperar" && (

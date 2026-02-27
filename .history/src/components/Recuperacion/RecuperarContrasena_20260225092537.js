@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../index.css";
-import "../LoginForm/LoginForm.scss";
+import "./LoginForm.scss";
 
 export default function RecuperarContrasena() {
   const [formData, setFormData] = useState({
@@ -20,7 +20,7 @@ export default function RecuperarContrasena() {
       [name]: value,
     }));
 
-    // borro error
+    // 
     setErrors((prev) => ({
       ...prev,
       [name]: false,
