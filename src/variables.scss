@@ -1,4 +1,31 @@
-$primary: #3C1053;
+//variables nuevas para bootstrap
+$primary: #5B2671;
+$secondary:#D4C46A;
+$success:#527614;
+$danger: #af251b;
+$warning: #ffa023;
+$info: #a0C562;
+// $light:
+// $dark:
+
+
+//Form - botones de form
+$color_form_background: #eff2f1;
+$btn-form: #c216db;
+$btn-bg: $primary;
+$btn-hover-bg: darken($primary, 8%);
+
+
+//Typografia
+@font-face {
+    font-family: 'RobotoSerif';
+    src: url('./../public/assets/fonts/static/RobotoSerif-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+/*$primary-dark: #3C1053;
 $secondary: #9d5baf;
 $warning: #b75e00;
 
@@ -20,18 +47,11 @@ $Color_Acc_ClaroINFORMATION: #84329B;
 $color_error: #D4351C;
 $color_texto: #FFFFFF;
 $color_txt_botones: rgb(60, 16, 83);
-$font-weight_enlace: bold;
+$font-weight_enlace: bold; */
 
 //font
 //$font-family-sans-serif: 'RobotoSerif';
 
-//Typografia
-@font-face {
-    font-family: 'RobotoSerif';
-    src: url('./../public/assets/fonts/static/RobotoSerif-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-}
 
 // Bootstrap
 //@import "~bootstrap/scss/bootstrap";

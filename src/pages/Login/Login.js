@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import LoginIniciar from "../../components/LoginIniciar/LoginIniciar";
-import LoginForm from "../../components/LoginForm/LoginForm";
-import RecuperarContrasena from "../../components/Recuperacion/RecuperarContrasena";
+// import LoginIniciar from "../../components/LoginIniciar/LoginIniciar";
+// import LoginForm from "../../components/LoginForm/LoginForm";
+// import RecuperarContrasena from "../../components/Recuperacion/RecuperarContrasena";
 
 export default function Login({ view }) {
   // Estado para controlar qué pestaña está activa
@@ -39,24 +39,24 @@ export default function Login({ view }) {
                 Ayuda
               </button>
             </div>
-
+{/* 
             <div className="card-body p-5">
 
-              {/* Si pulsas entrar */}
+              Si pulsas entrar
               {activeTab === "iniciar" && (
-                <LoginIniciar onSwitch={setActiveTab}/>
+                 <LoginIniciar onSwitch={setActiveTab}/>
               )}
 
-              {/* Si pulsas registro -componente LoginForm */}
+              {/* Si pulsas registro -componente LoginForm }
               {activeTab === "registro" && (
-                <LoginForm onSwitch={setActiveTab} />
+                 <LoginForm onSwitch={setActiveTab} />
               )}
 
-              {/* Si pulsas Ayuda - componente de Recuperar */}
+              {/* Si pulsas Ayuda - componente de Recuperar }
               {activeTab === "recuperar" && (
-                <RecuperarContrasena />
+                 <RecuperarContrasena />
               )}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
