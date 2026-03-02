@@ -9,14 +9,17 @@ const Footer = () => {
        <div className="container">
         <div className="row">
           
-          <div className="col-md-6 col-lg-3 mb-4">
-            <img className="footer-logo mb-2" src={logo} alt="Logo" style={{ width: '40px' }} />
-            <h3 className="fw-bold mb-3 text-primary">
-              Roosevelt
-            </h3>
+         <div className="col-md-6 col-lg-3 mb-4">
+            <div className="d-flex align-items-center mb-3">
+              <img className="footer-logo me-2" src={logo} alt="Logo" style={{ width: '40px' }} />
+              <h3 className="fw-bold mb-0 text-primary">
+                Roosevelt
+              </h3>
+            </div>
             <p className="small lh-lg">
               Esto es la aplicacion web sin animo de lucro
             </p>
+          
           </div>
 
           <div className="col-md-6 col-lg-3 mb-4">
