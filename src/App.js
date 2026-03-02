@@ -7,12 +7,14 @@ import Header from "./components/Header/Header";
 import NavBar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
 import AppRouter from "./pages/Router/AppRouter";
+import ScrollToTop from "./pages/Router/ScrollToTop";
 
 function App() {
   return (
     <>
 
       <BrowserRouter>
+      <ScrollToTop />
         <Header />
         <NavBar />
         <AppRouter />

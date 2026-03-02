@@ -125,13 +125,13 @@
 //     }
 //   };
 
-//   return (
-//     <section className="contact-section py-5">
-//       <div className="container">
-//         <div className="text-center mb-5">
-//           <p className="text-uppercase">Contact Us</p>
-//           <h2 className="fw-bold">We are here for you</h2>
-//         </div>
+  return (
+    <section id="contacto" className="contact-section py-5">
+      <div className="container">
+        <div className="text-center mb-5">
+          <p className="text-uppercase">Contact Us</p>
+          <h2 className="fw-bold">We are here for you</h2>
+        </div>
 
 //         <div className="row justify-content-center">
 //           <div className="col-lg-8">
