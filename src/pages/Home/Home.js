@@ -27,8 +27,8 @@ export default function Home(){
   }, [location]); // Запускаем заново, если ссылка поменялась
     return(
         <div>
-            {/* <HeroSection /> */}
-            {/* <ContactoForm /> */}
+           <HeroSection />
+            <ContactoForm />
         </div>
 
     )
