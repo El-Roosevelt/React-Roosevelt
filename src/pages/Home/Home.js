@@ -1,11 +1,11 @@
-// import ContactoForm from "../../components/ContactoForm/ContactoForm";
-// import HeroSection from "../../components/HeroSection/HeroSection";
+import ContactoForm from "../../components/ContactoForm/ContactoForm";
+import HeroSection from "../../components/HeroSection/HeroSection";
 
 export default function Home(){
     return(
         <div>
-            {/* <HeroSection /> */}
-            {/* <ContactoForm /> */}
+           <HeroSection />
+            <ContactoForm />
         </div>
 
     )
