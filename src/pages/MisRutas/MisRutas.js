@@ -3,7 +3,10 @@ import Ruta from "../../components/Ruta/Ruta";
 import { useState } from "react";
 
 export default function MisRutas() {
-  const [rutas, setRutas] = useState([
+  const [showModal, setShowModal] = useState(false);
+  const [id, setId] = useState(null);
+  const [misRutas,  setMisRutas] = useState([
+
     {
       id: 1,
       titulo: "Ruta-1",
@@ -41,14 +44,20 @@ export default function MisRutas() {
   const fecha = "2026-02-24";
 
   function eliminarRuta(id) {
-    setRutas(rutas.filter((r) => r.id !== id));
+    setShowModal(true);
+    setId(id);    
+    }
+    const handleCloseModal = () => {
+    setShowModal(false);
+    setMisRutas(misRutas.filter((r) => r.id !== id));
+    setId(null);
   }
 
   return (
     <div className="p-3 pb-5 bg-primary h-100">
       <h2 className="text-light text-center">Mis rutas</h2>
       <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 align-content-start g-4 h-100">
-        {rutas.map((ruta) => {
+        {misRutas.map((ruta) => {
 
           return (
             <div className="col">
@@ -63,6 +72,17 @@ export default function MisRutas() {
           );
         })}
       </div>
+      {showModal && (
+            <div className=" bg-modal">
+                <div className=" modal d-flex flex-column align-items-center justify-content-center">
+                    <h3 className="text-center">¿Estás seguro de que quieres eliminar esta ruta de tus favoritas?</h3>
+                    <div>
+                        <button className="btn btn-secondary me-2" onClick={handleCloseModal}>Sí, eliminar</button>
+                        <button className="btn btn-primary" onClick={() => setShowModal(false)}>No, cancelar</button>
+                    </div>
+                </div>
+            </div>    
+        )}
     </div>
   );
 }
