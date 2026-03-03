@@ -3,6 +3,7 @@ import Home from "../Home/Home";
 import Settings from "../Settings/Settings";
 import MisRutas from "../MisRutas/MisRutas";
 import RutasFavoritas from "../RutasFavoritas/RutasFavoritas";
+import Mapa from "../Mapa/Mapa";
 
 import Login from "../../pages/Login/Login";
 

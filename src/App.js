@@ -12,7 +12,6 @@ import ScrollToTop from "./pages/Router/ScrollToTop";
 function App() {
   return (
     <>
-
       <BrowserRouter>
       <ScrollToTop />
         <Header />
