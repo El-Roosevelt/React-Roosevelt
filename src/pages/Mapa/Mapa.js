@@ -25,9 +25,10 @@
 
 import { useEffect, useRef } from "react";
 import leaflet from "leaflet";
+import Map from "../../components/Map/Map"
 
 export default function Mapa() {
-    const mapRef = useRef();
+    /*const mapRef = useRef();
 
     useEffect(() => {
         mapRef.current = leaflet.map("map").setView([51.505, -0.09], 13);
@@ -38,11 +39,11 @@ export default function Mapa() {
 
             }
         ).addTo(mapRef.current);
-    }, []);
+    }, []);*/
 
     return (
-        <div id="map" ref={mapRef}>
-
+        <div className=" d-flex flex-column">
+            <Map></Map>
         </div>
     )
 }

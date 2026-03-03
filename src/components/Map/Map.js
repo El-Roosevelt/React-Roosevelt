@@ -14,7 +14,7 @@ import Popup from "../Popup/Popup";
 const INITIAL_CENTER = [-0.49144135129607736, 38.361498735545176];
 const INITIAL_ZOOM = 15;
 
-export default function Map({ }) {
+export default function Map() {
   const mapRef = useRef();
   const mapContainerRef = useRef();
   const markersRef = useRef([]);
