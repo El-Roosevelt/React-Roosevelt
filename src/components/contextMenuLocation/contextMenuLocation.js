@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./contextMenuLocation.scss";
 
 
-export default function ContextMenuLocation({ positionState, onClose, onCreateMark, types}) {
+export default function ContextMenuLocation({ positionState,positionContextMenu, onClose, onCreateMark, types}) {
     const [name, setName] = useState("");
     const [type, setType] = useState("");
     
@@ -30,9 +30,9 @@ export default function ContextMenuLocation({ positionState, onClose, onCreateMa
         <div
           style={{
             position: "absolute",
-            visibility: positionState.visible ? "visible" : "hidden",
-            top: positionState.y,
-            left: positionState.x,
+            visibility: positionContextMenu.visible ? "visible" : "hidden",
+            top: positionContextMenu.y,
+            left: positionContextMenu.x,
             boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
             background: "white",
             zIndex: 1001,
@@ -43,7 +43,7 @@ export default function ContextMenuLocation({ positionState, onClose, onCreateMa
             <div className=" d-flex flex-column gap-2 p-2">
                 {showForm && (
                     <div className=" d-flex flex-column gap-1 "> 
-                        <form className=" d-flex flex-column gap-1">
+                        <form onSubmit={createMark} className=" d-flex flex-column gap-1">
                             <h5>Creando un punto de interes</h5>
                             <input type="text" className="form-control" placeholder="Nombre del punto de interés" value={name} onChange={(e) => setName(e.target.value)} />
                             <select className="form-select" value={type} onChange={(e) => setType(e.target.value)}>
@@ -52,7 +52,7 @@ export default function ContextMenuLocation({ positionState, onClose, onCreateMa
                                     <option value={type.name}>{type.name}</option>
                                 ))}
                             </select>
-                            <input className=" btn btn-sm btn-success" type="button"  onClick={createMark} value="Crear" />
+                            <input className=" btn btn-sm btn-success" type="submit" value="Crear" />
                         </form>   
                     </div>
                 )}

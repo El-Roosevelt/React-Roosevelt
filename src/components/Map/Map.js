@@ -7,15 +7,18 @@ import customMarkerPng from "../../assets/custom-marker.png";
 import restaurantsData from "../../assets/providence-restaurants.json";
 import ContextMenuLocation from "../contextMenuLocation/contextMenuLocation";
 import LayerCheckboxes from "../LayerCheckboxes/LayerCheckboxes";
+import Popup from "../Popup/Popup";
 
-import { map } from "leaflet";
+
 //38.361498735545176, -0.49144135129607736
 const INITIAL_CENTER = [-0.49144135129607736, 38.361498735545176];
 const INITIAL_ZOOM = 15;
 
-export default function Map() {
+export default function Map({}) {
   const mapRef = useRef();
   const mapContainerRef = useRef();
+
+  const [popupData, setPopupData] = useState(null)
 
   const [center, setCenter] = useState(INITIAL_CENTER);
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
@@ -23,15 +26,13 @@ export default function Map() {
   const [centerMouse, setCenterMouse] = useState(INITIAL_CENTER);
 
   const [positionNewMark, setPositionNewMark] = useState({
-    name: "",
     lng: 0,
     lat: 0,
   });
 
-  const updatedRestaurantsData = {
-    ...restaurantsData,
-    features: [...restaurantsData.features],
-  };
+  const [routePoints,setRoutePoints]=useState([])
+
+  const [geoData, setGeoData] = useState(restaurantsData);
 
   const [layerState, setLayerState] = useState([
     {
@@ -94,7 +95,7 @@ export default function Map() {
   // State para controlar la visibilidad y posicion del menu contextual
   const [menu, setMenu] = useState({
     visible: false,
-    x: 0,
+    x: 0, 
     y: 0,
   });
 
@@ -110,8 +111,7 @@ export default function Map() {
       x: e.clientX,
       y: e.clientY,
     });
-    positionNewMark[0] = centerMouse[0];
-    positionNewMark[1] = centerMouse[1];
+    setPositionNewMark({ lng: centerMouse[0], lat: centerMouse[1] });
   };
 
   const handleButtonClick = () => {
@@ -125,15 +125,39 @@ export default function Map() {
     setCenterMouse([e.lngLat.lng, e.lngLat.lat]);
   };
 
+  const handleMarkerClick = (e) => {
+        setPopupData({ lngLat: e.feature.geometry.coordinates, properties: e.feature.properties });
+    }
+
   const handleCreateMark = () => {
-    new mapboxgl.Marker({ color: "red", rotation: 45 })
+    /*new mapboxgl.Marker({ color: "red", rotation: 45 })
       .setLngLat(positionNewMark)
-      .addTo(mapRef.current);
+      .addTo(mapRef.current);*/
   };
 
+  const handleCreateInteresPoint = (e) => {
+    const newPoint = {
+      id: 999,
+      type: "Feature",
+      properties: {
+        name: e.name,
+        cuisine: e.cuisine,
+      },
+      geometry: {
+        coordinates: [e.lng, e.lat],
+        type: "Point",
+      },
+    };
+    setGeoData((prev) => ({
+      ...prev,
+      features: [...prev.features, newPoint],
+    }));
+  };
+
+  //Para crear o inicializar el mapa
   useEffect(() => {
-    mapboxgl.accessToken =
-      "";
+    mapboxgl.accessToken = `${process.env.REACT_APP_MY_KEY}`;
+
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       center: center,
@@ -147,25 +171,10 @@ export default function Map() {
         mapRef.current.addImage("custom-marker", image, { sdf: true });
       });
 
-      if (positionNewMark.name != "") {
-        const newfeature = {
-          id: 999, // asegúrate de que no repita id
-          type: "Feature",
-          properties: {
-            name: positionNewMark.name,
-            cuisine: "italian",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [positionNewMark.lng, positionNewMark.lat],
-          },
-        };
-        updatedRestaurantsData.features.push(newfeature);
-      }
       // add a single source for all restaurants
       mapRef.current.addSource("restaurants", {
         type: "geojson",
-        data: updatedRestaurantsData,
+        data: geoData,
       });
 
       // add a layer for each cuisine type
@@ -206,42 +215,30 @@ export default function Map() {
             }
           }
         }
+        // add a click interaction for each of the layers to be used to render the popup
+        mapRef.current.addInteraction(`${layerId}-click`, {
+          type: "click",
+          target: { layerId },
+          handler: handleMarkerClick,
+        });
+        // change the cursor to a pointer when hovering over a marker
+        mapRef.current.addInteraction(`${layerId}-mouse-enter`, {
+          type: "mouseenter",
+          target: { layerId },
+          handler: () => {
+            mapRef.current.getCanvas().style.cursor = "pointer";
+          },
+        });
+        // reset the cursor to default image when cursor leaves a marker
+        mapRef.current.addInteraction(`${layerId}-mouse-leave`, {
+          type: "mouseleave",
+          target: { layerId },
+          handler: () => {
+            mapRef.current.getCanvas().style.cursor = "";
+          },
+        });
       }
-      if (!mapRef.current) return;
 
-      layerState.forEach((layer) => {
-        const layerId = `restaurants-${layer.name}-symbol`;
-        if (mapRef.current.getLayer(layerId)) {
-          const visibility = layer.isChecked ? "visible" : "none";
-          mapRef.current.setLayoutProperty(layerId, "visibility", visibility);
-        }
-      });
-    });
-
-    // para esconder o mostrar las capas dependiendo del estado de los checkboxes
-
-    new mapboxgl.Marker()
-      .setLngLat([-0.49144135129607737, 38.36149873554519])
-      .addTo(mapRef.current);
-
-    new mapboxgl.Marker({ color: "black", rotation: 45 })
-      .setLngLat([-0.486451351296075, 38.36349873554509])
-      .addTo(mapRef.current);
-
-    mapRef.current.on("move", () => {
-      // get the current center coordinates and zoom level from the map
-      const mapCenter = mapRef.current.getCenter();
-      const mapZoom = mapRef.current.getZoom();
-
-      // update state
-      setCenter([mapCenter.lng, mapCenter.lat]);
-      setZoom(mapZoom);
-    });
-
-    mapRef.current.on("mousemove", handleMouseMoveMap);
-
-    // crear los puntos de interes
-    mapRef.current.on("load", () => {
       mapRef.current.addSource("points", {
         type: "geojson",
         data: {
@@ -294,27 +291,96 @@ export default function Map() {
       });
     });
 
+    new mapboxgl.Marker()
+      .setLngLat([-0.49144135129607737, 38.36149873554519])
+      .addTo(mapRef.current);
+
+    new mapboxgl.Marker({ color: "black", rotation: 45 })
+      .setLngLat([-0.486451351296075, 38.36349873554509])
+      .addTo(mapRef.current);
+
+    mapRef.current.on("move", () => {
+      // get the current center coordinates and zoom level from the map
+      const mapCenter = mapRef.current.getCenter();
+      const mapZoom = mapRef.current.getZoom();
+
+      // update state
+      setCenter([mapCenter.lng, mapCenter.lat]);
+      setZoom(mapZoom);
+    });
+
+    mapRef.current.on("mousemove", handleMouseMoveMap);
+
     return () => {
       mapRef.current.remove();
     };
-  }, [layerState, positionNewMark]);
+  }, []);
+
+  // Cuando se añada un nuevo punto de interes
+  useEffect(() => {
+    if (mapRef.current?.getSource("restaurants")) {
+      mapRef.current.getSource("restaurants").setData(geoData);
+    }
+  }, [geoData]);
+  useEffect(()=>{
+    new mapboxgl.Marker()
+      .setLngLat([-0.49144135129607737, 38.36149873554519])
+      .addTo(mapRef.current);
+  })
+
+  // Cuando le de a un checkbox de la caja de checkboxs
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    layerState.forEach((layer) => {
+      const layerId = `restaurants-${layer.name}-symbol`;
+
+      if (mapRef.current.getLayer(layerId)) {
+        mapRef.current.setLayoutProperty(
+          layerId,
+          "visibility",
+          layer.isChecked ? "visible" : "none",
+        );
+      }
+    });
+  }, [layerState]);
+
+  useEffect(()=>{
+    const fetchRoute = async () => {
+    if (routePoints.length < 2) return;
+
+    const coords = routePoints.map((p) => p.join(",")).join(";");
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coords}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+    const route = data.routes[0].geometry;
+
+    // agregar o actualizar layer "route"
+    if (mapRef.current.getSource("route")) {
+      mapRef.current.getSource("route").setData(route);
+    } else {
+      mapRef.current.addSource("route", { type: "geojson", data: route });
+      mapRef.current.addLayer({
+        id: "route",
+        type: "line",
+        source: "route",
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: { "line-color": "#ff0000", "line-width": 4 },
+      });
+    }
+  };
+  fetchRoute();
+  }, [routePoints])
 
   return (
     <>
-      <div className="sidebar-mouse">
-        Mouse Longitude: {centerMouse[0].toFixed(4)} | Mouse Latitude:{" "}
-        {centerMouse[1].toFixed(4)}
-      </div>
-      <div className="sidebar-mouse">
-        Mouse Longitude: {positionNewMark.lng} | Mouse Latitude:{" "}
-        {positionNewMark.lat}
-      </div>
-
       {menu.visible && (
         <ContextMenuLocation
-          positionState={menu}
+          positionState={positionNewMark}
+          positionContextMenu={menu}
           onClose={handleCloseContextMenuMap}
-          onCreateMark={setPositionNewMark}
+          onCreateMark={handleCreateInteresPoint}
           types={layerState}
         />
       )}
@@ -324,6 +390,7 @@ export default function Map() {
         onContextMenu={handleContentMenu}
         onClick={handleCloseContextMenuMap}
       >
+        <Popup popupData={popupData} mapRef={mapRef} />
         <div className="sidebar">
           Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} |
           Zoom: {zoom.toFixed(2)}

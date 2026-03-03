@@ -16,6 +16,7 @@
     "mapbox-gl-leaflet": "^0.0.16",
     "react": "^19.0.0-rc.1",
     "react-dom": "^19.0.0-rc.1",
+    "react-dotenv": "^0.1.3",
     "react-leaflet": "^5.0.0-rc.2",
     "react-router-dom": "^7.13.0",
     "react-scripts": "5.0.1",
