@@ -14,23 +14,31 @@ import Popup from "../Popup/Popup";
 const INITIAL_CENTER = [-0.49144135129607736, 38.361498735545176];
 const INITIAL_ZOOM = 15;
 
-export default function Map({}) {
+export default function Map({ }) {
   const mapRef = useRef();
   const mapContainerRef = useRef();
+  const markersRef = useRef([]);
 
   const [popupData, setPopupData] = useState(null)
 
   const [center, setCenter] = useState(INITIAL_CENTER);
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
 
+  const [goal,setGoal]=useState(false)
+
   const [centerMouse, setCenterMouse] = useState(INITIAL_CENTER);
 
-  const [positionNewMark, setPositionNewMark] = useState({
+  const [positionCreateElement, setPositionCreateElement] = useState({
     lng: 0,
     lat: 0,
   });
 
-  const [routePoints,setRoutePoints]=useState([])
+  const [positionNewMark, setPositionNewMark] = useState({
+    lng: 0,
+    lat: 0
+  })
+
+  const [routePoints, setRoutePoints] = useState([])
 
   const [geoData, setGeoData] = useState(restaurantsData);
 
@@ -95,7 +103,7 @@ export default function Map({}) {
   // State para controlar la visibilidad y posicion del menu contextual
   const [menu, setMenu] = useState({
     visible: false,
-    x: 0, 
+    x: 0,
     y: 0,
   });
 
@@ -111,7 +119,7 @@ export default function Map({}) {
       x: e.clientX,
       y: e.clientY,
     });
-    setPositionNewMark({ lng: centerMouse[0], lat: centerMouse[1] });
+    setPositionCreateElement({ lng: centerMouse[0], lat: centerMouse[1] });
   };
 
   const handleButtonClick = () => {
@@ -126,13 +134,39 @@ export default function Map({}) {
   };
 
   const handleMarkerClick = (e) => {
-        setPopupData({ lngLat: e.feature.geometry.coordinates, properties: e.feature.properties });
-    }
+    setPopupData({ lngLat: e.feature.geometry.coordinates, properties: e.feature.properties });
+  }
 
-  const handleCreateMark = () => {
-    /*new mapboxgl.Marker({ color: "red", rotation: 45 })
-      .setLngLat(positionNewMark)
-      .addTo(mapRef.current);*/
+  const handleCreateMark = (e) => {
+    const coords = [e.lng, e.lat];
+
+    if (!mapRef.current) return;
+    if(routePoints.length===2){
+      clearMarkers();
+      setGoal(false);
+    }
+    else setGoal(true);
+    
+    const marker = new mapboxgl.Marker()
+      .setLngLat(coords)
+      .addTo(mapRef.current);
+
+    markersRef.current.push(marker);
+
+    setRoutePoints(prev => {
+      if (prev.length === 2) return [coords];
+      return [...prev, coords];
+    });
+  };
+
+  const clearMarkers = () => {
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
+    setRoutePoints([]);
+    if (mapRef.current.getLayer("route")) {
+      mapRef.current.removeLayer("route");
+      mapRef.current.removeSource("route");
+    }
   };
 
   const handleCreateInteresPoint = (e) => {
@@ -239,7 +273,7 @@ export default function Map({}) {
         });
       }
 
-      mapRef.current.addSource("points", {
+      /*mapRef.current.addSource("points", {
         type: "geojson",
         data: {
           type: "FeatureCollection",
@@ -288,16 +322,8 @@ export default function Map({}) {
 
       mapRef.current.on("mouseleave", "circle", () => {
         mapRef.current.getCanvas().style.cursor = "";
-      });
-    });
-
-    new mapboxgl.Marker()
-      .setLngLat([-0.49144135129607737, 38.36149873554519])
-      .addTo(mapRef.current);
-
-    new mapboxgl.Marker({ color: "black", rotation: 45 })
-      .setLngLat([-0.486451351296075, 38.36349873554509])
-      .addTo(mapRef.current);
+      });*/
+    });   
 
     mapRef.current.on("move", () => {
       // get the current center coordinates and zoom level from the map
@@ -322,11 +348,6 @@ export default function Map({}) {
       mapRef.current.getSource("restaurants").setData(geoData);
     }
   }, [geoData]);
-  useEffect(()=>{
-    new mapboxgl.Marker()
-      .setLngLat([-0.49144135129607737, 38.36149873554519])
-      .addTo(mapRef.current);
-  })
 
   // Cuando le de a un checkbox de la caja de checkboxs
   useEffect(() => {
@@ -344,44 +365,47 @@ export default function Map({}) {
       }
     });
   }, [layerState]);
-
-  useEffect(()=>{
+  // Cuando hayan suficientes puntos para crear una ruta
+  useEffect(() => {
     const fetchRoute = async () => {
-    if (routePoints.length < 2) return;
+      if (routePoints.length < 2) return;
 
-    const coords = routePoints.map((p) => p.join(",")).join(";");
-    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coords}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
+      const coords = routePoints.map((p) => p.join(",")).join(";");
+      const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
 
-    const res = await fetch(url);
-    const data = await res.json();
-    const route = data.routes[0].geometry;
+      const res = await fetch(url);
+      const data = await res.json();
+      const route = data.routes[0].geometry;
 
-    // agregar o actualizar layer "route"
-    if (mapRef.current.getSource("route")) {
-      mapRef.current.getSource("route").setData(route);
-    } else {
-      mapRef.current.addSource("route", { type: "geojson", data: route });
-      mapRef.current.addLayer({
-        id: "route",
-        type: "line",
-        source: "route",
-        layout: { "line-join": "round", "line-cap": "round" },
-        paint: { "line-color": "#ff0000", "line-width": 4 },
-      });
-    }
-  };
-  fetchRoute();
+      // agregar o actualizar layer "route"
+      if (mapRef.current.getSource("route")) {
+        mapRef.current.getSource("route").setData(route);
+      } else {
+        mapRef.current.addSource("route", { type: "geojson", data: route });
+        mapRef.current.addLayer({
+          id: "route",
+          type: "line",
+          source: "route",
+          layout: { "line-join": "round", "line-cap": "round" },
+          paint: { "line-color": "#ff0000", "line-width": 4 },
+        });
+      }
+    };
+    fetchRoute();
   }, [routePoints])
+
 
   return (
     <>
       {menu.visible && (
         <ContextMenuLocation
-          positionState={positionNewMark}
+          positionState={positionCreateElement}
           positionContextMenu={menu}
           onClose={handleCloseContextMenuMap}
-          onCreateMark={handleCreateInteresPoint}
+          onCreateInterestPoint={handleCreateInteresPoint}
+          onCreateMark={handleCreateMark}
           types={layerState}
+          goal={goal}
         />
       )}
       <div
