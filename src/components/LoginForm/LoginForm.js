@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import "../../index.css";
-import "./LoginForm.scss";
 
-export default function LoginForm({onSwitch}) {
+export default function LoginForm({ onSwitch }) {
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -13,8 +11,7 @@ export default function LoginForm({onSwitch}) {
 
   const [errors, setErrors] = useState({});
 
-  const emailRegex =
-    /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+  const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,7 +21,7 @@ export default function LoginForm({onSwitch}) {
       [name]: value,
     }));
 
-    // borro erro
+    // Borro error
     setErrors((prev) => ({
       ...prev,
       [name]: false,
@@ -64,13 +61,11 @@ export default function LoginForm({onSwitch}) {
   };
 
   return (
-    <div className="contact-section d-flex justify-content-center align-items-center vh-100">
-      <div className="contact-form col-11 col-sm-8 col-md-6 col-lg-5">
-
-        <h2 className="text-center mb-4">Formulario de Registro</h2>
+    <div className="d-flex justify-content-center align-items-center animate-fade">
+      <div className="col-12 col-sm-8 col-md-9 col-lg-10">
+        <h2 className="text-center mb-4 text-primary">Formulario de registro</h2>
 
         <form onSubmit={handleSubmitForm}>
-
           <div className="mb-3">
             <input
               type="text"
@@ -147,8 +142,11 @@ export default function LoginForm({onSwitch}) {
             )}
           </div>
 
-          <div className="d-grid">
-            <button type="submit" className="btn btn-custom">
+          <div className="d-flex justify-content-center mt-4">
+            <button
+              type="submit"
+              className="btn btn-primary border border-secondary border-2 rounded-pill px-5 py-3 fs-6 fw-bold text-uppercase"
+            >
               Registrarme
             </button>
           </div>
@@ -156,19 +154,18 @@ export default function LoginForm({onSwitch}) {
           <div className="text-center mt-3">
             <button
               type="button"
-              className="btn btn_link link-underline-opacity-0"
+              className="btn btn-link fw-semibold link-primary link-offset-4 link-underline-opacity-25 link-underline-opacity-100-hover"
             >
               Recuperar contraseña
             </button>
             <button
-            onClick={() => onSwitch("iniciar")}
+              onClick={() => onSwitch("iniciar")}
               type="button"
-              className="btn btn-link btn_link link-underline-opacity-0"
+              className="btn btn-link fw-semibold link-primary link-offset-4 link-underline-opacity-25 link-underline-opacity-100-hover"
             >
               Login
             </button>
           </div>
-
         </form>
       </div>
     </div>

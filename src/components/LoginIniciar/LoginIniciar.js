@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // redirect despues de la entrada
+import { useNavigate } from "react-router-dom";
 
-export default function LoginIniciar() {
+export default function LoginIniciar({onSwitch}) {
 
   const [credentials, setCredentials] = useState({
     email: "",
@@ -10,7 +10,6 @@ export default function LoginIniciar() {
 
   const navigate = useNavigate();
 
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials({
@@ -19,62 +18,106 @@ export default function LoginIniciar() {
     });
   };
 
-  
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    
     if (credentials.email && credentials.password) {
       console.log("datos:", credentials);
-      
       alert("¡Sesión iniciada!");
-      navigate("/"); // 
+      navigate("/");
     } else {
       alert("Por favor, rellena todos los campos");
     }
   };
 
   return (
-    <div className="login-card p-4 shadow animate-fade">
-      <h2 className="text-center mb-4">Bienvenido de nuevo</h2>
-      
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Correo electrónico</label>
-          <input
-            type="email"
-            name="email"
-            className="form-control"
-            value={credentials.email}
-            onChange={handleChange}
-            placeholder="ejemplo@correo.com"
-            required
-          />
+    <div className="animate-fade">
+      <div className="row justify-content-center">
+
+        {/* Tamaño responsive del formulario */}
+        <div className="col-12 col-sm-11 col-md-10 col-lg-11">
+
+          <form onSubmit={handleSubmit} className="row g-4">
+
+            {/* EMAIL */}
+            <div className="col-12">
+              <div className="row align-items-center">
+
+                <div className="col-12 col-md-4">
+                  <label className="form-label fw-semibold mb-md-0 text-primary">
+                    Correo electrónico
+                  </label>
+                </div>
+
+                <div className="col-12 col-md-8">
+                  <input
+                    type="email"
+                    name="email"
+                    className="form-control rounded-3 p-3"
+                    value={credentials.email}
+                    onChange={handleChange}
+                    placeholder="ejemplo@correo.com"
+                    required
+                  />
+                </div>
+
+              </div>
+            </div>
+
+            {/* PASSWORD */}
+            <div className="col-12">
+              <div className="row align-items-center">
+
+                <div className="col-12 col-md-4">
+                  <label className="form-label fw-semibold mb-md-0 text-primary">
+                    Contraseña
+                  </label>
+                </div>
+
+                <div className="col-12 col-md-8">
+                  <input
+                    type="password"
+                    name="password"
+                    className="form-control rounded-3 p-3"
+                    value={credentials.password}
+                    onChange={handleChange}
+                    placeholder="Tu contraseña"
+                    required
+                  />
+                </div>
+
+              </div>
+            </div>
+
+            {/* BOTÓN */}
+            <div className="col-12 text-center mt-3">
+              <button
+                type="submit"
+                className="btn btn-primary border border-secondary border-2 rounded-pill px-5 py-3 fs-6 fw-bold text-uppercase"
+              >
+                Iniciar Sesión
+              </button>
+            </div>
+
+          </form>
+
+          {/* REGISTRO */}
+          <div className="text-center mt-4">
+            <p className="small mb-0">
+              ¿No tienes cuenta?{" "}  </p>
+              <button
+                onClick={() => onSwitch("registro")}
+                type="button"
+                className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+              >
+                Regístrate aquí
+              </button>
+
+         
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Contraseña</label>
-          <input
-            type="password"
-            name="password"
-            className="form-control"
-            value={credentials.password}
-            onChange={handleChange}
-            placeholder="Tu contraseña"
-            required
-          />
-        </div>
-
-        <button type="submit" className="btn btn-primary w-100 py-2">
-          Iniciar Sesión
-        </button>
-      </form>
-
-      <div className="text-center mt-3">
-        <p className="small">
-          ¿No tienes cuenta? <a href="/registro">Regístrate aquí</a>
-        </p>
       </div>
     </div>
+    </div >
   );
 }

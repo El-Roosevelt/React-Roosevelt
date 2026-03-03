@@ -1,27 +1,65 @@
-$primary: #3C1053;
-$secondary: #9d5baf;
-$warning: #b75e00;
+@import "bootstrap/scss/functions";
 
-$color_texto_oscuro: black;
+
+//variables nuevas para bootstrap
+$primary: #5B2671;
+$primary-light: #9974AA;
+$secondary:#D4C46A;
+$success:#527614;
+$danger: #af251b;
+$warning: #ffa023;
+$info: #a0C562;
+$color_primary-accento: #84329B;
+// $light:
+// $dark:
+$text-nav: #736100;
+
+
+//Form - botones de form
+
+$color_form_bg: #c2c7c6;
+$border-form: #ced4da;
+//$btn-outline-secondary:
+//$btn-form: #c216db;
+
+$btn-hover-bg: darken($primary, 28%);
+
+
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/maps";
+
+
+$custom-colors: (
+    "bg-form": $color_form_bg,
+    "btn-hover": $btn-hover-bg,
+    "form-accento" : $color_primary-accento,
+    "border-color-form": $border-form
+
+);
+$theme-colors: map-merge($theme-colors,$custom-colors);
+
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/root";
+
+//Typografia
+@font-face {
+    font-family: 'RobotoSerif';
+    src: url('./../public/assets/fonts/static/RobotoSerif-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+//font
+$font-sans-serif: 'RobotoSerif';
+
+
+/*$primary-dark: #3C1053;
 $color_fondo: #f3f2f1;
 $color_form_background: #eff2f1;
 $link-color: #1d7bbf; // call to action
-$color_title: #7744d9;
-
-//botones
-
-$btn-form: #c216db;
-$btn-bg: $primary;
-$btn-hover-bg: darken($primary, 8%);
-
 $Color_F_Claro: #F3F2F1;
 $Color_Acc_ClaroINFORMATION: #84329B;
-$font-family-sans-serif: 'MyFont', Arial, sans-serif;
-$color_error: #D4351C;
-$color_texto: #FFFFFF;
-$color_txt_botones: rgb(60, 16, 83);
-$font-weight_enlace: bold;
 
+ */
 // Bootstrap
 @import "~bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons.css";
