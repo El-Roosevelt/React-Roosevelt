@@ -33,10 +33,12 @@ export default function Map({}) {
 
   const [center, setCenter] = useState(INITIAL_CENTER);
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
-
-  const [goal, setGoal] = useState(false);
-
   const [centerMouse, setCenterMouse] = useState(INITIAL_CENTER);
+
+  
+  const [goal, setGoal] = useState(false);
+  
+  const [amountPointZone,setAmountPointZone]= useState(0);
 
   const [positionCreateElement, setPositionCreateElement] = useState({
     lng: 0,
@@ -100,14 +102,33 @@ export default function Map({}) {
     clearMarkers();
   };
 
-  const handleCreatPointZone=(e)=>{
-    const coords=[e.lng.e.lat]
+  const handleCreatEdgeZone=()=>{
+    setAmountPointZone(amountPointZone+1)
+    const coords=[positionCreateElement.lng,positionCreateElement.lat]
 
     if(!mapRef.current) return;
     
-    coordsRef.current.coordpol.push(coords)
+    coordsRef.current[coordsRef.current.length-1].coordpol.push(coords)
+  }
 
+  const handleInitPointZone=()=>{
+    setAmountPointZone(1)
+    const newZone={
+      id:coordsRef.current.length,
+      coordpol:[
+        [positionCreateElement.lng,positionCreateElement.lat]
+      ]
+    }
+    coordsRef.current.push(newZone);
+  }
 
+  const handleCloseZone=()=>{
+    //Con esto se cierra la creacion de la zona
+    setAmountPointZone(0);
+    coordsRef.current[coordsRef.current.length-1].coordpol.push(coordsRef.current[coordsRef.current.length-1].coordpol[0])
+  }
+  const handleRemoveZoneInCreation=()=>{
+    coordsRef.current.pop();
   }
 
   const handleMouseMoveMap = (e) => {
@@ -121,8 +142,8 @@ export default function Map({}) {
     });
   };
 
-  const handleCreateMark = (e) => {
-    const coords = [e.lng, e.lat];
+  const handleCreateMark = () => {
+    const coords = [positionCreateElement.lng, positionCreateElement.lat];
 
     if (!mapRef.current) return;
     if (routePoints.length === 2) {
@@ -161,7 +182,7 @@ export default function Map({}) {
         cuisine: e.cuisine,
       },
       geometry: {
-        coordinates: [e.lng, e.lat],
+        coordinates: [positionCreateElement.lng, positionCreateElement.lat],
         type: "Point",
       },
     };
@@ -424,8 +445,11 @@ export default function Map({}) {
           onCreateMark={handleCreateMark}
           types={layerState}
           goal={goal}
-          amountPointZone={coordsRef.current.coordpol.length}
-          onCreatePointZone={handleCreatPointZone}
+          amountPointZone={amountPointZone}
+          onOpenZone={handleInitPointZone}
+          onCreateEdge={handleCreatEdgeZone}
+          onCloseZone={handleCloseZone}
+          onCancelZone={handleRemoveZoneInCreation}
         />
       )}
       <div className=" p-4">
@@ -433,6 +457,7 @@ export default function Map({}) {
           longitud:{positionCreateElement.lng} latitud{" "}
           {positionCreateElement.lat}
         </p>
+        <p>Numero de zonas {coordsRef.current.length}</p>
       </div>
       <div
         id="map-container"

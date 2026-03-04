@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./contextMenuLocation.scss";
 
 
-export default function ContextMenuLocation({ positionState, positionContextMenu, onClose, onCreateInterestPoint, onCreateMark, types, goal, amountPointZone, onCreatePointZone }) {
+export default function ContextMenuLocation({ positionContextMenu, onClose, onCreateInterestPoint, onCreateMark, types, goal, amountPointZone,onOpenZone , onCreateEdge, onCloseZone, onCancelZone }) {
     const [name, setName] = useState("");
     const [type, setType] = useState("");
 
@@ -12,27 +12,15 @@ export default function ContextMenuLocation({ positionState, positionContextMenu
     const createInterestPoint = () => {
         onCreateInterestPoint({
             name: name,
-            cuisine: type,
-            lng: positionState.lng,
-            lat: positionState.lat
+            cuisine: type
         })
         setName("");
         setType("");
         onClose();
     }
 
-    const createPointZone=()=>{
-        onCreatePointZone({
-            lng:positionState.lng,
-            lat:positionState.lat
-        })
-    }
-
     const createMark = () => {
-        onCreateMark({
-            lng: positionState.lng,
-            lat: positionState.lat
-        })
+        onCreateMark();
         onClose();
     }
     const [showForm, setShowForm] = useState(false);
@@ -102,15 +90,17 @@ export default function ContextMenuLocation({ positionState, positionContextMenu
                         {amountPointZone >0 && <span className=" d-flex flex-column border border-3 shadow-lg rounded-2 p-1 mb-4 align-items-center">Creados {amountPointZone} punto{amountPointZone>1?"s":""}</span>}
                         
                         {amountPointZone == 0 && 
-                        <input type="button" className=" btn btn-success " value={"Partida"} onClick={createPointZone}/>
-                        }                        
-                        {amountPointZone>0 && 
-                        <input type="button" className=" btn btn-outline-primary " value={"Extension"} onClick={createPointZone}/>
+                        <input type="button" className=" btn btn-success " value={"Abrir Zona"} onClick={onOpenZone}/>
+                        }                                                  
+                        {amountPointZone>=1 && 
+                        <input type="button" className=" btn btn-outline-primary " value={"Extension"} onClick={onCreateEdge}/>
                         }
                         {amountPointZone>2 && 
-                        <input type="button" className=" btn btn-danger " value={"Cerrar Zona"} onClick={createPointZone}/>
+                        <input type="button" className=" btn btn-danger " value={"Cerrar Zona"} onClick={onCloseZone}/>
                         }
-                        
+                        {amountPointZone > 0 && 
+                        <input type="button" className=" btn btn-success " value={"Cancelar"} onClick={onCancelZone}/>
+                        }                         
                     </div>)
                 }
 
