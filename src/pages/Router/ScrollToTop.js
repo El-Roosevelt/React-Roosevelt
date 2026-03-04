@@ -5,11 +5,10 @@ export default function ScrollToTop() {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    // Если в ссылке НЕТ решетки (якоря), тогда скроллим в самый верх
     if (!hash) {
       window.scrollTo(0, 0);
     }
-  }, [pathname, hash]); // Срабатывает при каждом изменении пути или якоря
+  }, [pathname, hash]); 
 
-  return null; // Этот компонент ничего не рисует на экране
+  return null; 
 }
