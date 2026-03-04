@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./contextMenuLocation.scss";
 
 
-export default function ContextMenuLocation({ positionState, positionContextMenu, onClose, onCreateInterestPoint, onCreateMark, types, goal }) {
+export default function ContextMenuLocation({ positionState, positionContextMenu, onClose, onCreateInterestPoint, onCreateMark, types, goal, amountPointZone, onCreatePointZone }) {
     const [name, setName] = useState("");
     const [type, setType] = useState("");
 
@@ -21,6 +21,13 @@ export default function ContextMenuLocation({ positionState, positionContextMenu
         onClose();
     }
 
+    const createPointZone=()=>{
+        onCreatePointZone({
+            lng:positionState.lng,
+            lat:positionState.lat
+        })
+    }
+
     const createMark = () => {
         onCreateMark({
             lng: positionState.lng,
@@ -30,8 +37,14 @@ export default function ContextMenuLocation({ positionState, positionContextMenu
     }
     const [showForm, setShowForm] = useState(false);
 
+    const [showZoneControl,setShowZoneControl]= useState(false)
+
     const toggleForm = () => {
         setShowForm(!showForm);
+    };
+
+    const toggleZoneControl = () => {
+        setShowZoneControl(!showZoneControl);
     };
 
     return (
@@ -49,7 +62,7 @@ export default function ContextMenuLocation({ positionState, positionContextMenu
             }}
         >
             <div className=" d-flex flex-column gap-2 p-2">
-                {showForm && (
+                {showForm ?
                     <div className=" d-flex flex-column gap-1 ">
                         <form onSubmit={createInterestPoint} className=" d-flex flex-column gap-1">
                             <h5>Creando un punto de interes</h5>
@@ -63,20 +76,42 @@ export default function ContextMenuLocation({ positionState, positionContextMenu
                             <input className=" btn btn-sm btn-success" type="submit" value="Crear" />
                         </form>
                     </div>
-                )}
-                {!showForm &&
+                
+                : (
+                    !showZoneControl?
                     <div className=" d-flex flex-column gap-1 ">
                         <div className="d-flex flex-row justify-content-end">
                             <input className=" btn btn-sm btn-danger" type="button" onClick={onClose} value="X" />
                         </div>
-                        <input type="text" className=" btn btn-outline-info" value={"Crear punto de interes"} onClick={toggleForm} />
+                        <input className=" btn btn-outline-info" value={"Crear punto de interes"} onClick={toggleForm} />
                         <input
                             type="button"
-                            className="btn btn-outline-secondary"
+                            className="btn btn-outline-secondary"                            
                             onClick={createMark}
-                            value={goal ? "Crear ruta desde aquí" : "Crear ruta hasta aquí"}
-                        />
+                            value={!goal ? "Crear ruta desde aquí" : "Crear ruta hasta aquí"}
+                        />                        
+                        <input
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={toggleZoneControl}
+                            value={"Crear poligono"}
+                        />                                                
                     </div>
+                    :<div className="d-flex flex-column gap-1">
+                        <p className=" m-1 text-info">Para crearlo minimo 3 puntos</p>
+                        {amountPointZone >0 && <span className=" d-flex flex-column border border-3 shadow-lg rounded-2 p-1 mb-4 align-items-center">Creados {amountPointZone} punto{amountPointZone>1?"s":""}</span>}
+                        
+                        {amountPointZone == 0 && 
+                        <input type="button" className=" btn btn-success " value={"Partida"} onClick={createPointZone}/>
+                        }                        
+                        {amountPointZone>0 && 
+                        <input type="button" className=" btn btn-outline-primary " value={"Extension"} onClick={createPointZone}/>
+                        }
+                        {amountPointZone>2 && 
+                        <input type="button" className=" btn btn-danger " value={"Cerrar Zona"} onClick={createPointZone}/>
+                        }
+                        
+                    </div>)
                 }
 
             </div>

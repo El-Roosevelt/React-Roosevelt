@@ -4,98 +4,68 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./Map.scss";
 import customMarkerPng from "../../assets/custom-marker.png";
-import restaurantsData from "../../assets/providence-restaurants.json";
+import interestPointData from "../../assets/providence-interestPoint.json";
 import ContextMenuLocation from "../contextMenuLocation/contextMenuLocation";
 import LayerCheckboxes from "../LayerCheckboxes/LayerCheckboxes";
 import Popup from "../Popup/Popup";
-
 
 //38.361498735545176, -0.49144135129607736
 const INITIAL_CENTER = [-0.49144135129607736, 38.361498735545176];
 const INITIAL_ZOOM = 15;
 
-export default function Map({ }) {
+export default function Map({}) {
   const mapRef = useRef();
   const mapContainerRef = useRef();
+  // marcadores punto a punto
   const markersRef = useRef([]);
 
-  const [popupData, setPopupData] = useState(null)
+  const coordsRef = useRef([{
+    id: 0,
+    coordpol: [
+      [-0.49321027016051744, 38.36560377774532],// va de principio a fin
+      [-0.4924404263540225, 38.3626784200614],
+      [-0.4802074143640027,38.36177478672232],
+      [-0.49321027016051744, 38.36560377774532], // hay que volverlo a unir con el primer punto
+    ],
+  }]);
+
+  const [popupData, setPopupData] = useState(null);
 
   const [center, setCenter] = useState(INITIAL_CENTER);
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
 
-  const [goal,setGoal]=useState(false)
+  const [goal, setGoal] = useState(false);
 
   const [centerMouse, setCenterMouse] = useState(INITIAL_CENTER);
 
   const [positionCreateElement, setPositionCreateElement] = useState({
     lng: 0,
-    lat: 0,
+    lat: 0
   });
 
-  const [positionNewMark, setPositionNewMark] = useState({
-    lng: 0,
-    lat: 0
-  })
+  const [routePoints, setRoutePoints] = useState([]);
 
-  const [routePoints, setRoutePoints] = useState([])
-
-  const [geoData, setGeoData] = useState(restaurantsData);
+  const [geoData, setGeoData] = useState(interestPointData);
 
   const [layerState, setLayerState] = useState([
     {
-      name: "vegetarian",
+      name: "elevator",
       color: "#33a02c",
       isChecked: true,
     },
     {
-      name: "sandwich",
+      name: "ramp",
       color: "#ffff99",
       isChecked: true,
     },
     {
-      name: "asian",
+      name: "stairs",
       color: "#6a3d9a",
       isChecked: true,
     },
     {
-      name: "american",
+      name: "rebuild",
       color: "#a6cee3",
-      isChecked: true,
-    },
-    {
-      name: "coffee",
-      color: "#e31a1c",
-      isChecked: true,
-    },
-    {
-      name: "mexican",
-      color: "#cab2d6",
-      isChecked: true,
-    },
-    {
-      name: "seafood",
-      color: "#1f78b4",
-      isChecked: true,
-    },
-    {
-      name: "ice cream",
-      color: "#fb9a99",
-      isChecked: true,
-    },
-    {
-      name: "korean",
-      color: "#cab2d6",
-      isChecked: true,
-    },
-    {
-      name: "sushi",
-      color: "#b2df8a",
-      isChecked: true,
-    },
-    {
-      name: "italian",
-      color: "#ff7f00",
       isChecked: true,
     },
   ]);
@@ -127,40 +97,53 @@ export default function Map({ }) {
       center: INITIAL_CENTER,
       zoom: INITIAL_ZOOM,
     });
+    clearMarkers();
   };
+
+  const handleCreatPointZone=(e)=>{
+    const coords=[e.lng.e.lat]
+
+    if(!mapRef.current) return;
+    
+    coordsRef.current.coordpol.push(coords)
+
+
+  }
 
   const handleMouseMoveMap = (e) => {
     setCenterMouse([e.lngLat.lng, e.lngLat.lat]);
   };
 
   const handleMarkerClick = (e) => {
-    setPopupData({ lngLat: e.feature.geometry.coordinates, properties: e.feature.properties });
-  }
+    setPopupData({
+      lngLat: e.feature.geometry.coordinates,
+      properties: e.feature.properties,
+    });
+  };
 
   const handleCreateMark = (e) => {
     const coords = [e.lng, e.lat];
 
     if (!mapRef.current) return;
-    if(routePoints.length===2){
+    if (routePoints.length === 2) {
       clearMarkers();
       setGoal(false);
-    }
-    else setGoal(true);
-    
+    } else setGoal(true);
+
     const marker = new mapboxgl.Marker()
       .setLngLat(coords)
       .addTo(mapRef.current);
 
     markersRef.current.push(marker);
 
-    setRoutePoints(prev => {
+    setRoutePoints((prev) => {
       if (prev.length === 2) return [coords];
       return [...prev, coords];
     });
   };
 
   const clearMarkers = () => {
-    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = [];
     setRoutePoints([]);
     if (mapRef.current.getLayer("route")) {
@@ -205,8 +188,8 @@ export default function Map({ }) {
         mapRef.current.addImage("custom-marker", image, { sdf: true });
       });
 
-      // add a single source for all restaurants
-      mapRef.current.addSource("restaurants", {
+      // add a single source for all interestPoint
+      mapRef.current.addSource("interestPoint", {
         type: "geojson",
         data: geoData,
       });
@@ -215,21 +198,21 @@ export default function Map({ }) {
       for (const layer of layerState) {
         const { name, color } = layer;
 
-        const layerId = `restaurants-${name}-symbol`;
+        const layerId = `interestPoint-${name}-symbol`;
 
         if (!mapRef.current.getLayer(layerId)) {
           // add a layer for each cuisine type, filtering to only show features with that cuisine type.
           for (const layer of layerState) {
             const { name, color } = layer;
 
-            const layerId = `restaurants-${name}-symbol`;
+            const layerId = `interestPoint-${name}-symbol`;
 
             // add a symbol layer for each cuisine type, filtering to only show features with that cuisine type.
             if (!mapRef.current.getLayer(layerId)) {
               mapRef.current.addLayer({
                 id: layerId,
                 type: "symbol",
-                source: "restaurants",
+                source: "interestPoint",
 
                 // Grabs local image for custom marker, allows markers to over lap and colors each marker based on the related cuisine color.
                 layout: {
@@ -272,6 +255,42 @@ export default function Map({ }) {
           },
         });
       }
+      mapRef.current.addSource("maine", {
+        type: "geojson",
+        data: {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            // These coordinates outline Maine.
+            coordinates:   [             
+              coordsRef.current[0].coordpol
+            ]
+            ,
+          },
+        },
+      });
+
+      mapRef.current.addLayer({
+        id: "maine",
+        type: "fill",
+        source: "maine",
+        layout: {},
+        paint: {
+          "fill-color": "#0080ff",
+          "fill-opacity": 0.5,
+        },
+      });
+
+      mapRef.current.addLayer({
+        id: "outline",
+        type: "line",
+        source: "maine",
+        layout: {},
+        paint: {
+          "line-color": "#000",
+          "line-width": 3,
+        },
+      });
 
       /*mapRef.current.addSource("points", {
         type: "geojson",
@@ -323,7 +342,7 @@ export default function Map({ }) {
       mapRef.current.on("mouseleave", "circle", () => {
         mapRef.current.getCanvas().style.cursor = "";
       });*/
-    });   
+    });
 
     mapRef.current.on("move", () => {
       // get the current center coordinates and zoom level from the map
@@ -344,8 +363,8 @@ export default function Map({ }) {
 
   // Cuando se añada un nuevo punto de interes
   useEffect(() => {
-    if (mapRef.current?.getSource("restaurants")) {
-      mapRef.current.getSource("restaurants").setData(geoData);
+    if (mapRef.current?.getSource("interestPoint")) {
+      mapRef.current.getSource("interestPoint").setData(geoData);
     }
   }, [geoData]);
 
@@ -354,7 +373,7 @@ export default function Map({ }) {
     if (!mapRef.current) return;
 
     layerState.forEach((layer) => {
-      const layerId = `restaurants-${layer.name}-symbol`;
+      const layerId = `interestPoint-${layer.name}-symbol`;
 
       if (mapRef.current.getLayer(layerId)) {
         mapRef.current.setLayoutProperty(
@@ -392,8 +411,7 @@ export default function Map({ }) {
       }
     };
     fetchRoute();
-  }, [routePoints])
-
+  }, [routePoints]);
 
   return (
     <>
@@ -406,8 +424,16 @@ export default function Map({ }) {
           onCreateMark={handleCreateMark}
           types={layerState}
           goal={goal}
+          amountPointZone={coordsRef.current.coordpol.length}
+          onCreatePointZone={handleCreatPointZone}
         />
       )}
+      <div className=" p-4">
+        <p>
+          longitud:{positionCreateElement.lng} latitud{" "}
+          {positionCreateElement.lat}
+        </p>
+      </div>
       <div
         id="map-container"
         ref={mapContainerRef}
