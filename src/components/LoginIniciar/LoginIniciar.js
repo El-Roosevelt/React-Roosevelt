@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+
 
 export default function LoginIniciar({onSwitch}) {
 
@@ -20,6 +22,7 @@ export default function LoginIniciar({onSwitch}) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+   
 
     if (credentials.email && credentials.password) {
       console.log("datos:", credentials);
