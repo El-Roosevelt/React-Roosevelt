@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
 
 export default function LoginIniciar({onSwitch}) {
 
@@ -35,10 +34,10 @@ export default function LoginIniciar({onSwitch}) {
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
       
-      // status 401 (Unauthorized) o 404 (Not Found)
+      // Если статус 401 (Unauthorized) или 404 (Not Found)
       if (error.response?.status === 401 || error.response?.status === 404) {
-        alert("El usuario no existe o los datos son incorrectos. Por favor primero hay que registrarse.");
-        onSwitch("registro"); 
+        alert("El usuario no existe o los datos son incorrectos. Пожалуйста, пройдите регистрацию.");
+        onSwitch("registro"); // Переключаем на регистрацию
       } else {
         alert("Error de conexión con el servidor.");
       }
@@ -137,6 +136,8 @@ export default function LoginIniciar({onSwitch}) {
               >
                 Regístrate aquí
               </button>
+
+         
         </div>
 
       </div>

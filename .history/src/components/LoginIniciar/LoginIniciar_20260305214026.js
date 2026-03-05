@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
 
 export default function LoginIniciar({onSwitch}) {
 
@@ -21,39 +20,16 @@ export default function LoginIniciar({onSwitch}) {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    try {
-      // mando datos
-      const response = await axios.post("http://localhost:8081/backend-rooselvelt/api/auth/login", {
-        username: credentials.username,
-        password: credentials.password
-      });
-
-      if (response.status === 200) {
-        alert("¡Bienvenido! Sesión iniciada.");
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("Login error:", error.response?.data || error.message);
-      
-      // status 401 (Unauthorized) o 404 (Not Found)
-      if (error.response?.status === 401 || error.response?.status === 404) {
-        alert("El usuario no existe o los datos son incorrectos. Por favor primero hay que registrarse.");
-        onSwitch("registro"); 
-      } else {
-        alert("Error de conexión con el servidor.");
-      }
-    }
-  };
    
 
-      //   if (credentials.username && credentials.password) {
-      //     console.log("datos:", credentials);
-      //     alert("¡Sesión iniciada!");
-      //     navigate("/");
-      //   } else {
-      //     alert("Por favor, rellena todos los campos");
-      //   }
-      // };
+      if (credentials.username && credentials.password) {
+        console.log("datos:", credentials);
+        alert("¡Sesión iniciada!");
+        navigate("/");
+      } else {
+        alert("Por favor, rellena todos los campos");
+      }
+    };
 
   return (
     <div className="animate-fade">
@@ -137,6 +113,8 @@ export default function LoginIniciar({onSwitch}) {
               >
                 Regístrate aquí
               </button>
+
+         
         </div>
 
       </div>
