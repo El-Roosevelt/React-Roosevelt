@@ -29,10 +29,20 @@ const LayerCheckboxes = ({ layerState, setLayerState }) => {
     return (
         <div className="layer-checkboxes">
             {/* "All" checkbox with indeterminate state */}
-            <div className=' bg-light rounded-3 opacity-0.7'>
-                <p>a</p>
-                <p></p>
+            <h5>Tipos de zonas</h5>
+            <div className=' checkbox'>
+                <input type='checkbox' className=' checkbox-input'/>
+                <label className=' checkbox-label'>Zonas peligrosas</label>
             </div>
+            <div className=' checkbox'>
+                <input type='checkbox' className=' checkbox-input'/>
+                <label className=' checkbox-label'>Zonas medianamente peligrosas</label>
+            </div>
+            <div className=' checkbox'>
+                <input type='checkbox' className=' checkbox-input'/>
+                <label className=' checkbox-label'>Zonas no peligrosas</label>
+            </div>
+            <h5>Puntos de Interes</h5>
             <div className="checkbox">
                 <input
                     type="checkbox"

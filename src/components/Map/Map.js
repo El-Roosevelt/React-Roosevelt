@@ -17,12 +17,35 @@ const INITIAL_ZOOM = 15;
 export default function Map({}) {
   const mapRef = useRef();
   const mapContainerRef = useRef();
+
+    // VARIABLES DE MAPA
+  const [center, setCenter] = useState(INITIAL_CENTER);
+  const [zoom, setZoom] = useState(INITIAL_ZOOM);
+  const [centerMouse, setCenterMouse] = useState(INITIAL_CENTER);
+
+
   // marcadores punto a punto
   const markersRef = useRef([]);
 
+  const ColorTranslate= Object.freeze({
+    rojo: "red",
+    amarillo: "yellow",
+    verde: "green"
+  })
+
+  const dangerColor = Object.freeze({
+        rojo:" bg-danger",
+        amarillo:" bg-warning",
+        verde:" bg-success"
+    })
+
+
+  // Datos que vendran de la api
   const [zonesRef, setZonesRef] = useState([
     {
-      id: 0,
+      id:0,
+      name: "Zona de Plaza Alfonso X",
+      color:"amarillo",
       coordpol: [
         [-0.49321027016051744, 38.36560377774532], // va de principio a fin
         [-0.4924404263540225, 38.3626784200614],
@@ -32,6 +55,14 @@ export default function Map({}) {
     },
   ]);
 
+  const [dataNewZone,setDataNewZone]=useState({
+    id:zonesRef.length,
+    name:"",
+    color:""
+  });
+
+
+  // Datos de zonas que se convertiran en poligonos para crear zonas
   const [datazones, setDataZones] = useState({
     type: "FeatureCollection",
     features: zonesRef.map((zone) => ({
@@ -42,16 +73,16 @@ export default function Map({}) {
       },
       properties: {
         id: zone.id,
+        name: zone.name,
+        color:ColorTranslate[zone.color]
       },
     })),
   });
 
   const [popupData, setPopupData] = useState(null);
 
-  const [center, setCenter] = useState(INITIAL_CENTER);
-  const [zoom, setZoom] = useState(INITIAL_ZOOM);
-  const [centerMouse, setCenterMouse] = useState(INITIAL_CENTER);
 
+  // MIS VARIABLES
   const [goal, setGoal] = useState(false);
 
   const [amountPointZone, setAmountPointZone] = useState(0);
@@ -117,6 +148,19 @@ export default function Map({}) {
     });
     clearMarkers();
   };
+  
+  // Iniciar la creacion de la zona con un punto inicial
+  const handleOpenZone = () => {
+    setAmountPointZone(1);
+    const newZone = {
+      id: dataNewZone.id,
+      name:dataNewZone.name,
+      coordpol: [[positionCreateElement.lng, positionCreateElement.lat]],
+      color: dataNewZone.color
+    };
+    setZonesRef((prev) => [...prev, newZone]
+  );
+  };
   // Creando la arista de la zona en creacion
   const handleCreatEdgeZone = () => {
     setAmountPointZone(amountPointZone + 1);
@@ -130,16 +174,6 @@ export default function Map({}) {
       return newZones;
     });
   };
-  // Iniciar la creacion de la zona con un punto inicial
-  const handleInitPointZone = () => {
-    setAmountPointZone(1);
-    const newZone = {
-      id: zonesRef.length,
-      coordpol: [[positionCreateElement.lng, positionCreateElement.lat]],
-    };
-    setZonesRef((prev) => [...prev, newZone]
-  );
-  };
   // Terminar de cerrar la zona en creacion y cierra el contextmenu
   const handleCloseZone = () => {
     setAmountPointZone(0); 
@@ -151,6 +185,12 @@ export default function Map({}) {
       );
       return newZones
     });
+
+    setDataNewZone({
+      id:zonesRef.length,
+      name:"",
+      color:""
+    })
     
   };
   // Cancelar la creacion de la zona
@@ -158,6 +198,12 @@ export default function Map({}) {
     setAmountPointZone(0);
     handleCloseContextMenuMap();
     setZonesRef(prev=>prev.slice(0,-1));
+
+    setDataNewZone({
+      id:zonesRef.length,
+      name:"",
+      color:""
+    })
   };
 
   const handleMouseMoveMap = (e) => {
@@ -315,7 +361,7 @@ export default function Map({}) {
         type: "fill",
         source: "zones",
         paint: {
-          "fill-color": "#0080ff",
+          "fill-color": ["get","color"],
           "fill-opacity": 0.5,
         },
       });
@@ -414,6 +460,7 @@ export default function Map({}) {
       },
       properties: {
         id: zone.id,
+        color: ColorTranslate[zone.color]
       },
     })),
   });
@@ -434,10 +481,13 @@ export default function Map({}) {
           types={layerState}
           goal={goal}
           amountPointZone={amountPointZone}
-          onOpenZone={handleInitPointZone}
+          onOpenZone={handleOpenZone}
           onCreateEdge={handleCreatEdgeZone}
           onCloseZone={handleCloseZone}
           onCancelZone={handleRemoveZoneInCreation}
+          typeZones={ColorTranslate}
+          dataNewZone={dataNewZone}
+          onChangeDataZone={setDataNewZone}
         />
       )}
       <div className=" p-4">
@@ -445,7 +495,7 @@ export default function Map({}) {
           longitud:{positionCreateElement.lng} latitud{" "}
           {positionCreateElement.lat}
         </p>
-        <p>Numero de zonas {zonesRef.length}</p>
+        <p>{dataNewZone.name}</p>
       </div>
       <div
         id="map-container"
@@ -465,6 +515,33 @@ export default function Map({}) {
           layerState={layerState}
           setLayerState={setLayerState}
         />
+        <div className=" infoSide d-flex flex-row">
+          <div className=" mx-3">
+            <i className="bi bi-chevron-left"></i>
+          </div>
+          <div className=" d-flex flex-column">
+            <p>Datos de rutas o zonas</p>
+            <div className=" d-flex flex-column gap-2">
+              {zonesRef.map((z)=>(
+                <div className={" card "+(dangerColor[z.color])}>
+                  <div className=" card-body">
+                    <p>Id: {z.id}</p>
+                    <p>Nombre: {z.name}</p>
+                    <p>Zona: {z.color}</p>
+                    <p>{z.coordpol.map(c => (
+                      <div>
+                        {c.map(e => (
+                          <p>{e[0]} {e[1]}</p>
+                        ))}
+                      </div>
+                    ))}</p>
+                  </div>                  
+                </div>
+              ))}
+            </div>
+          </div>
+          
+        </div>
       </div>
     </>
   );
