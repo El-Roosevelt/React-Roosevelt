@@ -18,6 +18,7 @@ export default function AppRouter() {
                 <Route path="/my-routes" element={<MisRutas />} />
                 <Route path="/fav-routes" element={<RutasFavoritas />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/map" element={<Mapa />} /> 
             </Routes>
 
         </>

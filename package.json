@@ -12,7 +12,7 @@
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "leaflet": "^1.9.4",
-    "mapbox-gl": "^3.19.0",
+    "mapbox-gl": "^3.19.1",
     "mapbox-gl-leaflet": "^0.0.16",
     "react": "^19.0.0-rc.1",
     "react-dom": "^19.0.0-rc.1",
