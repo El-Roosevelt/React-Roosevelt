@@ -9,7 +9,7 @@ export default function RegisterForm({ onSwitch }) {
     email: "",
     contrasena: "",
     confirmarContrasena: "",
-
+    
     tel: "",
     fechaNac: "",
     foto: ""
@@ -40,25 +40,25 @@ export default function RegisterForm({ onSwitch }) {
       try {
         const userLoad = {
           username: formData.username,
-          password: formData.contrasena,
+          password: formData.contrasena, 
           email: formData.email,
-          email_sec: formData.email,
+          email_sec: formData.email, 
           nombre: formData.nombre,
           apellido: formData.apellido,
           administrador: false,
           tel: formData.tel,
           fechaNac: formData.fechaNac,
-          foto: formData.foto || "default.png"
+          foto: formData.foto || "default.png" 
         };
 
         const response = await axios.post(
-          "http://localhost:8081/backend-rooselvelt/api/users",
+          "http://localhost:8081/backend-rooselvelt/api/users", 
           userLoad
         );
 
         console.log("Success:", response.data);
         alert("Usuario registrado con éxito!");
-        onSwitch("iniciar");
+        onSwitch("iniciar"); 
 
       } catch (error) {
         console.error("Error details:", error.response?.data || error.message);
@@ -73,7 +73,7 @@ export default function RegisterForm({ onSwitch }) {
         <h2 className="text-center mb-4 text-primary">Formulario de registro</h2>
 
         <form onSubmit={handleSubmitForm}>
-
+          
           <div className="row">
             <div className="col-md-6 mb-3">
               <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" className="form-control" />
@@ -97,7 +97,7 @@ export default function RegisterForm({ onSwitch }) {
             </div>
           </div>
 
-
+          
           <div className="row">
             <div className="col-md-6 mb-3">
               <label className="form-label small">Teléfono</label>
@@ -120,19 +120,43 @@ export default function RegisterForm({ onSwitch }) {
               Registrarme
             </button>
           </div>
-          <div className="text-center mt-4">
-            <p className="small mb-0">
-              ¿Ya tienes cuenta?
-            </p>
-
-            <button onClick={() => onSwitch("iniciar")} type="button" className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-              Login
-
-            </button>
-
-          </div>
         </form>
+          {/* REGISTRO */}
+
+          <div className="text-center mt-4">
+
+            <p className="small mb-0">
+
+              ¿No tienes cuenta?{" "}  </p>
+
+              <button
+
+                onClick={() => onSwitch("registro")}
+
+                type="button"
+
+                className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+
+              >
+
+                Regístrate aquí
+
+              </button>
+
+
+
+         
+
+        </div>
+
+
+
       </div>
+
     </div>
+
+    </div >
+
   );
+    
 }

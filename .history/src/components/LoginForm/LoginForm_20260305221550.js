@@ -120,13 +120,11 @@ export default function RegisterForm({ onSwitch }) {
               Registrarme
             </button>
           </div>
-          <div className="text-center mt-4">
-            <p className="small mb-0">
-              ¿Ya tienes cuenta?
-            </p>
+             <div className="text-center mt-3">
 
-            <button onClick={() => onSwitch("iniciar")} type="button" className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-              Login
+            <button onClick={() => onSwitch("iniciar")} type="button" className="btn btn-link">
+
+              ¿Ya tienes cuenta? Login
 
             </button>
 
