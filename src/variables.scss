@@ -49,7 +49,8 @@ $theme-colors: map-merge($theme-colors,$custom-colors);
     font-style: normal;
 }
 //font
-$font-sans-serif: 'RobotoSerif';
+$font-sans-serif:'RobotoSerif';
+// $font-family-base: $font-sans-serif;
 
 
 /*$primary-dark: #3C1053;

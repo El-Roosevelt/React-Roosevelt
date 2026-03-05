@@ -129,7 +129,7 @@ export default function ContactoForm() {
         <section className="contact-section py-5 bg-form bg-color_form_bg">
             <div className="container">
                 <div className="text-center mb-5">
-                    <p className="text-uppercase text-muted fw-semibold mb-2">Contact Us</p>
+                    <p className="text-uppercase text-muted fw-semibold mb-2">Concacta</p>
                     <h2 className="fw-bold text-primary fs-2">We are here for you</h2>
                 </div>
 
