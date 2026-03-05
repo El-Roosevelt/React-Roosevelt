@@ -29,6 +29,10 @@ const LayerCheckboxes = ({ layerState, setLayerState }) => {
     return (
         <div className="layer-checkboxes">
             {/* "All" checkbox with indeterminate state */}
+            <div className=' bg-light rounded-3 opacity-0.7'>
+                <p>a</p>
+                <p></p>
+            </div>
             <div className="checkbox">
                 <input
                     type="checkbox"

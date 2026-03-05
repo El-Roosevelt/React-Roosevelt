@@ -8,6 +8,7 @@ import interestPointData from "../../assets/providence-interestPoint.json";
 import ContextMenuLocation from "../contextMenuLocation/contextMenuLocation";
 import LayerCheckboxes from "../LayerCheckboxes/LayerCheckboxes";
 import Popup from "../Popup/Popup";
+import { data } from "react-router-dom";
 
 //38.361498735545176, -0.49144135129607736
 const INITIAL_CENTER = [-0.49144135129607736, 38.361498735545176];
@@ -19,15 +20,31 @@ export default function Map({}) {
   // marcadores punto a punto
   const markersRef = useRef([]);
 
-  const coordsRef = useRef([{
-    id: 0,
-    coordpol: [
-      [-0.49321027016051744, 38.36560377774532],// va de principio a fin
-      [-0.4924404263540225, 38.3626784200614],
-      [-0.4802074143640027,38.36177478672232],
-      [-0.49321027016051744, 38.36560377774532], // hay que volverlo a unir con el primer punto
-    ],
-  }]);
+  const [zonesRef, setZonesRef] = useState([
+    {
+      id: 0,
+      coordpol: [
+        [-0.49321027016051744, 38.36560377774532], // va de principio a fin
+        [-0.4924404263540225, 38.3626784200614],
+        [-0.4802074143640027, 38.36177478672232],
+        [-0.49321027016051744, 38.36560377774532], // hay que volverlo a unir con el primer punto
+      ],
+    },
+  ]);
+
+  const [datazones, setDataZones] = useState({
+    type: "FeatureCollection",
+    features: zonesRef.map((zone) => ({
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [zone.coordpol], 
+      },
+      properties: {
+        id: zone.id,
+      },
+    })),
+  });
 
   const [popupData, setPopupData] = useState(null);
 
@@ -35,14 +52,13 @@ export default function Map({}) {
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
   const [centerMouse, setCenterMouse] = useState(INITIAL_CENTER);
 
-  
   const [goal, setGoal] = useState(false);
-  
-  const [amountPointZone,setAmountPointZone]= useState(0);
+
+  const [amountPointZone, setAmountPointZone] = useState(0);
 
   const [positionCreateElement, setPositionCreateElement] = useState({
     lng: 0,
-    lat: 0
+    lat: 0,
   });
 
   const [routePoints, setRoutePoints] = useState([]);
@@ -101,35 +117,48 @@ export default function Map({}) {
     });
     clearMarkers();
   };
+  // Creando la arista de la zona en creacion
+  const handleCreatEdgeZone = () => {
+    setAmountPointZone(amountPointZone + 1);
+    const coords = [positionCreateElement.lng, positionCreateElement.lat];
 
-  const handleCreatEdgeZone=()=>{
-    setAmountPointZone(amountPointZone+1)
-    const coords=[positionCreateElement.lng,positionCreateElement.lat]
+    if (!mapRef.current) return;
 
-    if(!mapRef.current) return;
+    setZonesRef((prev) => {
+      const newZones = [...prev];
+      newZones[newZones.length - 1].coordpol.push(coords);
+      return newZones;
+    });
+  };
+  // Iniciar la creacion de la zona con un punto inicial
+  const handleInitPointZone = () => {
+    setAmountPointZone(1);
+    const newZone = {
+      id: zonesRef.length,
+      coordpol: [[positionCreateElement.lng, positionCreateElement.lat]],
+    };
+    setZonesRef((prev) => [...prev, newZone]
+  );
+  };
+  // Terminar de cerrar la zona en creacion y cierra el contextmenu
+  const handleCloseZone = () => {
+    setAmountPointZone(0); 
+    handleCloseContextMenuMap();   
+    setZonesRef((prev) => {
+      const newZones = [...prev];
+      newZones[newZones.length - 1].coordpol.push(
+        newZones[newZones.length - 1].coordpol[0],
+      );
+      return newZones
+    });
     
-    coordsRef.current[coordsRef.current.length-1].coordpol.push(coords)
-  }
-
-  const handleInitPointZone=()=>{
-    setAmountPointZone(1)
-    const newZone={
-      id:coordsRef.current.length,
-      coordpol:[
-        [positionCreateElement.lng,positionCreateElement.lat]
-      ]
-    }
-    coordsRef.current.push(newZone);
-  }
-
-  const handleCloseZone=()=>{
-    //Con esto se cierra la creacion de la zona
+  };
+  // Cancelar la creacion de la zona
+  const handleRemoveZoneInCreation = () => {
     setAmountPointZone(0);
-    coordsRef.current[coordsRef.current.length-1].coordpol.push(coordsRef.current[coordsRef.current.length-1].coordpol[0])
-  }
-  const handleRemoveZoneInCreation=()=>{
-    coordsRef.current.pop();
-  }
+    handleCloseContextMenuMap();
+    setZonesRef(prev=>prev.slice(0,-1));
+  };
 
   const handleMouseMoveMap = (e) => {
     setCenterMouse([e.lngLat.lng, e.lngLat.lat]);
@@ -276,26 +305,15 @@ export default function Map({}) {
           },
         });
       }
-      mapRef.current.addSource("maine", {
+      mapRef.current.addSource("zones", {
         type: "geojson",
-        data: {
-          type: "Feature",
-          geometry: {
-            type: "Polygon",
-            // These coordinates outline Maine.
-            coordinates:   [             
-              coordsRef.current[0].coordpol
-            ]
-            ,
-          },
-        },
+        data: datazones,
       });
 
       mapRef.current.addLayer({
-        id: "maine",
+        id: "zones",
         type: "fill",
-        source: "maine",
-        layout: {},
+        source: "zones",
         paint: {
           "fill-color": "#0080ff",
           "fill-opacity": 0.5,
@@ -305,64 +323,12 @@ export default function Map({}) {
       mapRef.current.addLayer({
         id: "outline",
         type: "line",
-        source: "maine",
-        layout: {},
+        source: "zones",
         paint: {
           "line-color": "#000",
           "line-width": 3,
         },
       });
-
-      /*mapRef.current.addSource("points", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [
-            {
-              type: "Feature",
-              properties: {},
-              geometry: {
-                type: "Point",
-                coordinates: [-0.49144135129607737, 38.33989873554519],
-              },
-            },
-            {
-              type: "Feature",
-              properties: {},
-              geometry: {
-                type: "Point",
-                coordinates: [-0.489451351296075, 38.36949873554509],
-              },
-            },
-          ],
-        },
-      });
-
-      mapRef.current.addLayer({
-        id: "circle",
-        type: "circle",
-        source: "points",
-        paint: {
-          "circle-color": "#4264fb",
-          "circle-radius": 8,
-          "circle-stroke-width": 2,
-          "circle-stroke-color": "#ffffff",
-        },
-      });
-
-      mapRef.current.on("click", "circle", (e) => {
-        mapRef.current.flyTo({
-          center: e.features[0].geometry.coordinates,
-        });
-      });
-
-      mapRef.current.on("mouseenter", "circle", () => {
-        mapRef.current.getCanvas().style.cursor = "pointer";
-      });
-
-      mapRef.current.on("mouseleave", "circle", () => {
-        mapRef.current.getCanvas().style.cursor = "";
-      });*/
     });
 
     mapRef.current.on("move", () => {
@@ -381,7 +347,6 @@ export default function Map({}) {
       mapRef.current.remove();
     };
   }, []);
-
   // Cuando se añada un nuevo punto de interes
   useEffect(() => {
     if (mapRef.current?.getSource("interestPoint")) {
@@ -427,12 +392,35 @@ export default function Map({}) {
           type: "line",
           source: "route",
           layout: { "line-join": "round", "line-cap": "round" },
-          paint: { "line-color": "#ff0000", "line-width": 4 },
+          paint: { "line-color": "#ff0000", "line-width": 4 }
         });
       }
     };
     fetchRoute();
   }, [routePoints]);
+  // creador de zonas nuevas
+  useEffect(() => {
+    if (!mapRef.current?.isStyleLoaded()) return;
+
+    if (zonesRef.length === 0) return;    
+
+    setDataZones({
+    type: "FeatureCollection",
+    features: zonesRef.map((zone) => ({
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [zone.coordpol],
+      },
+      properties: {
+        id: zone.id,
+      },
+    })),
+  });
+    mapRef.current.getSource("zones").setData(datazones);
+
+  }, [zonesRef]);
+
 
   return (
     <>
@@ -457,7 +445,7 @@ export default function Map({}) {
           longitud:{positionCreateElement.lng} latitud{" "}
           {positionCreateElement.lat}
         </p>
-        <p>Numero de zonas {coordsRef.current.length}</p>
+        <p>Numero de zonas {zonesRef.length}</p>
       </div>
       <div
         id="map-container"

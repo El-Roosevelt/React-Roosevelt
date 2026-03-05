@@ -85,14 +85,14 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
                             value={"Crear poligono"}
                         />                                                
                     </div>
-                    :<div className="d-flex flex-column gap-1">
+                    :<div className="d-flex flex-column gap-1">                        
                         <p className=" m-1 text-info">Para crearlo minimo 3 puntos</p>
                         {amountPointZone >0 && <span className=" d-flex flex-column border border-3 shadow-lg rounded-2 p-1 mb-4 align-items-center">Creados {amountPointZone} punto{amountPointZone>1?"s":""}</span>}
                         
                         {amountPointZone == 0 && 
                         <input type="button" className=" btn btn-success " value={"Abrir Zona"} onClick={onOpenZone}/>
                         }                                                  
-                        {amountPointZone>=1 && 
+                        {amountPointZone >=1 && 
                         <input type="button" className=" btn btn-outline-primary " value={"Extension"} onClick={onCreateEdge}/>
                         }
                         {amountPointZone>2 && 
