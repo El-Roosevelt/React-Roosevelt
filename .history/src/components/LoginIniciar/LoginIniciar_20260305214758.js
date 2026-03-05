@@ -137,6 +137,8 @@ export default function LoginIniciar({onSwitch}) {
               >
                 Regístrate aquí
               </button>
+
+         
         </div>
 
       </div>

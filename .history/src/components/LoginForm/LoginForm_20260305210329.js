@@ -42,13 +42,13 @@ export default function RegisterForm({ onSwitch }) {
           username: formData.username,
           password: formData.contrasena, 
           email: formData.email,
-          email_sec: formData.email, 
+          email_sec: formData.email, // Используем основной email как резервный
           nombre: formData.nombre,
           apellido: formData.apellido,
           administrador: false,
           tel: formData.tel,
           fechaNac: formData.fechaNac,
-          foto: formData.foto || "default.png" 
+          foto: formData.foto || "default.png" // Если фото нет, ставим заглушку
         };
 
         const response = await axios.post(
@@ -57,12 +57,12 @@ export default function RegisterForm({ onSwitch }) {
         );
 
         console.log("Success:", response.data);
-        alert("Usuario registrado con éxito!");
+        alert("¡Usuario registrado con éxito!");
         onSwitch("iniciar"); 
 
       } catch (error) {
         console.error("Error details:", error.response?.data || error.message);
-        alert("Error: " + (error.response?.data?.error || "revisa los campos"));
+        alert("Error: " + (error.response?.data?.error || "Проверьте заполнение всех полей"));
       }
     }
   };
@@ -97,7 +97,7 @@ export default function RegisterForm({ onSwitch }) {
             </div>
           </div>
 
-          
+          {/* НОВЫЕ ПОЛЯ ДЛЯ СООТВЕТСТВИЯ БЭКЕНДУ */}
           <div className="row">
             <div className="col-md-6 mb-3">
               <label className="form-label small">Teléfono</label>

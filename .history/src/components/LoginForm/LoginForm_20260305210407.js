@@ -97,7 +97,7 @@ export default function RegisterForm({ onSwitch }) {
             </div>
           </div>
 
-          
+          {/* НОВЫЕ ПОЛЯ ДЛЯ СООТВЕТСТВИЯ БЭКЕНДУ */}
           <div className="row">
             <div className="col-md-6 mb-3">
               <label className="form-label small">Teléfono</label>

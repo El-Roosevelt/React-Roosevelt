@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
 
 export default function LoginIniciar({onSwitch}) {
 
   const [credentials, setCredentials] = useState({
-    username: "",
+    : "",
     password: ""
   });
 
@@ -19,41 +18,18 @@ export default function LoginIniciar({onSwitch}) {
     });
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      // mando datos
-      const response = await axios.post("http://localhost:8081/backend-rooselvelt/api/auth/login", {
-        username: credentials.username,
-        password: credentials.password
-      });
-
-      if (response.status === 200) {
-        alert("¡Bienvenido! Sesión iniciada.");
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("Login error:", error.response?.data || error.message);
-      
-      // status 401 (Unauthorized) o 404 (Not Found)
-      if (error.response?.status === 401 || error.response?.status === 404) {
-        alert("El usuario no existe o los datos son incorrectos. Por favor primero hay que registrarse.");
-        onSwitch("registro"); 
-      } else {
-        alert("Error de conexión con el servidor.");
-      }
-    }
-  };
    
 
-      //   if (credentials.username && credentials.password) {
-      //     console.log("datos:", credentials);
-      //     alert("¡Sesión iniciada!");
-      //     navigate("/");
-      //   } else {
-      //     alert("Por favor, rellena todos los campos");
-      //   }
-      // };
+    if (credentials.email && credentials.password) {
+      console.log("datos:", credentials);
+      alert("¡Sesión iniciada!");
+      navigate("/");
+    } else {
+      alert("Por favor, rellena todos los campos");
+    }
+  };
 
   return (
     <div className="animate-fade">
@@ -70,18 +46,18 @@ export default function LoginIniciar({onSwitch}) {
 
                 <div className="col-12 col-md-4">
                   <label className="form-label fw-semibold mb-md-0 text-primary">
-                    Username
+                    Correo electrónico
                   </label>
                 </div>
 
                 <div className="col-12 col-md-8">
                   <input
-                    type="text"
-                    name="username"
+                    type="email"
+                    name="email"
                     className="form-control rounded-3 p-3"
-                    value={credentials.username}
+                    value={credentials.email}
                     onChange={handleChange}
-                    placeholder="kris"
+                    placeholder="ejemplo@correo.com"
                     required
                   />
                 </div>
@@ -137,6 +113,8 @@ export default function LoginIniciar({onSwitch}) {
               >
                 Regístrate aquí
               </button>
+
+         
         </div>
 
       </div>
