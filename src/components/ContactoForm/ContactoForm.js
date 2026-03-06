@@ -12,13 +12,11 @@ export default function ContactoForm() {
 
     const [errors, setErrors] = useState({});
 
-    const nombreRegex =
-        /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{1,79}( [A-ZÁÉÍÓÚÑ][a-záéíóúñ]{1,79})*$/;
+    const nombreRegex =  /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{1,79}( [A-ZÁÉÍÓÚÑ][a-záéíóúñ]{1,79})*$/;
     const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/i;
     const phoneRegex = /^[0-9+\-\s]{6,20}$/;
     const messageRegex = /^.{10,500}$/;
 
-    // Валидация одного поля
     const validateField = (name, value) => {
         let error = "";
 
@@ -129,8 +127,8 @@ export default function ContactoForm() {
         <section className="contact-section py-5 bg-form bg-color_form_bg">
             <div className="container">
                 <div className="text-center mb-5">
-                    <p className="text-uppercase text-muted fw-semibold mb-2">Concacta</p>
-                    <h2 className="fw-bold text-primary fs-2">We are here for you</h2>
+                    <p className="text-uppercase text-muted fw-semibold mb-2">Contacta con nosotros!</p>
+                    <h2 className="fw-bold text-primary fs-2">Estamos aqui para ayudarte</h2>
                 </div>
 
                 <div className="row justify-content-center">
@@ -141,7 +139,7 @@ export default function ContactoForm() {
                                     type="text"
                                     name="name"
                                     className={`form-control rounded-3 p-3 ${errors.name ? "is-invalid" : ""}`}
-                                    placeholder="Name"
+                                    placeholder="Nombre"
                                     value={form.name}
                                     onChange={onChange}
                                 />
@@ -156,7 +154,7 @@ export default function ContactoForm() {
                                     type="text"
                                     name="surname"
                                     className={`form-control rounded-3 p-3 ${errors.surname ? "is-invalid" : ""}`}
-                                    placeholder="Surname"
+                                    placeholder="Apellido"
                                     value={form.surname}
                                     onChange={onChange}
                                 />
@@ -171,7 +169,7 @@ export default function ContactoForm() {
                                     type="email"
                                     name="email"
                                     className={`form-control rounded-3 p-3 ${errors.email ? "is-invalid" : ""}`}
-                                    placeholder="Email"
+                                    placeholder="Correo electrónico"
                                     value={form.email}
                                     onChange={onChange}
                                 />
@@ -186,7 +184,7 @@ export default function ContactoForm() {
                                     type="tel"
                                     name="phone"
                                     className={`form-control rounded-3 p-3 ${errors.phone ? "is-invalid" : ""}`}
-                                    placeholder="Phone"
+                                    placeholder="Telefono"
                                     value={form.phone}
                                     onChange={onChange}
                                 />
@@ -201,7 +199,7 @@ export default function ContactoForm() {
                                     name="message"
                                     className={`form-control ${errors.message ? "is-invalid" : ""}`}
                                     rows="4"
-                                    placeholder="Your Message"
+                                    placeholder="Tu mensaje"
                                     value={form.message}
                                     onChange={onChange}
                                 ></textarea>
@@ -215,7 +213,7 @@ export default function ContactoForm() {
                             {/* BUTTON */}
                             <div className="col-12 text-center">
                                 <button type="submit" className="btn btn-primary border border-secondary border-2 rounded-pill px-5 py-3 fs-6 fw-bold text-uppercase">
-                                    Send Message
+                                    Enviar mensaje
                                 </button>
                             </div>
                         </form>
