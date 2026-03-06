@@ -50,7 +50,8 @@ $theme-colors: map-merge($theme-colors,$custom-colors);
 }
 //font
 $font-sans-serif: 'RobotoSerif';
-
+$font-family-sans-serif: 'RobotoSerif', sans-serif;
+$font-family-base: $font-family-sans-serif;
 
 /*$primary-dark: #3C1053;
 $color_fondo: #f3f2f1;
