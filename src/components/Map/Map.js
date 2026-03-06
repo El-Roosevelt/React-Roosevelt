@@ -9,6 +9,7 @@ import ContextMenuLocation from "../contextMenuLocation/contextMenuLocation";
 import LayerCheckboxes from "../LayerCheckboxes/LayerCheckboxes";
 import Popup from "../Popup/Popup";
 import { data } from "react-router-dom";
+import { tab } from "@testing-library/user-event/dist/tab";
 
 //38.361498735545176, -0.49144135129607736
 const INITIAL_CENTER = [-0.49144135129607736, 38.361498735545176];
@@ -37,7 +38,7 @@ export default function Map({}) {
         rojo:" bg-danger",
         amarillo:" bg-warning",
         verde:" bg-success"
-    })
+  })
 
 
   // Datos que vendran de la api
@@ -54,6 +55,13 @@ export default function Map({}) {
       ],
     },
   ]);
+
+  const [rutesRef, setRutesRef]=useState({
+    id:0,
+    coordinates: [[  
+
+    ]]
+  })
 
   const [dataNewZone,setDataNewZone]=useState({
     id:zonesRef.length,
@@ -75,7 +83,7 @@ export default function Map({}) {
         id: zone.id,
         name: zone.name,
         color:ColorTranslate[zone.color]
-      },
+      }
     })),
   });
 
@@ -84,6 +92,8 @@ export default function Map({}) {
 
   // MIS VARIABLES
   const [goal, setGoal] = useState(false);
+
+  const [tabswitched,setTabSwitched]=useState(false);
 
   const [amountPointZone, setAmountPointZone] = useState(0);
 
@@ -158,8 +168,7 @@ export default function Map({}) {
       coordpol: [[positionCreateElement.lng, positionCreateElement.lat]],
       color: dataNewZone.color
     };
-    setZonesRef((prev) => [...prev, newZone]
-  );
+    setZonesRef((prev) => [...prev, newZone]);
   };
   // Creando la arista de la zona en creacion
   const handleCreatEdgeZone = () => {
@@ -205,6 +214,10 @@ export default function Map({}) {
       color:""
     })
   };
+
+  function handleRemoveZone(id){
+    setZonesRef(prev=>prev.filter(e=>e.id!=id));
+  }
 
   const handleMouseMoveMap = (e) => {
     setCenterMouse([e.lngLat.lng, e.lngLat.lat]);
@@ -450,21 +463,21 @@ export default function Map({}) {
 
     if (zonesRef.length === 0) return;    
 
-    setDataZones({
-    type: "FeatureCollection",
-    features: zonesRef.map((zone) => ({
-      type: "Feature",
-      geometry: {
-        type: "Polygon",
-        coordinates: [zone.coordpol],
-      },
-      properties: {
-        id: zone.id,
-        color: ColorTranslate[zone.color]
-      },
-    })),
-  });
-    mapRef.current.getSource("zones").setData(datazones);
+    const newData={
+      type: "FeatureCollection",
+      features: zonesRef.map((zone) => ({
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [zone.coordpol],
+        },
+        properties: {
+          id: zone.id,
+          color: ColorTranslate[zone.color]
+        },
+      })),
+    };
+    mapRef.current.getSource("zones").setData(newData);
 
   }, [zonesRef]);
 
@@ -496,6 +509,7 @@ export default function Map({}) {
           {positionCreateElement.lat}
         </p>
         <p>{dataNewZone.name}</p>
+        <p>{dataNewZone.color}</p>
       </div>
       <div
         id="map-container"
@@ -516,31 +530,86 @@ export default function Map({}) {
           setLayerState={setLayerState}
         />
         <div className=" infoSide d-flex flex-row">
-          <div className=" mx-3">
+          <div className="d-flex flex-column align-items-start mx-3">
             <i className="bi bi-chevron-left"></i>
           </div>
           <div className=" d-flex flex-column">
-            <p>Datos de rutas o zonas</p>
-            <div className=" d-flex flex-column gap-2">
-              {zonesRef.map((z)=>(
-                <div className={" card "+(dangerColor[z.color])}>
-                  <div className=" card-body">
-                    <p>Id: {z.id}</p>
-                    <p>Nombre: {z.name}</p>
-                    <p>Zona: {z.color}</p>
-                    <p>{z.coordpol.map(c => (
-                      <div>
-                        {c.map(e => (
-                          <p>{e[0]} {e[1]}</p>
+            <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a class={"nav-link "+(!tabswitched?"active":"")} aria-current="page" href="#" onClick={e=>setTabSwitched(false)}>
+                  Zonas
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class={"nav-link "+(tabswitched?"active":"")} href="#" onClick={e=>setTabSwitched(true)}>                  
+                  Rutas
+                </a>
+              </li>              
+            </ul>
+            { !tabswitched ?
+            <div style={{width:"300px"}}>
+              <p className=" bg-body-secondary mb-1 mt-2 p-1 fw-bolder rounded-2">Datos de Zonas</p>
+              <div className=" d-flex flex-column gap-2">
+                {zonesRef.map((z) => (
+                  <div className=" card border-3 shadow-sm w-auto">
+                    <div className=" d-flex flex-column align-items-end m-1">
+                      <button className=" border-0 bg-transparent" onClick={()=>handleRemoveZone(z.id)}>
+                        <i class="bi bi-x"></i>
+                      </button>
+                    </div>
+                    <div className=" card-body">
+                      <p>Numero: {z.id + 1}</p>
+                      <p>Nombre: {z.name}</p>
+                      <p className={" card text-light p-1 " + dangerColor[z.color]}>
+                        Zona: {z.color}
+                      </p>
+                      <p>
+                        {z.coordpol.map((c) => (
+                          <p>
+                            {c[0]} {c[1]}
+                          </p>
                         ))}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>:
+            <div style={{width:"300px"}}>
+              <p className=" bg-body-secondary mb-1 mt-2 p-1 fw-bolder rounded-2">Datos de Rutas</p>
+              <div className=" d-flex flex-column gap-2 ">
+                {zonesRef.map((z) => (
+                    <div className=" card border-3 shadow-sm w-auto">
+                      <div className=" d-flex flex-column align-items-end m-1">
+                        <button className=" border-0 bg-transparent" onClick={""}>
+                          <i class="bi bi-x"></i>
+                        </button>
                       </div>
-                    ))}</p>
-                  </div>                  
-                </div>
-              ))}
+                      <div className=" card-body">
+                        <p>Numero: {z.id + 1}</p>
+                        <p>Nombre: {z.name}</p>
+                        <p className={" card text-light p-1 " + dangerColor[z.color]}>
+                          Zona: {z.color}
+                        </p>
+                        <p>
+                          {z.coordpol.map((c) => (
+                            <div>
+                              {c.map((e) => (
+                                <p>
+                                  {e[0]} {e[1]}
+                                </p>
+                              ))}
+                            </div>
+                          ))}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
+            }
+
           </div>
-          
         </div>
       </div>
     </>
