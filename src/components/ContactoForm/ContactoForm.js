@@ -133,7 +133,7 @@ export default function ContactoForm() {
 
                 <div className="row justify-content-center">
                     <div className="col-lg-8">
-                        <form className="row g-4 p-4 rounded-4 shadow bg-form border border-form needs-validation" noValidate onSubmit={onSubmit}>
+                        <form className="row g-4 p-4 rounded-4 shadow bg-form border  border-primary needs-validation" noValidate onSubmit={onSubmit}>
                             <div className="col-md-6">
                                 <input
                                     type="text"
