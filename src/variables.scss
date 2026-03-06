@@ -17,9 +17,8 @@ $text-nav: #736100;
 
 //Form - botones de form
 
-$color_form_bg: #c2c7c6;
-$border-form: #ced4da;
-//$btn-outline-secondary:
+$color_form_bg: #e5eeeb;
+$border-form: $primary-light;
 //$btn-form: #c216db;
 
 $btn-hover-bg: darken($primary, 28%);
@@ -49,8 +48,7 @@ $theme-colors: map-merge($theme-colors,$custom-colors);
     font-style: normal;
 }
 //font
-$font-sans-serif:'RobotoSerif';
-// $font-family-base: $font-sans-serif;
+$font-sans-serif: 'RobotoSerif';
 
 
 /*$primary-dark: #3C1053;

@@ -37,7 +37,7 @@ export default function RecuperarContrasena({ onSwitch }) {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Email"
+              placeholder="Correo electronico"
               className="form-control rounded-3 p-3"
             />
             {errors.email === "required" && (
