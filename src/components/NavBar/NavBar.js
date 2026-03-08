@@ -99,6 +99,7 @@ export default function NavBar() {
   //codigo para ruta protegido
 
   const [user, setUser] = useState(null);
+  const isAdmin = user?.roles?.includes("ROLE_ADMIN");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -119,6 +120,7 @@ window.addEventListener("storage", checkUser);
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
+    navigate("/");
   };
 
 
@@ -141,10 +143,11 @@ window.addEventListener("storage", checkUser);
 
           <li className="nav-item col"><NavLink to="/fav-routes" className={link}>
             <i className="bi bi-heart pe-1"></i>
-            <span className="d-none d-lg-inline">Rutas Favoritas</span></NavLink></li>
+            <span className="d-none d-lg-inline">Rutas Favoritas</span></NavLink>
+          </li>
 
           {/* enlace para admin solo */}
-          {user?.administrador && (
+          {isAdmin && (
             <li className="nav-item col">
               <NavLink to="/settings" className={link}><i className="bi bi-gear pe-1"></i>Configuración</NavLink>
             </li>
@@ -241,7 +244,7 @@ window.addEventListener("storage", checkUser);
             </li>
             {/* en mobile si no eres admin hay que ocultar */}
 
-            {user?.administrador && (
+            {isAdmin && (
               <li className="nav-item">
                 <li className="nav-item">
                   <NavLink to="/settings" className="nav-links" onClick={handleClick}>
