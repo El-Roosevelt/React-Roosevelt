@@ -102,11 +102,20 @@ export default function NavBar() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const checkUser = () => {
     const loggedUser = localStorage.getItem("user");
     if (loggedUser) {
       setUser(JSON.parse(loggedUser));
     }
-  }, [])
+  }
+
+
+checkUser()
+window.addEventListener("storage", checkUser);
+    
+    return () => window.removeEventListener("storage", checkUser);
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
@@ -232,7 +241,7 @@ export default function NavBar() {
             </li>
             {/* en mobile si no eres admin hay que ocultar */}
 
-            {user?.admin && (
+            {user?.administrador && (
               <li className="nav-item">
                 <li className="nav-item">
                   <NavLink to="/settings" className="nav-links" onClick={handleClick}>
