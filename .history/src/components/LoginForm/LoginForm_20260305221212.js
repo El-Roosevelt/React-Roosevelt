@@ -109,21 +109,6 @@ export default function RegisterForm({ onSwitch }) {
               <input type="date" name="fechaNac" value={formData.fechaNac} onChange={handleChange} className="form-control" />
               {errors.fechaNac && <small className="text-danger">Fecha es obligatoria</small>}
             </div>
-          <div className="mb-3">
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Correo electrónico"
-              className="form-control"
-            />
-            {errors.email === "required" && (
-              <small className="text-danger">Correo electrónico es obligatorio</small>
-            )}
-            {errors.email === "invalid" && (
-              <small className="text-danger">Correo electrónico no es válido</small>
-            )}
           </div>
 
           <div className="mb-3">
@@ -135,18 +120,27 @@ export default function RegisterForm({ onSwitch }) {
               Registrarme
             </button>
           </div>
-          <div className="text-center mt-4">
-            <p className="small mb-0">
-              ¿Ya tienes cuenta?
-            </p>
-
-            <button onClick={() => onSwitch("iniciar")} type="button" className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-              Login
-
-            </button>
-
-          </div>
         </form>
+        {/* REGISTRO */}
+
+        <div className="text-center mt-4">
+
+          <p className="small mb-0">
+
+            ¿No tienes cuenta?{" "}  </p>
+
+          <button
+
+            onClick={() => onSwitch("registro")}
+
+            type="button"
+
+            className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+
+          >
+            Regístrate aquí
+          </button>
+        </div>
       </div>
     </div>
   );

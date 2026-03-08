@@ -9,7 +9,7 @@ export default function RegisterForm({ onSwitch }) {
     email: "",
     contrasena: "",
     confirmarContrasena: "",
-
+    
     tel: "",
     fechaNac: "",
     foto: ""
@@ -40,29 +40,29 @@ export default function RegisterForm({ onSwitch }) {
       try {
         const userLoad = {
           username: formData.username,
-          password: formData.contrasena,
+          password: formData.contrasena, 
           email: formData.email,
-          email_sec: formData.email,
+          email_sec: formData.email, 
           nombre: formData.nombre,
           apellido: formData.apellido,
           administrador: false,
           tel: formData.tel,
           fechaNac: formData.fechaNac,
-          foto: formData.foto || "default.png"
+          foto: formData.foto || "default.png" 
         };
 
         const response = await axios.post(
-          "http://localhost:8081/backend-rooselvelt/api/users",
+          "http://localhost:8081/backend-rooselvelt/api/users", 
           userLoad
         );
 
         console.log("Success:", response.data);
         alert("Usuario registrado con éxito!");
-        onSwitch("iniciar");
+        onSwitch("iniciar"); 
 
       } catch (error) {
         console.error("Error details:", error.response?.data || error.message);
-        alert("Error: " + (error.response?.data?.error || "revisa los campos"));
+        alert("Error: " + (error.response?.data?.error || "Проверьте заполнение всех полей"));
       }
     }
   };
@@ -73,7 +73,7 @@ export default function RegisterForm({ onSwitch }) {
         <h2 className="text-center mb-4 text-primary">Formulario de registro</h2>
 
         <form onSubmit={handleSubmitForm}>
-
+          
           <div className="row">
             <div className="col-md-6 mb-3">
               <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" className="form-control" />
@@ -97,7 +97,7 @@ export default function RegisterForm({ onSwitch }) {
             </div>
           </div>
 
-
+          {/* НОВЫЕ ПОЛЯ ДЛЯ СООТВЕТСТВИЯ БЭКЕНДУ */}
           <div className="row">
             <div className="col-md-6 mb-3">
               <label className="form-label small">Teléfono</label>
@@ -109,21 +109,6 @@ export default function RegisterForm({ onSwitch }) {
               <input type="date" name="fechaNac" value={formData.fechaNac} onChange={handleChange} className="form-control" />
               {errors.fechaNac && <small className="text-danger">Fecha es obligatoria</small>}
             </div>
-          <div className="mb-3">
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Correo electrónico"
-              className="form-control"
-            />
-            {errors.email === "required" && (
-              <small className="text-danger">Correo electrónico es obligatorio</small>
-            )}
-            {errors.email === "invalid" && (
-              <small className="text-danger">Correo electrónico no es válido</small>
-            )}
           </div>
 
           <div className="mb-3">
@@ -134,17 +119,6 @@ export default function RegisterForm({ onSwitch }) {
             <button type="submit" className="btn btn-primary rounded-pill px-5 py-3 fw-bold text-uppercase">
               Registrarme
             </button>
-          </div>
-          <div className="text-center mt-4">
-            <p className="small mb-0">
-              ¿Ya tienes cuenta?
-            </p>
-
-            <button onClick={() => onSwitch("iniciar")} type="button" className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-              Login
-
-            </button>
-
           </div>
         </form>
       </div>

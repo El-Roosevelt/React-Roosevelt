@@ -109,21 +109,6 @@ export default function RegisterForm({ onSwitch }) {
               <input type="date" name="fechaNac" value={formData.fechaNac} onChange={handleChange} className="form-control" />
               {errors.fechaNac && <small className="text-danger">Fecha es obligatoria</small>}
             </div>
-          <div className="mb-3">
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Correo electrónico"
-              className="form-control"
-            />
-            {errors.email === "required" && (
-              <small className="text-danger">Correo electrónico es obligatorio</small>
-            )}
-            {errors.email === "invalid" && (
-              <small className="text-danger">Correo electrónico no es válido</small>
-            )}
           </div>
 
           <div className="mb-3">
