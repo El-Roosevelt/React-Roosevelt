@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
-export default function LoginIniciar({onSwitch}) {
+export default function LoginIniciar({ onSwitch }) {
 
   const [credentials, setCredentials] = useState({
     email: "",
     password: ""
   });
+  const [message, setMessage] = useState({ text: "", type: "" });
 
   const navigate = useNavigate();
 
@@ -18,106 +20,130 @@ export default function LoginIniciar({onSwitch}) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (credentials.email && credentials.password) {
-      console.log("datos:", credentials);
-      alert("¡Sesión iniciada!");
-      navigate("/");
-    } else {
-      alert("Por favor, rellena todos los campos");
+    setMessage({ text: "", type: "" }); // no tengo nada 
+    try {
+      const response = await axios.post("http://localhost:8081/backend-rooselvelt/api/auth/login", {
+        username: credentials.username,
+        password: credentials.password
+      });
+      if (response.status === 200) {
+        // guardar datos en LS
+        localStorage.setItem("user", JSON.stringify(response.data));
+        setMessage({ text: "Éxito! Iniciando sesión...", type: "success" });
+        setTimeout(() => navigate("/"), 1500);
+      }
+    } catch (error) {
+      if (error.response?.status === 401 || error.response?.status === 404) {
+        setMessage({
+          text: "Usuario no encontrado. Por favor, regístrate.",
+          type: "danger"
+        });
+      } else {
+        setMessage({ text: "Error en el servidor", type: "danger" });
+      }
     }
   };
 
-  return (
-    <div className="animate-fade">
-      <div className="row justify-content-center">
+  // if (credentials.email && credentials.password) {
+  //   console.log("datos:", credentials);
+  //   alert("¡Sesión iniciada!");
+  //   navigate("/");
+  // } else {
+  //   alert("Por favor, rellena todos los campos");
+  // }
 
-        {/* Tamaño responsive del formulario */}
-        <div className="col-12 col-sm-11 col-md-10 col-lg-11">
+return (
+  <div className="animate-fade">
+    <div className="row justify-content-center">
 
-          <form onSubmit={handleSubmit} className="row g-4">
+      {/* Tamaño responsive del formulario */}
+      <div className="col-12 col-sm-11 col-md-10 col-lg-11">
 
-            {/* EMAIL */}
-            <div className="col-12">
-              <div className="row align-items-center">
+        <form onSubmit={handleSubmit} className="row g-4">
 
-                <div className="col-12 col-md-4">
-                  <label className="form-label fw-semibold mb-md-0 text-primary">
-                    Correo electrónico
-                  </label>
-                </div>
+          {/* EMAIL */}
+          <div className="col-12">
+            <div className="row align-items-center">
 
-                <div className="col-12 col-md-8">
-                  <input
-                    type="email"
-                    name="email"
-                    className="form-control rounded-3 p-3"
-                    value={credentials.email}
-                    onChange={handleChange}
-                    placeholder="ejemplo@correo.com"
-                    required
-                  />
-                </div>
-
+              <div className="col-12 col-md-4">
+                <label className="form-label fw-semibold mb-md-0 text-primary">
+                  Correo electrónico
+                </label>
               </div>
-            </div>
 
-            {/* PASSWORD */}
-            <div className="col-12">
-              <div className="row align-items-center">
-
-                <div className="col-12 col-md-4">
-                  <label className="form-label fw-semibold mb-md-0 text-primary">
-                    Contraseña
-                  </label>
-                </div>
-
-                <div className="col-12 col-md-8">
-                  <input
-                    type="password"
-                    name="password"
-                    className="form-control rounded-3 p-3"
-                    value={credentials.password}
-                    onChange={handleChange}
-                    placeholder="Tu contraseña"
-                    required
-                  />
-                </div>
-
+              <div className="col-12 col-md-8">
+                <input
+                  type="email"
+                  name="email"
+                  className="form-control rounded-3 p-3"
+                  value={credentials.email}
+                  onChange={handleChange}
+                  placeholder="ejemplo@correo.com"
+                  required
+                />
               </div>
+
             </div>
+          </div>
 
-            {/* BOTÓN */}
-            <div className="col-12 text-center mt-3">
-              <button
-                type="submit"
-                className="btn btn-primary border border-secondary border-2 rounded-pill px-5 py-3 fs-6 fw-bold text-uppercase"
-              >
-                Iniciar Sesión
-              </button>
+          {/* PASSWORD */}
+          <div className="col-12">
+            <div className="row align-items-center">
+
+              <div className="col-12 col-md-4">
+                <label className="form-label fw-semibold mb-md-0 text-primary">
+                  Contraseña
+                </label>
+              </div>
+
+              <div className="col-12 col-md-8">
+                <input
+                  type="password"
+                  name="password"
+                  className="form-control rounded-3 p-3"
+                  value={credentials.password}
+                  onChange={handleChange}
+                  placeholder="Tu contraseña"
+                  required
+                />
+              </div>
+
             </div>
+          </div>
 
-          </form>
+          {/* BOTÓN */}
+          <div className="col-12 text-center mt-3">
+            <button
+              type="submit"
+              className="btn btn-primary border border-secondary border-2 rounded-pill px-5 py-3 fs-6 fw-bold text-uppercase"
+            >
+              Iniciar Sesión
+            </button>
+          </div>
 
-          {/* REGISTRO */}
-          <div className="text-center mt-4">
-            <p className="small mb-0">
-              ¿No tienes cuenta?{" "}  </p>
-              <button
-                onClick={() => onSwitch("registro")}
-                type="button"
-                className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-              >
-                Regístrate aquí
-              </button>
+        </form>
 
-         
+        {/* REGISTRO */}
+        <div className="text-center mt-4">
+          <p className="small mb-0">
+            ¿No tienes cuenta?{" "}  </p>
+          <button
+            onClick={() => onSwitch("registro")}
+            type="button"
+            className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+          >
+            Regístrate aquí
+          </button>
         </div>
-
+        {message.text && (
+          <div className={`alert alert-${message.type} text-center py-2`}>
+            {message.text}
+          </div>
+        )}
       </div>
     </div>
-    </div >
-  );
+  </div >
+);
 }

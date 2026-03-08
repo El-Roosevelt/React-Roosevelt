@@ -100,14 +100,14 @@ export default function LoginForm({ onSwitch }) {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Email"
+              placeholder="Correo electrónico"
               className="form-control"
             />
             {errors.email === "required" && (
-              <small className="text-danger">Email es obligatorio</small>
+              <small className="text-danger">Correo electrónico es obligatorio</small>
             )}
             {errors.email === "invalid" && (
-              <small className="text-danger">Email no es válido</small>
+              <small className="text-danger">Correo electrónico no es válido</small>
             )}
           </div>
 
