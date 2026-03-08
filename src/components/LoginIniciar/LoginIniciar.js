@@ -31,6 +31,7 @@ export default function LoginIniciar({ onSwitch }) {
 
       if (response.status === 200) {
         localStorage.setItem("user", JSON.stringify(response.data));
+        window.dispatchEvent(new Event("storage"));
         setMessage({ text: "¡Éxito! Iniciando sesión...", type: "success" });
         setTimeout(() => navigate("/"), 1500);
       }
@@ -40,7 +41,7 @@ export default function LoginIniciar({ onSwitch }) {
           text: "Usuario no encontrado. Por favor, regístrate.", 
           type: "danger" 
         });
-        onSwitch("registro");
+        //onSwitch("registro");
       } else {
         setMessage({ text: "Error en el servidor", type: "danger" });
       }
