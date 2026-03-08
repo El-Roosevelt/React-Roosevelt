@@ -9,11 +9,11 @@ export default function RegisterForm({ onSwitch }) {
     email: "",
     contrasena: "",
     confirmarContrasena: "",
-
     tel: "",
     fechaNac: "",
     foto: ""
   });
+  const [statusMessage, setStatusMessage] = useState({ text: "", type: "" });
 
   const [errors, setErrors] = useState({});
   const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
@@ -56,13 +56,18 @@ export default function RegisterForm({ onSwitch }) {
           userLoad
         );
 
-        console.log("Success:", response.data);
-        alert("Usuario registrado con éxito!");
-        onSwitch("iniciar");
+        // console.log("Success:", response.data);
+        // alert("Usuario registrado con éxito!");
+        setStatusMessage({ text: "Usuario se ha registrado con éxito!", type: "success" });
+
+        // switch a login 
+        setTimeout(() => onSwitch("iniciar"), 2000);
 
       } catch (error) {
         console.error("Error details:", error.response?.data || error.message);
-        alert("Error: " + (error.response?.data?.error || "revisa los campos"));
+        //alert("Error: " + (error.response?.data?.error || "revisa los campos"));
+        const errorMsg = error.response?.data?.error || "Error al registrar. Revisa los campos.";
+        setStatusMessage({ text: errorMsg, type: "danger" });
       }
     }
   };
@@ -109,43 +114,46 @@ export default function RegisterForm({ onSwitch }) {
               <input type="date" name="fechaNac" value={formData.fechaNac} onChange={handleChange} className="form-control" />
               {errors.fechaNac && <small className="text-danger">Fecha es obligatoria</small>}
             </div>
-          <div className="mb-3">
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Correo electrónico"
-              className="form-control"
-            />
-            {errors.email === "required" && (
-              <small className="text-danger">Correo electrónico es obligatorio</small>
+          </div>
+            <div className="mb-3">
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Correo electrónico"
+                className="form-control"
+              />
+              {errors.email === "required" && (
+                <small className="text-danger">Correo electrónico es obligatorio</small>
+              )}
+              {errors.email === "invalid" && (
+                <small className="text-danger">Correo electrónico no es válido</small>
+              )}
+            </div>
+
+            <div className="mb-3">
+              <input type="text" name="foto" value={formData.foto} onChange={handleChange} placeholder="URL de tu foto (opcional)" className="form-control" />
+            </div>
+            {statusMessage.text && (
+              <div className={`alert alert-${statusMessage.type} text-center mb-3`} role="alert">
+                {statusMessage.text}
+              </div>
             )}
-            {errors.email === "invalid" && (
-              <small className="text-danger">Correo electrónico no es válido</small>
-            )}
-          </div>
 
-          <div className="mb-3">
-            <input type="text" name="foto" value={formData.foto} onChange={handleChange} placeholder="URL de tu foto (opcional)" className="form-control" />
-          </div>
-
-          <div className="d-flex justify-content-center mt-4">
-            <button type="submit" className="btn btn-primary rounded-pill px-5 py-3 fw-bold text-uppercase">
-              Registrarme
-            </button>
-          </div>
-          <div className="text-center mt-4">
-            <p className="small mb-0">
-              ¿Ya tienes cuenta?
-            </p>
-
-            <button onClick={() => onSwitch("iniciar")} type="button" className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-              Login
-
-            </button>
-
-          </div>
+            <div className="d-flex justify-content-center mt-4">
+              <button type="submit" className="btn btn-primary rounded-pill px-5 py-3 fw-bold text-uppercase">
+                Registrarme
+              </button>
+            </div>
+            <div className="text-center mt-4">
+              <p className="small mb-0">
+                ¿Ya tienes cuenta?
+              </p>
+              <button onClick={() => onSwitch("iniciar")} type="button" className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                Login
+              </button>
+            </div>
         </form>
       </div>
     </div>
