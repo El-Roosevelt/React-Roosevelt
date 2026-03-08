@@ -5,17 +5,16 @@
 
   h2 {
     letter-spacing: 2px;
-    font-family: $font-family-base;
+    font-family: $font-sans-serif;
   }
   p {
     letter-spacing: 2px;
-    font-family: $font-sans-serif;
+
   }
 }
 
 /*  FORM */
 .contact-form {
-  border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 
   .form-control {
