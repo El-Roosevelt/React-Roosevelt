@@ -1,7 +1,8 @@
 import { Navigate } from "react-router-dom";
 export default function ProtectedRoute({ children }) {
     const user = JSON.parse(localStorage.getItem("user"));
-   if (!user || !user.administrador) {
+    const isAdmin = user?.roles?.includes("ROLE_ADMIN");
+   if (!isAdmin) {
     return <Navigate to="/" replace />; 
   }
 
