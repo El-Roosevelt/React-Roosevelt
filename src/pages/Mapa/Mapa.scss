@@ -1,2 +1,9 @@
 @import '~mapbox-gl/dist/mapbox-gl.css';
 @import '~leaflet/dist/leaflet.css';
+
+.container-map{
+    width: 100%;
+    height: 100%;
+    z-index: 1005px;
+    overflow-x: hidden;
+}

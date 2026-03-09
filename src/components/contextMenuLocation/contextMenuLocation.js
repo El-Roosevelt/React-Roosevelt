@@ -6,8 +6,8 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
     const [name, setName] = useState("");
     const [type, setType] = useState("");
 
-    const [nameZone,setNameZone] = useState ();
-    const [typeZone,setTypeZone]=useState();
+    const [nameZone,setNameZone] = useState ("");
+    const [typeZone,setTypeZone]=useState("");
     const [writtenData,setWrittenData]=useState(false);
 
     const options = types.map(type => ({ name: type.name, color: type.color }));
@@ -24,15 +24,19 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
     }
 
     function createZone(e){
-        e.preventDefault();        
-        onChangeDataZone({
+        e.preventDefault();  
+
+        const newZone={
             name:nameZone,
             color:typeZone
-        })
+        }
+
+        onChangeDataZone(newZone)
+        onOpenZone(newZone);
+
         setNameZone("");
         setTypeZone("");
         setWrittenData(true);
-        onOpenZone();
     }
 
     
@@ -70,13 +74,13 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
             style={{
                 position: "absolute",
                 visibility: positionContextMenu.visible ? "visible" : "hidden",
-                top: positionContextMenu.y,
+                top: positionContextMenu.y-180,
                 left: positionContextMenu.x,
                 boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
                 background: "white",
                 zIndex: 1001,
-                padding: "2px",
-                borderRadius: "0px 25px 10px 25px",
+                padding: "2px",                
+                borderRadius: "25px 25px 10px 0px",
             }}
         >
             <div className=" d-flex flex-column gap-2 p-2">

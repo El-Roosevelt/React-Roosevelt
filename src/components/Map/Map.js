@@ -15,38 +15,36 @@ import { tab } from "@testing-library/user-event/dist/tab";
 const INITIAL_CENTER = [-0.49144135129607736, 38.361498735545176];
 const INITIAL_ZOOM = 15;
 
-export default function Map({}) {
+export default function Map() {
   const mapRef = useRef();
   const mapContainerRef = useRef();
 
-    // VARIABLES DE MAPA
+  // VARIABLES DE MAPA
   const [center, setCenter] = useState(INITIAL_CENTER);
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
   const [centerMouse, setCenterMouse] = useState(INITIAL_CENTER);
 
-
   // marcadores punto a punto
   const markersRef = useRef([]);
 
-  const ColorTranslate= Object.freeze({
+  const ColorTranslate = Object.freeze({
     rojo: "red",
     amarillo: "yellow",
-    verde: "green"
-  })
+    verde: "green",
+  });
 
   const dangerColor = Object.freeze({
-        rojo:" bg-danger",
-        amarillo:" bg-warning",
-        verde:" bg-success"
-  })
-
+    rojo: " bg-danger",
+    amarillo: " bg-warning",
+    verde: " bg-success",
+  });
 
   // Datos que vendran de la api
   const [zonesRef, setZonesRef] = useState([
     {
-      id:0,
+      id: Date.now(),
       name: "Zona de Plaza Alfonso X",
-      color:"amarillo",
+      color: "amarillo",
       coordpol: [
         [-0.49321027016051744, 38.36560377774532], // va de principio a fin
         [-0.4924404263540225, 38.3626784200614],
@@ -56,44 +54,40 @@ export default function Map({}) {
     },
   ]);
 
-  const [rutesRef, setRutesRef]=useState({
-    id:0,
-    coordinates: [[  
-
-    ]]
-  })
-
-  const [dataNewZone,setDataNewZone]=useState({
-    id:zonesRef.length,
-    name:"",
-    color:""
+  const [rutesRef, setRutesRef] = useState({
+    id: 0,
+    coordinates: [[]],
   });
 
+  const [dataNewZone, setDataNewZone] = useState({
+    id: zonesRef.length,
+    name: "",
+    color: "",
+  });
 
   // Datos de zonas que se convertiran en poligonos para crear zonas
-  const [datazones, setDataZones] = useState({
+  const datazones = {
     type: "FeatureCollection",
     features: zonesRef.map((zone) => ({
       type: "Feature",
       geometry: {
         type: "Polygon",
-        coordinates: [zone.coordpol], 
+        coordinates: [zone.coordpol],
       },
       properties: {
         id: zone.id,
         name: zone.name,
-        color:ColorTranslate[zone.color]
-      }
+        color: ColorTranslate[zone.color],
+      },
     })),
-  });
+  };
 
   const [popupData, setPopupData] = useState(null);
-
 
   // MIS VARIABLES
   const [goal, setGoal] = useState(false);
 
-  const [tabswitched,setTabSwitched]=useState(false);
+  const [tabswitched, setTabSwitched] = useState(false);
 
   const [amountPointZone, setAmountPointZone] = useState(0);
 
@@ -158,16 +152,19 @@ export default function Map({}) {
     });
     clearMarkers();
   };
-  
+
   // Iniciar la creacion de la zona con un punto inicial
-  const handleOpenZone = () => {
+  const handleOpenZone = (dataZone) => {
+    console.log("DATA ZONA:", dataZone);
     setAmountPointZone(1);
+
     const newZone = {
-      id: dataNewZone.id,
-      name:dataNewZone.name,
+      id: Date.now(),
+      name: dataZone.name,
+      color: dataZone.color,
       coordpol: [[positionCreateElement.lng, positionCreateElement.lat]],
-      color: dataNewZone.color
     };
+
     setZonesRef((prev) => [...prev, newZone]);
   };
   // Creando la arista de la zona en creacion
@@ -185,38 +182,37 @@ export default function Map({}) {
   };
   // Terminar de cerrar la zona en creacion y cierra el contextmenu
   const handleCloseZone = () => {
-    setAmountPointZone(0); 
-    handleCloseContextMenuMap();   
+    setAmountPointZone(0);
+    handleCloseContextMenuMap();
     setZonesRef((prev) => {
       const newZones = [...prev];
       newZones[newZones.length - 1].coordpol.push(
         newZones[newZones.length - 1].coordpol[0],
       );
-      return newZones
+      return newZones;
     });
 
     setDataNewZone({
-      id:zonesRef.length,
-      name:"",
-      color:""
-    })
-    
+      id: zonesRef.length,
+      name: "",
+      color: "",
+    });
   };
   // Cancelar la creacion de la zona
   const handleRemoveZoneInCreation = () => {
     setAmountPointZone(0);
     handleCloseContextMenuMap();
-    setZonesRef(prev=>prev.slice(0,-1));
+    setZonesRef((prev) => prev.slice(0, -1));
 
     setDataNewZone({
-      id:zonesRef.length,
-      name:"",
-      color:""
-    })
+      id: zonesRef.length,
+      name: "",
+      color: "",
+    });
   };
 
-  function handleRemoveZone(id){
-    setZonesRef(prev=>prev.filter(e=>e.id!=id));
+  function handleRemoveZone(id) {
+    setZonesRef((prev) => prev.filter((e) => e.id != id));
   }
 
   const handleMouseMoveMap = (e) => {
@@ -374,7 +370,7 @@ export default function Map({}) {
         type: "fill",
         source: "zones",
         paint: {
-          "fill-color": ["get","color"],
+          "fill-color": ["get", "color"],
           "fill-opacity": 0.5,
         },
       });
@@ -451,7 +447,7 @@ export default function Map({}) {
           type: "line",
           source: "route",
           layout: { "line-join": "round", "line-cap": "round" },
-          paint: { "line-color": "#ff0000", "line-width": 4 }
+          paint: { "line-color": "#ff0000", "line-width": 4 },
         });
       }
     };
@@ -461,9 +457,9 @@ export default function Map({}) {
   useEffect(() => {
     if (!mapRef.current?.isStyleLoaded()) return;
 
-    if (zonesRef.length === 0) return;    
+    if (zonesRef.length === 0) return;
 
-    const newData={
+    const newData = {
       type: "FeatureCollection",
       features: zonesRef.map((zone) => ({
         type: "Feature",
@@ -473,14 +469,13 @@ export default function Map({}) {
         },
         properties: {
           id: zone.id,
-          color: ColorTranslate[zone.color]
+          name: zone.name,
+          color: ColorTranslate[zone.color],
         },
       })),
     };
     mapRef.current.getSource("zones").setData(newData);
-
   }, [zonesRef]);
-
 
   return (
     <>
@@ -511,6 +506,7 @@ export default function Map({}) {
         <p>{dataNewZone.name}</p>
         <p>{dataNewZone.color}</p>
       </div>
+
       <div
         id="map-container"
         ref={mapContainerRef}
@@ -536,79 +532,102 @@ export default function Map({}) {
           <div className=" d-flex flex-column">
             <ul class="nav nav-tabs">
               <li class="nav-item">
-                <a class={"nav-link "+(!tabswitched?"active":"")} aria-current="page" href="#" onClick={e=>setTabSwitched(false)}>
+                <a
+                  class={"nav-link " + (!tabswitched ? "active" : "")}
+                  aria-current="page"
+                  href="#"
+                  onClick={(e) => setTabSwitched(false)}
+                >
                   Zonas
                 </a>
               </li>
               <li class="nav-item">
-                <a class={"nav-link "+(tabswitched?"active":"")} href="#" onClick={e=>setTabSwitched(true)}>                  
+                <a
+                  class={"nav-link " + (tabswitched ? "active" : "")}
+                  href="#"
+                  onClick={(e) => setTabSwitched(true)}
+                >
                   Rutas
                 </a>
-              </li>              
+              </li>
             </ul>
-            { !tabswitched ?
-            <div style={{width:"300px"}}>
-              <p className=" bg-body-secondary mb-1 mt-2 p-1 fw-bolder rounded-2">Datos de Zonas</p>
-              <div className=" d-flex flex-column gap-2">
-                {zonesRef.map((z) => (
-                  <div className=" card border-3 shadow-sm w-auto">
-                    <div className=" d-flex flex-column align-items-end m-1">
-                      <button className=" border-0 bg-transparent" onClick={()=>handleRemoveZone(z.id)}>
-                        <i class="bi bi-x"></i>
-                      </button>
-                    </div>
-                    <div className=" card-body">
-                      <p>Numero: {z.id + 1}</p>
-                      <p>Nombre: {z.name}</p>
-                      <p className={" card text-light p-1 " + dangerColor[z.color]}>
-                        Zona: {z.color}
-                      </p>
-                      <p>
-                        {z.coordpol.map((c) => (
-                          <p>
-                            {c[0]} {c[1]}
-                          </p>
-                        ))}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>:
-            <div style={{width:"300px"}}>
-              <p className=" bg-body-secondary mb-1 mt-2 p-1 fw-bolder rounded-2">Datos de Rutas</p>
-              <div className=" d-flex flex-column gap-2 ">
-                {zonesRef.map((z) => (
-                    <div className=" card border-3 shadow-sm w-auto">
+            {!tabswitched ? (
+              <div style={{ width: "300px" }}>
+                <p className=" bg-body-secondary mb-1 mt-2 p-1 fw-bolder rounded-2">
+                  Datos de Zonas
+                </p>
+                <div className=" d-flex flex-column gap-2">
+                  {zonesRef.map((z) => (
+                    <div key={z.id} className=" card border-3 shadow-sm w-auto">
                       <div className=" d-flex flex-column align-items-end m-1">
-                        <button className=" border-0 bg-transparent" onClick={""}>
+                        <button
+                          className=" border-0 bg-transparent"
+                          onClick={() => handleRemoveZone(z.id)}
+                        >
                           <i class="bi bi-x"></i>
                         </button>
                       </div>
                       <div className=" card-body">
                         <p>Numero: {z.id + 1}</p>
                         <p>Nombre: {z.name}</p>
-                        <p className={" card text-light p-1 " + dangerColor[z.color]}>
+                        <p
+                          className={
+                            " card text-light p-1 " + dangerColor[z.color]
+                          }
+                        >
                           Zona: {z.color}
                         </p>
-                        <p>
-                          {z.coordpol.map((c) => (
-                            <div>
-                              {c.map((e) => (
-                                <p>
-                                  {e[0]} {e[1]}
-                                </p>
-                              ))}
-                            </div>
-                          ))}
-                        </p>
+                        {z.coordpol.map((c, i) => (
+                          <p key={i}>
+                            {c[0]} {c[1]}
+                          </p>
+                        ))}
                       </div>
                     </div>
                   ))}
+                </div>
               </div>
-            </div>
-            }
-
+            ) : (
+              <div style={{ width: "300px" }}>
+                <p className=" bg-body-secondary mb-1 mt-2 p-1 fw-bolder rounded-2">
+                  Datos de Rutas
+                </p>
+                <div className=" d-flex flex-column gap-2 ">
+                  {zonesRef.map((z) => (
+                    <div className=" card border-3 shadow-sm w-auto">
+                      <div className=" d-flex flex-column align-items-end m-1">
+                        <button
+                          className=" border-0 bg-transparent"
+                          onClick={""}
+                        >
+                          <i className="bi bi-x"></i>
+                        </button>
+                      </div>
+                      <div className=" card-body">
+                        <p>Numero: {z.id + 1}</p>
+                        <p>Nombre: {z.name}</p>
+                        <p
+                          className={
+                            " card text-light p-1 " + dangerColor[z.color]
+                          }
+                        >
+                          Zona: {z.color}
+                        </p>
+                        {z.coordpol.map((c) => (
+                          <div>
+                            {c.map((e, i) => (
+                              <p key={i}>
+                                {e[0]} {e[1]}
+                              </p>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

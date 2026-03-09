@@ -5,7 +5,7 @@ import Header from "./components/Header/Header";
 import NavBar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
 import AppRouter from "./pages/Router/AppRouter";
-import Map from "./components/Map/Map"
+import Mapa from "./pages/Mapa/Mapa.js"
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
           <Footer />
       </BrowserRouter>      
       </div> */}
-      <Map />
+      <Mapa />
     </>
   );
 }
