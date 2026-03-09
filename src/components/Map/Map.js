@@ -8,6 +8,7 @@ import interestPointData from "../../assets/providence-interestPoint.json";
 import ContextMenuLocation from "../contextMenuLocation/contextMenuLocation";
 import LayerCheckboxes from "../LayerCheckboxes/LayerCheckboxes";
 import Popup from "../Popup/Popup";
+import InfoPanel from "../../components/InfoPanel/InfoPanel";
 import { data } from "react-router-dom";
 import { tab } from "@testing-library/user-event/dist/tab";
 
@@ -92,8 +93,6 @@ export default function Map({}) {
 
   // MIS VARIABLES
   const [goal, setGoal] = useState(false);
-
-  const [tabswitched,setTabSwitched]=useState(false);
 
   const [amountPointZone, setAmountPointZone] = useState(0);
 
@@ -529,87 +528,18 @@ export default function Map({}) {
           layerState={layerState}
           setLayerState={setLayerState}
         />
-        <div className=" infoSide d-flex flex-row">
+       <div className="infoSide d-flex flex-row">
           <div className="d-flex flex-column align-items-start mx-3">
-            <i className="bi bi-chevron-left"></i>
+            <i className="bi bi-chevron-left" style={{ fontSize: "1.5rem", cursor: "pointer" }}></i>
           </div>
-          <div className=" d-flex flex-column">
-            <ul class="nav nav-tabs">
-              <li class="nav-item">
-                <a class={"nav-link "+(!tabswitched?"active":"")} aria-current="page" href="#" onClick={e=>setTabSwitched(false)}>
-                  Zonas
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class={"nav-link "+(tabswitched?"active":"")} href="#" onClick={e=>setTabSwitched(true)}>                  
-                  Rutas
-                </a>
-              </li>              
-            </ul>
-            { !tabswitched ?
-            <div style={{width:"300px"}}>
-              <p className=" bg-body-secondary mb-1 mt-2 p-1 fw-bolder rounded-2">Datos de Zonas</p>
-              <div className=" d-flex flex-column gap-2">
-                {zonesRef.map((z) => (
-                  <div className=" card border-3 shadow-sm w-auto">
-                    <div className=" d-flex flex-column align-items-end m-1">
-                      <button className=" border-0 bg-transparent" onClick={()=>handleRemoveZone(z.id)}>
-                        <i class="bi bi-x"></i>
-                      </button>
-                    </div>
-                    <div className=" card-body">
-                      <p>Numero: {z.id + 1}</p>
-                      <p>Nombre: {z.name}</p>
-                      <p className={" card text-light p-1 " + dangerColor[z.color]}>
-                        Zona: {z.color}
-                      </p>
-                      <p>
-                        {z.coordpol.map((c) => (
-                          <p>
-                            {c[0]} {c[1]}
-                          </p>
-                        ))}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>:
-            <div style={{width:"300px"}}>
-              <p className=" bg-body-secondary mb-1 mt-2 p-1 fw-bolder rounded-2">Datos de Rutas</p>
-              <div className=" d-flex flex-column gap-2 ">
-                {zonesRef.map((z) => (
-                    <div className=" card border-3 shadow-sm w-auto">
-                      <div className=" d-flex flex-column align-items-end m-1">
-                        <button className=" border-0 bg-transparent" onClick={""}>
-                          <i class="bi bi-x"></i>
-                        </button>
-                      </div>
-                      <div className=" card-body">
-                        <p>Numero: {z.id + 1}</p>
-                        <p>Nombre: {z.name}</p>
-                        <p className={" card text-light p-1 " + dangerColor[z.color]}>
-                          Zona: {z.color}
-                        </p>
-                        <p>
-                          {z.coordpol.map((c) => (
-                            <div>
-                              {c.map((e) => (
-                                <p>
-                                  {e[0]} {e[1]}
-                                </p>
-                              ))}
-                            </div>
-                          ))}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </div>
-            }
-
-          </div>
+          
+          {/* НАШ НОВЫЙ КРАСИВЫЙ КОМПОНЕНТ */}
+          <InfoPanel 
+            zones={zonesRef} 
+            onRemoveZone={handleRemoveZone} 
+            dangerColor={dangerColor} 
+          />
+          
         </div>
       </div>
     </>

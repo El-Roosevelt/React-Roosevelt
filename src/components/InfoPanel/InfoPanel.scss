@@ -1,0 +1,92 @@
+.info-panel-container {
+  width: 350px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh; // Чтобы панель не вылезала за экран
+  overflow: hidden;
+
+  // Стили для навигации (вкладок)
+  .nav-tabs {
+    border-bottom: 2px solid #f1f1f1;
+    .nav-item {
+      width: 50%;
+      text-align: center;
+    }
+    .nav-link {
+      border: none;
+      color: #6c757d;
+      font-weight: 500;
+      padding: 12px 0;
+      &.active {
+        color: #5B2671; // Твой фирменный primary цвет
+        border-bottom: 3px solid #5B2671;
+        font-weight: 700;
+        background: transparent;
+      }
+    }
+  }
+
+  // Внутренний контент со скроллом
+  .panel-content {
+    overflow-y: auto;
+    padding: 1rem;
+    
+    // Стилизуем карточку
+    .zone-card {
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: #fafafa;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+
+      .zone-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        
+        .zone-number {
+          font-size: 0.85rem;
+          color: #6c757d;
+          font-weight: 600;
+        }
+        
+        .btn-close-zone {
+          color: #af251b;
+          background: none;
+          border: none;
+          font-size: 1.2rem;
+          cursor: pointer;
+          transition: transform 0.2s;
+          &:hover { transform: scale(1.1); }
+        }
+      }
+
+      .zone-name {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      // Список координат
+      .coords-box {
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 0.5rem;
+        max-height: 120px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 0.75rem;
+        color: #555;
+        
+        p { margin-bottom: 2px; }
+      }
+    }
+  }
+}
