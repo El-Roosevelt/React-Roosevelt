@@ -2,14 +2,37 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-export default function LoginIniciar({onSwitch}) {
+export default function LoginIniciar({ onSwitch }) {
 
   const [credentials, setCredentials] = useState({
     username: "",
     password: ""
   });
-
+  const [message, setMessage] = useState({ text: "", type: "" });
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const validateField = (name, value) => {
+    let error = "";
+
+    switch (name) {
+
+      case "username":
+        if (!value) error = "El usuario es obligatorio";
+        break;
+
+      case "password":
+        if (!value) error = "La contraseña es obligatoria";
+        break;
+
+      default:
+        break;
+    }
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error
+    }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,10 +40,26 @@ export default function LoginIniciar({onSwitch}) {
       ...credentials,
       [name]: value
     });
+
+    validateField(name, value);
+    //limpiar mensaje backend cuando escribe
+    if (message.text) {
+      setMessage({ text: "", type: "" });
+    }
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    let newErrors = {};
+    if (!credentials.username)
+      newErrors.username = "El usuario es obligatorio";
+
+    if (!credentials.password)
+      newErrors.password = "La contraseña es obligatoria";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
     try {
       // mando datos
       const response = await axios.post("http://localhost:8081/backend-rooselvelt/api/auth/login", {
@@ -29,31 +68,35 @@ export default function LoginIniciar({onSwitch}) {
       });
 
       if (response.status === 200) {
-        alert("¡Bienvenido! Sesión iniciada.");
-        navigate("/");
+        localStorage.setItem("user", JSON.stringify(response.data));
+        window.dispatchEvent(new Event("storage"));
+        setMessage({ text: "Éxito! Iniciando sesión...",
+           type: "success"
+           });
+        setTimeout(() => navigate("/"), 1500);
       }
     } catch (error) {
-      console.error("Login error:", error.response?.data || error.message);
-      
-      // status 401 (Unauthorized) o 404 (Not Found)
       if (error.response?.status === 401 || error.response?.status === 404) {
-        alert("El usuario no existe o los datos son incorrectos. Por favor primero hay que registrarse.");
-        onSwitch("registro"); 
+        setMessage({ 
+          text: "Usuario no encontrado. Por favor, regístrate.", 
+          type: "danger" 
+        });
+        //onSwitch("registro");
       } else {
-        alert("Error de conexión con el servidor.");
+        setMessage({ text: "Error en el servidor", type: "danger" });
       }
     }
   };
-   
 
-      //   if (credentials.username && credentials.password) {
-      //     console.log("datos:", credentials);
-      //     alert("¡Sesión iniciada!");
-      //     navigate("/");
-      //   } else {
-      //     alert("Por favor, rellena todos los campos");
-      //   }
-      // };
+
+  //   if (credentials.username && credentials.password) {
+  //     console.log("datos:", credentials);
+  //     alert("¡Sesión iniciada!");
+  //     navigate("/");
+  //   } else {
+  //     alert("Por favor, rellena todos los campos");
+  //   }
+  // };
 
   return (
     <div className="animate-fade">
@@ -64,13 +107,13 @@ export default function LoginIniciar({onSwitch}) {
 
           <form onSubmit={handleSubmit} className="row g-4">
 
-            {/* EMAIL */}
+            {/* username */}
             <div className="col-12">
               <div className="row align-items-center">
 
                 <div className="col-12 col-md-4">
                   <label className="form-label fw-semibold mb-md-0 text-primary">
-                    Username
+                    Nombre de usuario
                   </label>
                 </div>
 
@@ -78,12 +121,18 @@ export default function LoginIniciar({onSwitch}) {
                   <input
                     type="text"
                     name="username"
-                    className="form-control rounded-3 p-3"
+                    
                     value={credentials.username}
                     onChange={handleChange}
-                    placeholder="kris"
-                    required
+                    placeholder="nombre de usuario"
+                   className={`form-control rounded-3 p-3 ${errors.username ? "is-invalid" : ""}`}
                   />
+
+                  {errors.username && (
+                    <div className="invalid-feedback">
+                      {errors.username}
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -103,18 +152,24 @@ export default function LoginIniciar({onSwitch}) {
                   <input
                     type="password"
                     name="password"
-                    className="form-control rounded-3 p-3"
+                   
                     value={credentials.password}
                     onChange={handleChange}
                     placeholder="Tu contraseña"
-                    required
+                    className={`form-control rounded-3 p-3 ${errors.password ? "is-invalid" : ""}`}
                   />
+
+                  {errors.password && (
+                    <div className="invalid-feedback">
+                      {errors.password}
+                    </div>
+                  )}
                 </div>
 
               </div>
             </div>
 
-            {/* BOTÓN */}
+            {/* btn */}
             <div className="col-12 text-center mt-3">
               <button
                 type="submit"
@@ -130,17 +185,21 @@ export default function LoginIniciar({onSwitch}) {
           <div className="text-center mt-4">
             <p className="small mb-0">
               ¿No tienes cuenta?{" "}  </p>
-              <button
-                onClick={() => onSwitch("registro")}
-                type="button"
-                className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-              >
-                Regístrate aquí
-              </button>
+            <button
+              onClick={() => onSwitch("registro")}
+              type="button"
+              className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+            >
+              Regístrate aquí
+            </button>
+          </div>
+          {message.text && (
+            <div className={`alert alert-${message.type} text-center py-2`}>
+              {message.text}
+            </div>
+          )}
         </div>
-
       </div>
-    </div>
     </div >
   );
 }
