@@ -77,27 +77,35 @@ export default function RegisterForm({ onSwitch }) {
       <div className="col-12 col-sm-8 col-md-9 col-lg-10">
         <h2 className="text-center mb-4 text-primary">Formulario de registro</h2>
 
-        <form onSubmit={handleSubmitForm}>
+        <form className="needs-validation" novalidate onSubmit={handleSubmitForm}>
 
           <div className="row">
             <div className="col-md-6 mb-3">
-              <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" className="form-control" />
-              {errors.username && <small className="text-danger">Requerido</small>}
+              <label for="validationCustom01" className="form-label">Nombre de usuario</label>
+              <input type="text" name="username" className="form-control" value={formData.username} onChange={handleChange} placeholder="Nombre del usuario" className="form-control" />
+              {errors.username && <small className="text-danger">Required</small>}
+              <div class="invalid-feedback">
+                Por favor eliga un nombre de usuario.
+              </div>
             </div>
             <div className="col-md-6 mb-3">
+              <label for="validationCustom02" className="form-label">Nombre</label>
               <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} placeholder="Nombre" className="form-control" />
             </div>
           </div>
 
           <div className="mb-3">
+            <label for="validationCustom03" className="form-label">Email</label>
             <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="form-control" />
           </div>
 
           <div className="row">
             <div className="col-md-6 mb-3">
+              <label for="validationCustom04" className="form-label">Contraseña</label>
               <input type="password" name="contrasena" value={formData.contrasena} onChange={handleChange} placeholder="Contraseña" className="form-control" />
             </div>
             <div className="col-md-6 mb-3">
+              <label for="validationCustom05" className="form-label">Confirmar Contraseña</label>
               <input type="password" name="confirmarContrasena" value={formData.confirmarContrasena} onChange={handleChange} placeholder="Confirmar" className="form-control" />
             </div>
           </div>
@@ -105,55 +113,55 @@ export default function RegisterForm({ onSwitch }) {
 
           <div className="row">
             <div className="col-md-6 mb-3">
-              <label className="form-label small">Teléfono</label>
+              <label for="validationCustom06" className="form-label text-primary">Teléfono</label>
               <input type="text" name="tel" value={formData.tel} onChange={handleChange} placeholder="Ej: +34..." className="form-control" />
               {errors.tel && <small className="text-danger">Teléfono es obligatorio</small>}
             </div>
             <div className="col-md-6 mb-3">
-              <label className="form-label small">Fecha de Nacimiento</label>
+              <label for="validationCustom07" className="form-label">Fecha de Nacimiento</label>
               <input type="date" name="fechaNac" value={formData.fechaNac} onChange={handleChange} className="form-control" />
               {errors.fechaNac && <small className="text-danger">Fecha es obligatoria</small>}
             </div>
           </div>
-            <div className="mb-3">
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Correo electrónico"
-                className="form-control"
-              />
-              {errors.email === "required" && (
-                <small className="text-danger">Correo electrónico es obligatorio</small>
-              )}
-              {errors.email === "invalid" && (
-                <small className="text-danger">Correo electrónico no es válido</small>
-              )}
-            </div>
-
-            <div className="mb-3">
-              <input type="text" name="foto" value={formData.foto} onChange={handleChange} placeholder="URL de tu foto (opcional)" className="form-control" />
-            </div>
-            {statusMessage.text && (
-              <div className={`alert alert-${statusMessage.type} text-center mb-3`} role="alert">
-                {statusMessage.text}
-              </div>
+          <div className="mb-3">
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Correo electrónico"
+              className="form-control"
+            />
+            {errors.email === "required" && (
+              <small className="text-danger">Correo electrónico es obligatorio</small>
             )}
+            {errors.email === "invalid" && (
+              <small className="text-danger">Correo electrónico no es válido</small>
+            )}
+          </div>
 
-            <div className="d-flex justify-content-center mt-4">
-              <button type="submit" className="btn btn-primary rounded-pill px-5 py-3 fw-bold text-uppercase">
-                Registrarme
-              </button>
+          <div className="mb-3">
+            <input type="text" name="foto" value={formData.foto} onChange={handleChange} placeholder="URL de tu foto (opcional)" className="form-control" />
+          </div>
+          {statusMessage.text && (
+            <div className={`alert alert-${statusMessage.type} text-center mb-3`} role="alert">
+              {statusMessage.text}
             </div>
-            <div className="text-center mt-4">
-              <p className="small mb-0">
-                ¿Ya tienes cuenta?
-              </p>
-              <button onClick={() => onSwitch("iniciar")} type="button" className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-                Login
-              </button>
-            </div>
+          )}
+
+          <div className="d-flex justify-content-center mt-4">
+            <button type="submit" className="btn btn-primary rounded-pill px-5 py-3 fw-bold text-uppercase">
+              Registrarme
+            </button>
+          </div>
+          <div className="text-center mt-4">
+            <p className="small mb-0">
+              ¿Ya tienes cuenta?
+            </p>
+            <button onClick={() => onSwitch("iniciar")} type="button" className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+              Login
+            </button>
+          </div>
         </form>
       </div>
     </div>
