@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export default function RecuperarContrasena({ onSwitch }) {
   const [formData, setFormData] = useState({ email: "" });
   const [errors, setErrors] = useState({});
-  const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
   const handleChange = (e) => {
     const { name, value } = e.target;

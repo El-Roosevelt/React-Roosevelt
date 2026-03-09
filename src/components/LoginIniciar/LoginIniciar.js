@@ -9,8 +9,30 @@ export default function LoginIniciar({ onSwitch }) {
     password: ""
   });
   const [message, setMessage] = useState({ text: "", type: "" });
-
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const validateField = (name, value) => {
+    let error = "";
+
+    switch (name) {
+
+      case "username":
+        if (!value) error = "El usuario es obligatorio";
+        break;
+
+      case "password":
+        if (!value) error = "La contraseña es obligatoria";
+        break;
+
+      default:
+        break;
+    }
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error
+    }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,10 +40,26 @@ export default function LoginIniciar({ onSwitch }) {
       ...credentials,
       [name]: value
     });
+
+    validateField(name, value);
+    //limpiar mensaje backend cuando escribe
+    if (message.text) {
+      setMessage({ text: "", type: "" });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let newErrors = {};
+    if (!credentials.username)
+      newErrors.username = "El usuario es obligatorio";
+
+    if (!credentials.password)
+      newErrors.password = "La contraseña es obligatoria";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
     try {
       // mando datos
       const response = await axios.post("http://localhost:8081/backend-rooselvelt/api/auth/login", {
@@ -32,7 +70,9 @@ export default function LoginIniciar({ onSwitch }) {
       if (response.status === 200) {
         localStorage.setItem("user", JSON.stringify(response.data));
         window.dispatchEvent(new Event("storage"));
-        setMessage({ text: "¡Éxito! Iniciando sesión...", type: "success" });
+        setMessage({ text: "Éxito! Iniciando sesión...",
+           type: "success"
+           });
         setTimeout(() => navigate("/"), 1500);
       }
     } catch (error) {
@@ -67,13 +107,13 @@ export default function LoginIniciar({ onSwitch }) {
 
           <form onSubmit={handleSubmit} className="row g-4">
 
-            {/* EMAIL */}
+            {/* username */}
             <div className="col-12">
               <div className="row align-items-center">
 
                 <div className="col-12 col-md-4">
                   <label className="form-label fw-semibold mb-md-0 text-primary">
-                    Username
+                    Nombre de usuario
                   </label>
                 </div>
 
@@ -81,12 +121,18 @@ export default function LoginIniciar({ onSwitch }) {
                   <input
                     type="text"
                     name="username"
-                    className="form-control rounded-3 p-3"
+                    
                     value={credentials.username}
                     onChange={handleChange}
                     placeholder="nombre de usuario"
-                    required
+                   className={`form-control rounded-3 p-3 ${errors.username ? "is-invalid" : ""}`}
                   />
+
+                  {errors.username && (
+                    <div className="invalid-feedback">
+                      {errors.username}
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -106,18 +152,24 @@ export default function LoginIniciar({ onSwitch }) {
                   <input
                     type="password"
                     name="password"
-                    className="form-control rounded-3 p-3"
+                   
                     value={credentials.password}
                     onChange={handleChange}
                     placeholder="Tu contraseña"
-                    required
+                    className={`form-control rounded-3 p-3 ${errors.password ? "is-invalid" : ""}`}
                   />
+
+                  {errors.password && (
+                    <div className="invalid-feedback">
+                      {errors.password}
+                    </div>
+                  )}
                 </div>
 
               </div>
             </div>
 
-            {/* BOTÓN */}
+            {/* btn */}
             <div className="col-12 text-center mt-3">
               <button
                 type="submit"

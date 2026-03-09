@@ -13,7 +13,9 @@ export default function ContactoForm() {
     const [errors, setErrors] = useState({});
 
     const nombreRegex = /^[A-Za-zÁÉÍÓÚÑáéíóúñ][A-Za-zÁÉÍÓÚÑáéíóúñ]{1,79}( [A-Za-zÁÉÍÓÚÑáéíóúñ]{1,79})*$/;
-    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/i;
+
+
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
     const phoneRegex = /^[0-9+\-\s]{6,20}$/;
     const messageRegex = /^.{10,500}$/;
 
