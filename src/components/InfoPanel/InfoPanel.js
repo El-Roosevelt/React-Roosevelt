@@ -1,73 +1,97 @@
 import React, { useState } from "react";
 import "./InfoPanel.scss";
 
+// ВАЖНО: Убедись, что в Map.js ты передаешь dangerColor!
+// <InfoPanel zones={zonesRef} onRemoveZone={handleRemoveZone} dangerColor={dangerColor} />
 export default function InfoPanel({ zones, onRemoveZone, dangerColor }) {
   const [tabSwitched, setTabSwitched] = useState(false);
 
   return (
     <div className="info-panel-container">
-      <ul className="nav nav-tabs m-0">
-        <li className="nav-item">
-          <button 
-            className={`nav-link w-100 ${!tabSwitched ? "active" : ""}`} 
-            onClick={() => setTabSwitched(false)}
-          >
-            Zonas
-          </button>
-        </li>
-        <li className="nav-item">
-          <button 
-            className={`nav-link w-100 ${tabSwitched ? "active" : ""}`} 
-            onClick={() => setTabSwitched(true)}
-          >
-            Rutas
-          </button>
-        </li>
-      </ul>
+      {/* Навигация (Вкладки) */}
+      <div className="modern-tabs">
+        <button 
+          className={`tab-btn ${!tabSwitched ? "active" : ""}`} 
+          onClick={() => setTabSwitched(false)}
+        >
+          Zonas
+        </button>
+        <button 
+          className={`tab-btn ${tabSwitched ? "active" : ""}`} 
+          onClick={() => setTabSwitched(true)}
+        >
+          Rutas
+        </button>
+      </div>
 
+      {/* Контент */}
       <div className="panel-content">
-        <p className="bg-light mb-3 p-2 fw-bolder rounded text-center text-muted">
-          Datos de {!tabSwitched ? "Zonas" : "Rutas"}
-        </p>
+        {zones.length === 0 ? (
+          <div className="text-center p-4 text-muted small">
+            No hay {tabSwitched ? "rutas" : "zonas"} para mostrar.
+          </div>
+        ) : (
+          zones.map((z) => {
+            
+            // Строго берем цвет из словаря твоего друга (если не найдет, будет серым)
+            const dotColorClass = dangerColor && dangerColor[z.color] 
+              ? dangerColor[z.color] 
+              : "bg-secondary";
 
-        <div className="d-flex flex-column">
-          {zones.map((z) => (
-            <div className="zone-card" key={z.id}>
-              
-              <div className="zone-header">
-                <span className="zone-number">Numero: {z.id + 1}</span>
-                <button className="btn-close-zone" onClick={() => onRemoveZone(z.id)}>
-                  <i className="bi bi-x"></i>
-                </button>
+            return (
+              <div className="zone-item" key={z.id}>
+                
+                <div className="item-header">
+                  <div className="item-title-group">
+                    {/* Точка с оригинальным классом от твоего друга (bg-warning, bg-danger и тд) */}
+                    <div className={`color-dot ${dotColorClass}`}></div>
+                    <h4 className="item-title">{z.name || `Zona ${z.id + 1}`}</h4>
+                  </div>
+                  
+                  <button className="btn-close" onClick={() => onRemoveZone(z.id)}>
+                    <i className="bi bi-x"></i>
+                  </button>
+                </div>
+
+                <div className="item-meta">
+                  {/* Строго выводим текст, который прислал его компонент */}
+                  Zona: <span className="fw-bold" style={{color: "#333"}}>{z.color || "Ninguno"}</span>
+                </div>
+
+                {/* КООРДИНАТЫ (защищенные от падений) */}
+                <div className="coords-box">
+                  {z.coordpol && z.coordpol.map((c, index) => {
+                    // Обычные точки для Зон
+                    if (typeof c[0] === 'number') {
+                      return (
+                        <div key={index} style={{ marginBottom: "4px" }}>
+                          <strong style={{color: "#1a73e8"}}>P{index + 1}:</strong> {c[0].toFixed(5)}, {c[1].toFixed(5)}
+                        </div>
+                      );
+                    }
+                    
+                    // Массивы для Рут
+                    if (Array.isArray(c[0])) {
+                      return (
+                        <div key={index} style={{ marginBottom: "8px" }}>
+                          <strong style={{color: "#1a73e8"}}>Tramo {index + 1}:</strong>
+                          {c.map((e, idx) => (
+                            <div key={idx} style={{ marginLeft: "12px" }}>
+                              ↳ {e[0]?.toFixed(5)}, {e[1]?.toFixed(5)}
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }
+
+                    return null;
+                  })}
+                </div>
+
               </div>
-
-              <div className="zone-name">
-                Nombre: {z.name || "Sin nombre"}
-              </div>
-
-              <div className={`text-light fw-bold text-center rounded py-2 mb-3 shadow-sm ${dangerColor[z.color] || "bg-secondary"}`}>
-                Zona: {z.color}
-              </div>
-
-              <div className="coords-box">
-                {!tabSwitched ? (
-                  z.coordpol.map((c, index) => (
-                    <p key={index}>{c[0]} <br/> {c[1]}</p>
-                  ))
-                ) : (
-                  z.coordpol.map((c, idx1) => (
-                    <div key={idx1}>
-                      {c.map((e, idx2) => (
-                        <p key={idx2}>{e[0]} <br/> {e[1]}</p>
-                      ))}
-                    </div>
-                  ))
-                )}
-              </div>
-
-            </div>
-          ))}
-        </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

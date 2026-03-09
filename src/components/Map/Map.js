@@ -533,7 +533,6 @@ export default function Map({}) {
             <i className="bi bi-chevron-left" style={{ fontSize: "1.5rem", cursor: "pointer" }}></i>
           </div>
           
-          {/* НАШ НОВЫЙ КРАСИВЫЙ КОМПОНЕНТ */}
           <InfoPanel 
             zones={zonesRef} 
             onRemoveZone={handleRemoveZone} 
