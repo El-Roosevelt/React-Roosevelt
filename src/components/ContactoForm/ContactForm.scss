@@ -5,7 +5,7 @@
 
   h2 {
     letter-spacing: 2px;
-    font-family: $font-sans-serif;
+    font-family: $font-family-sans-serif;
   }
   p {
     letter-spacing: 2px;
@@ -48,10 +48,10 @@
 }
 
 /*  LINKS */
-a {
-  color: $link-color;
+// a {
+//   color: $link-color;
 
-  &:hover {
-    text-decoration: underline;
-  }
-}
+//   &:hover {
+//     text-decoration: underline;
+//   }
+// }

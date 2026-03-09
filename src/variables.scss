@@ -1,6 +1,3 @@
-@import "bootstrap/scss/functions";
-
-
 //variables nuevas para bootstrap
 $primary: #5B2671;
 $primary-light: #9974AA;
@@ -22,24 +19,6 @@ $border-form: $primary-light;
 //$btn-form: #c216db;
 
 $btn-hover-bg: darken($primary, 28%);
-
-
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/maps";
-
-
-$custom-colors: (
-    "bg-form": $color_form_bg,
-    "btn-hover": $btn-hover-bg,
-    "form-accento" : $color_primary-accento,
-    "border-color-form": $border-form
-
-);
-$theme-colors: map-merge($theme-colors,$custom-colors);
-
-@import "bootstrap/scss/mixins";
-@import "bootstrap/scss/root";
-
 //Typografia
 @font-face {
     font-family: 'RobotoSerif';
@@ -49,17 +28,5 @@ $theme-colors: map-merge($theme-colors,$custom-colors);
 }
 //font
 $font-sans-serif: 'RobotoSerif';
-$font-family-sans-serif: 'RobotoSerif', sans-serif;
+$font-family-sans-serif: 'RobotoSerif';
 $font-family-base: $font-family-sans-serif;
-
-/*$primary-dark: #3C1053;
-$color_fondo: #f3f2f1;
-$color_form_background: #eff2f1;
-$link-color: #1d7bbf; // call to action
-$Color_F_Claro: #F3F2F1;
-$Color_Acc_ClaroINFORMATION: #84329B;
-
- */
-// Bootstrap
-@import "~bootstrap/scss/bootstrap";
-@import "bootstrap-icons/font/bootstrap-icons.css";
