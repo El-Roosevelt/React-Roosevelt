@@ -1,7 +1,8 @@
 import "./HeroSection.scss";
-
-export default function HeroSection({ onSwitch }) {
+import { useNavigate } from "react-router-dom";
+export default function HeroSection() {
     const videoBG = "/assets/fondo.mp4";
+    const navigate = useNavigate();
 
     return (
         <section className="hero-section bg-dark d-flex align-items-center justify-content-center">
@@ -28,7 +29,7 @@ export default function HeroSection({ onSwitch }) {
                     Puedes navegarte y guardar tus rutas favoritas!
                 </p>
 
-                <button onClick={() => onSwitch("mapa")} className=" btn btn-primary px-4 px-md-5 py-2 py-md-3  fs-6 fs-md-5 fw-bold  text-uppercase border border-secondary border-2 rounded-pill">
+                <button onClick={() => navigate("/map")} className=" btn btn-primary px-4 px-md-5 py-2 py-md-3  fs-6 fs-md-5 fw-bold  text-uppercase border border-secondary border-2 rounded-pill">
                     Ir al mapa
                 </button>
 
