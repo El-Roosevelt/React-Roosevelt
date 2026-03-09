@@ -1,6 +1,6 @@
 import "./HeroSection.scss";
 
-export default function HeroSection() {
+export default function HeroSection({ onSwitch }) {
     const videoBG = "/assets/fondo.mp4";
 
     return (
@@ -28,7 +28,7 @@ export default function HeroSection() {
                     Puedes navegarte y guardar tus rutas favoritas!
                 </p>
 
-                <button className=" btn btn-primary px-4 px-md-5 py-2 py-md-3  fs-6 fs-md-5 fw-bold  text-uppercase border border-secondary border-2 rounded-pill">
+                <button onClick={() => onSwitch("mapa")} className=" btn btn-primary px-4 px-md-5 py-2 py-md-3  fs-6 fs-md-5 fw-bold  text-uppercase border border-secondary border-2 rounded-pill">
                     Ir al mapa
                 </button>
 

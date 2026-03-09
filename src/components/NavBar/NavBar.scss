@@ -35,6 +35,14 @@
   line-height: 40px;
   margin-right: 1rem;
 }
+.nav-link, .nav-links, span.nav-link {
+  cursor: pointer; 
+}
+
+span.nav-link:hover, span.nav-links:hover {
+  color: #ffd700; 
+  text-decoration: underline; 
+}
 
 .nav-item:after {
   content: "";
