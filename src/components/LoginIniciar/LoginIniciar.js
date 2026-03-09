@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-export default function LoginIniciar({onSwitch}) {
+export default function LoginIniciar({ onSwitch }) {
 
   const [credentials, setCredentials] = useState({
     username: "",
     password: ""
   });
+  const [message, setMessage] = useState({ text: "", type: "" });
 
   const navigate = useNavigate();
 
@@ -19,7 +20,7 @@ export default function LoginIniciar({onSwitch}) {
     });
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // mando datos
@@ -29,31 +30,33 @@ export default function LoginIniciar({onSwitch}) {
       });
 
       if (response.status === 200) {
-        alert("¡Bienvenido! Sesión iniciada.");
-        navigate("/");
+        localStorage.setItem("user", JSON.stringify(response.data));
+        window.dispatchEvent(new Event("storage"));
+        setMessage({ text: "¡Éxito! Iniciando sesión...", type: "success" });
+        setTimeout(() => navigate("/"), 1500);
       }
     } catch (error) {
-      console.error("Login error:", error.response?.data || error.message);
-      
-      // status 401 (Unauthorized) o 404 (Not Found)
       if (error.response?.status === 401 || error.response?.status === 404) {
-        alert("El usuario no existe o los datos son incorrectos. Por favor primero hay que registrarse.");
-        onSwitch("registro"); 
+        setMessage({ 
+          text: "Usuario no encontrado. Por favor, regístrate.", 
+          type: "danger" 
+        });
+        //onSwitch("registro");
       } else {
-        alert("Error de conexión con el servidor.");
+        setMessage({ text: "Error en el servidor", type: "danger" });
       }
     }
   };
-   
 
-      //   if (credentials.username && credentials.password) {
-      //     console.log("datos:", credentials);
-      //     alert("¡Sesión iniciada!");
-      //     navigate("/");
-      //   } else {
-      //     alert("Por favor, rellena todos los campos");
-      //   }
-      // };
+
+  //   if (credentials.username && credentials.password) {
+  //     console.log("datos:", credentials);
+  //     alert("¡Sesión iniciada!");
+  //     navigate("/");
+  //   } else {
+  //     alert("Por favor, rellena todos los campos");
+  //   }
+  // };
 
   return (
     <div className="animate-fade">
@@ -81,7 +84,7 @@ export default function LoginIniciar({onSwitch}) {
                     className="form-control rounded-3 p-3"
                     value={credentials.username}
                     onChange={handleChange}
-                    placeholder="kris"
+                    placeholder="nombre de usuario"
                     required
                   />
                 </div>
@@ -130,17 +133,21 @@ export default function LoginIniciar({onSwitch}) {
           <div className="text-center mt-4">
             <p className="small mb-0">
               ¿No tienes cuenta?{" "}  </p>
-              <button
-                onClick={() => onSwitch("registro")}
-                type="button"
-                className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-              >
-                Regístrate aquí
-              </button>
+            <button
+              onClick={() => onSwitch("registro")}
+              type="button"
+              className="btn btn-link fw-semibold link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+            >
+              Regístrate aquí
+            </button>
+          </div>
+          {message.text && (
+            <div className={`alert alert-${message.type} text-center py-2`}>
+              {message.text}
+            </div>
+          )}
         </div>
-
       </div>
-    </div>
     </div >
   );
 }
