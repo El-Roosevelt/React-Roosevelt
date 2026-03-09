@@ -26,7 +26,7 @@ export default function AppRouter() {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/map" element={<Mapa />} />
+                <Route path="/map" element={<Mapa  view = "mapa"/>} />
             </Routes>
 
         </>
