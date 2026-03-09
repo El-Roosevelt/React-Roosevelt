@@ -15,9 +15,9 @@ export default function MisRutas() {
   };
 
   return (
-    <div className="p-3 pb-5 bg-primary h-100">
+    <div className="p-3 pb-5 bg-primary min-vh-100">
       <h2 className="text-light text-center">Mis rutas</h2>
-      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 align-content-start g-4 h-100">
+      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 align-content-start g-4">
         {misRutas.map((ruta) => (
           <div className="col" key={ruta.id}>
             <Ruta
