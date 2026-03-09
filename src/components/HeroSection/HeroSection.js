@@ -16,7 +16,7 @@ export default function HeroSection() {
 
             <div className="hero-overlay container text-center text-light px-4 px-md-5 py-4 py-md-5 rounded animate-fade bg-dark bg-opacity-25">
 
-                <h1 className="display-4 display-md-3 fw-bolder text-uppercase mb-4 mb-md-5">
+                <h1 className="hero-title display-4 display-md-3 fw-bolder text-uppercase mb-4 mb-md-5">
                     Tu compañero indispensable
                 </h1>
 
