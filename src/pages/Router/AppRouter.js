@@ -4,7 +4,7 @@ import Settings from "../Settings/Settings";
 import MisRutas from "../MisRutas/MisRutas";
 import RutasFavoritas from "../RutasFavoritas/RutasFavoritas";
 import Mapa from "../Mapa/Mapa";
-
+import NotFound from "../NotFound/NotFound";
 import Login from "../../pages/Login/Login";
 
 export default function AppRouter() {

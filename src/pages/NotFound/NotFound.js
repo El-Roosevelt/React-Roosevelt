@@ -7,7 +7,7 @@ export default function NotFound() {
      <div className="not-found-section d-flex flex-column justify-content-center align-items-center vh-100 text-center bg-white px-3">
       
       <img
-        src="/assets/404-robot.png" 
+        src="/assets/robot.png" 
         alt="Error 404 - Page not found"
         className="robot-img img-fluid mb-4"
       />
