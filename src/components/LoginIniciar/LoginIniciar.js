@@ -70,9 +70,7 @@ export default function LoginIniciar({ onSwitch }) {
       if (response.status === 200) {
         localStorage.setItem("user", JSON.stringify(response.data));
         window.dispatchEvent(new Event("storage"));
-        setMessage({ text: "Éxito! Iniciando sesión...",
-           type: "success"
-           });
+        setMessage({text: `¡Hola, ${credentials.username}! Sesión iniciada con éxito.`, type: "success" });
         setTimeout(() => navigate("/"), 1500);
       }
     } catch (error) {
