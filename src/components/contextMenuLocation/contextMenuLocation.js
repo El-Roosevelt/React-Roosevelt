@@ -33,7 +33,6 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
 
         onChangeDataZone(newZone)
         onOpenZone(newZone);
-
         setNameZone("");
         setTypeZone("");
         setWrittenData(true);
@@ -81,9 +80,10 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
                 zIndex: 1001,
                 padding: "2px",
                 borderRadius: "25px 25px 10px 0px",
+                height: "180px"
             }}
         >
-            <div className=" d-flex flex-column gap-2 p-2">
+            <div className="  d-flex flex-column gap-2 p-2">
                 {showForm ?
                     <div className=" d-flex flex-column gap-1 ">
                         <form onSubmit={createInterestPoint} className=" d-flex flex-column gap-1">
@@ -108,24 +108,33 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
                                 <div className=" d-flex flex-row">
                                     <button className=" btn btn-outline-info align-content-center" onClick={toggleForm} >
                                         Crear punto de interes
-                                        <svg xmlns="http://www.w3.org/2000/svg"  width="20" height="20" fill="currentColor" class="bi bi-pin-map m-1" viewBox="0 0 16 16">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pin-map m-1" viewBox="0 0 16 16">
                                             <path fill-rule="evenodd" d="M3.1 11.2a.5.5 0 0 1 .4-.2H6a.5.5 0 0 1 0 1H3.75L1.5 15h13l-2.25-3H10a.5.5 0 0 1 0-1h2.5a.5.5 0 0 1 .4.2l3 4a.5.5 0 0 1-.4.8H.5a.5.5 0 0 1-.4-.8z" />
                                             <path fill-rule="evenodd" d="M8 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999z" />
                                         </svg>
                                     </button>
                                 </div>
-                                <input
+                                <button
                                     type="button"
                                     className="btn btn-outline-secondary"
                                     onClick={createMark}
-                                    value={!goal ? "Crear ruta desde aquí" : "Crear ruta hasta aquí"}
-                                />
-                                <input
+                                >
+                                    {!goal ? "Crear ruta desde aquí" : "Crear ruta hasta aquí"}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-compass m-1" viewBox="0 0 16 16">
+                                        <path d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016m6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0" />
+                                        <path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z" />
+                                    </svg>
+                                </button>
+                                <button
                                     type="button"
                                     className="btn btn-secondary"
                                     onClick={toggleZoneControl}
-                                    value={"Crear poligono"}
-                                />
+                                >
+                                    Crear Zona
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heptagon m-1" viewBox="0 0 16 16">
+                                        <path d="M7.779.052a.5.5 0 0 1 .442 0l6.015 2.97a.5.5 0 0 1 .267.34l1.485 6.676a.5.5 0 0 1-.093.415l-4.162 5.354a.5.5 0 0 1-.395.193H4.662a.5.5 0 0 1-.395-.193L.105 10.453a.5.5 0 0 1-.093-.415l1.485-6.676a.5.5 0 0 1 .267-.34zM2.422 3.813l-1.383 6.212L4.907 15h6.186l3.868-4.975-1.383-6.212L8 1.058z" />
+                                    </svg>
+                                </button>
                             </div>
                             : <div className="d-flex flex-column gap-1">
                                 <p className=" m-1 text-info">Para crearlo minimo 3 puntos</p>
@@ -144,10 +153,10 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
                                         </div>
                                         <div>
                                             <label>Peligrosidad</label>
-                                            <select className={" form-control " + (dangerColor[typeZone])} value={typeZone} onChange={e => setTypeZone(e.target.value)} required>
+                                            <select className={" form-control "} value={typeZone} onChange={e => setTypeZone(e.target.value)} required>
                                                 <option value="" selected>Elegir un tipo de zona</option>
                                                 {Object.entries(typeZones).map(([key, value]) => (
-                                                    <option className={dangerColor[key]} value={key}>{danger[key]}</option>
+                                                    <option value={key}>{danger[key]}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -166,10 +175,12 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
                                 }
                             </div>)
                 }
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="red" class="bi bi-geo-alt " viewBox="0 0 16 16">
-                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                </svg>
+                <div className="locationPointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="purple" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+                    </svg>
+                </div>
+
 
             </div>
 

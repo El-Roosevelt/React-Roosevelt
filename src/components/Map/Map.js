@@ -9,8 +9,6 @@ import ContextMenuLocation from "../contextMenuLocation/contextMenuLocation";
 import LayerCheckboxes from "../LayerCheckboxes/LayerCheckboxes";
 import Popup from "../Popup/Popup";
 import InfoPanel from "../../components/InfoPanel/InfoPanel";
-import { data } from "react-router-dom";
-import { tab } from "@testing-library/user-event/dist/tab";
 
 //38.361498735545176, -0.49144135129607736
 const INITIAL_CENTER = [-0.49144135129607736, 38.361498735545176];
@@ -190,7 +188,6 @@ export default function Map() {
       );
       return newZones;
     });
-
     setDataNewZone({
       id: zonesRef.length,
       name: "",
@@ -210,10 +207,15 @@ export default function Map() {
     });
   };
 
-  function handleRemoveZone(id) {
-    setZonesRef((prev) => prev.filter((e) => e.id != id));
+  // Eliminar zona
+
+  function handleRemoveZone(id) {    
+    setZonesRef((prev) => prev.filter((e) => e.id != id));    
   }
 
+  function handleEditZone(zone){
+
+  }
   const handleMouseMoveMap = (e) => {
     setCenterMouse([e.lngLat.lng, e.lngLat.lat]);
   };
@@ -455,8 +457,8 @@ export default function Map() {
   // creador de zonas nuevas
   useEffect(() => {
     if (!mapRef.current?.isStyleLoaded()) return;
-
-    if (zonesRef.length === 0) return;
+    // 
+    if (!mapRef || !mapRef.current.isStyleLoaded() || !mapRef.current.getSource("zones")) return;
 
     const newData = {
       type: "FeatureCollection",
@@ -532,7 +534,9 @@ export default function Map() {
           <InfoPanel 
             zones={zonesRef} 
             onRemoveZone={handleRemoveZone} 
+            onEditZone={handleEditZone}
             dangerColor={dangerColor} 
+            types={layerState}
           />
           
         </div>
