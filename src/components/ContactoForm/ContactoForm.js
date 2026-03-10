@@ -164,16 +164,17 @@ export default function ContactoForm() {
     // };
 
     return (
-        <section className="contact-section py-5 bg-form bg-color_form_bg">
+        <section className="contact-section py-5">
             <div className="container">
                 <div className="text-center mb-5">
                     <p className="text-uppercase text-muted fw-semibold mb-2">Contacta con nosotros!</p>
                     <h2 className="fw-bold text-primary fs-2">Estamos aqui para ayudarte</h2>
                 </div>
 
-                <div className="row justify-content-center">
+                <div className="  row justify-content-center">
                     <div className="col-lg-8">
-                        <form className="row g-4 p-4 rounded-4 shadow bg-form border  border-primary needs-validation" noValidate onSubmit={onSubmit}>
+                        <form className="contact-form row g-4 p-5 rounded-4 shadow-sm bg-white border border-primary-subtle needs-validation" noValidate onSubmit={onSubmit}>
+                           
                             <div className="col-md-6">
                                 <input
                                     type="text"
