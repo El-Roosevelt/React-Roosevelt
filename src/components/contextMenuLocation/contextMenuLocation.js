@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import "./contextMenuLocation.scss";
 
 
-export default function ContextMenuLocation({ positionContextMenu, onClose, onCreateInterestPoint, onCreateMark, types, goal, amountPointZone,onOpenZone , onCreateEdge, onCloseZone, onCancelZone, typeZones, dataNewZone,onChangeDataZone}) {
+export default function ContextMenuLocation({ positionContextMenu, onClose, onCreateInterestPoint, onCreateMark, types, goal, amountPointZone, onOpenZone, onCreateEdge, onCloseZone, onCancelZone, typeZones, dataNewZone, onChangeDataZone }) {
     const [name, setName] = useState("");
     const [type, setType] = useState("");
 
-    const [nameZone,setNameZone] = useState ("");
-    const [typeZone,setTypeZone]=useState("");
-    const [writtenData,setWrittenData]=useState(false);
+    const [nameZone, setNameZone] = useState("");
+    const [typeZone, setTypeZone] = useState("");
+    const [writtenData, setWrittenData] = useState(false);
 
     const options = types.map(type => ({ name: type.name, color: type.color }));
 
@@ -23,12 +23,12 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
         onClose();
     }
 
-    function createZone(e){
-        e.preventDefault();  
+    function createZone(e) {
+        e.preventDefault();
 
-        const newZone={
-            name:nameZone,
-            color:typeZone
+        const newZone = {
+            name: nameZone,
+            color: typeZone
         }
 
         onChangeDataZone(newZone)
@@ -39,7 +39,7 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
         setWrittenData(true);
     }
 
-    
+
 
     const danger = Object.freeze({
         rojo: "Alta",
@@ -47,9 +47,9 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
         verde: "Baja"
     })
     const dangerColor = Object.freeze({
-        rojo:" bg-danger",
-        amarillo:" bg-warning",
-        verde:" bg-success"
+        rojo: " bg-danger",
+        amarillo: " bg-warning",
+        verde: " bg-success"
     })
 
 
@@ -59,7 +59,7 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
     }
     const [showForm, setShowForm] = useState(false);
 
-    const [showZoneControl,setShowZoneControl]= useState(false)
+    const [showZoneControl, setShowZoneControl] = useState(false)
 
     const toggleForm = () => {
         setShowForm(!showForm);
@@ -74,12 +74,12 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
             style={{
                 position: "absolute",
                 visibility: positionContextMenu.visible ? "visible" : "hidden",
-                top: positionContextMenu.y-180,
+                top: positionContextMenu.y - 180,
                 left: positionContextMenu.x,
                 boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
                 background: "white",
                 zIndex: 1001,
-                padding: "2px",                
+                padding: "2px",
                 borderRadius: "25px 25px 10px 0px",
             }}
         >
@@ -98,66 +98,78 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
                             <input className=" btn btn-sm btn-success" type="submit" value="Crear" />
                         </form>
                     </div>
-                
-                : (
-                    !showZoneControl?
-                    <div className=" d-flex flex-column gap-1 ">
-                        <div className="d-flex flex-row justify-content-end">
-                            <input className=" btn btn-sm btn-danger" type="button" onClick={onClose} value="X" />
-                        </div>
-                        <input className=" btn btn-outline-info" value={"Crear punto de interes"} onClick={toggleForm} />
-                        <input
-                            type="button"
-                            className="btn btn-outline-secondary"                            
-                            onClick={createMark}
-                            value={!goal ? "Crear ruta desde aquí" : "Crear ruta hasta aquí"}
-                        />                        
-                        <input
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={toggleZoneControl}
-                            value={"Crear poligono"}
-                        />                                                
-                    </div>
-                    :<div className="d-flex flex-column gap-1">                        
-                        <p className=" m-1 text-info">Para crearlo minimo 3 puntos</p>
-                        {amountPointZone >0 && <span className=" d-flex flex-column border border-3 shadow-lg rounded-2 p-1 mb-4 align-items-center">Creados {amountPointZone} punto{amountPointZone>1?"s":""}</span>}
-                        
-                        {writtenData ?
-                        <div>
-                            <p>Zona: {dataNewZone.name}</p>
-                            <p>Peligrosidad: {danger[dataNewZone.color]}</p>
-                        </div>
-                
-                        :<form onSubmit={createZone} className=" d-flex flex-column gap-2">
-                            <div>
-                                <label>Nombre de la zona</label>
-                                <input className=" form-control" type="text" value={nameZone} onChange={e=>setNameZone(e.target.value)} required></input>
+
+                    : (
+                        !showZoneControl ?
+                            <div className=" d-flex flex-column gap-1 ">
+                                <div className="d-flex flex-row justify-content-end">
+                                    <input className=" btn btn-sm btn-danger" type="button" onClick={onClose} value="X" />
+                                </div>
+                                <div className=" d-flex flex-row">
+                                    <button className=" btn btn-outline-info align-content-center" onClick={toggleForm} >
+                                        Crear punto de interes
+                                        <svg xmlns="http://www.w3.org/2000/svg"  width="20" height="20" fill="currentColor" class="bi bi-pin-map m-1" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M3.1 11.2a.5.5 0 0 1 .4-.2H6a.5.5 0 0 1 0 1H3.75L1.5 15h13l-2.25-3H10a.5.5 0 0 1 0-1h2.5a.5.5 0 0 1 .4.2l3 4a.5.5 0 0 1-.4.8H.5a.5.5 0 0 1-.4-.8z" />
+                                            <path fill-rule="evenodd" d="M8 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <input
+                                    type="button"
+                                    className="btn btn-outline-secondary"
+                                    onClick={createMark}
+                                    value={!goal ? "Crear ruta desde aquí" : "Crear ruta hasta aquí"}
+                                />
+                                <input
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={toggleZoneControl}
+                                    value={"Crear poligono"}
+                                />
                             </div>
-                            <div>
-                                <label>Peligrosidad</label>
-                                <select className={" form-control "+(dangerColor[typeZone])} value={typeZone} onChange={e=>setTypeZone(e.target.value)} required>
-                                    <option value="" selected>Elegir un tipo de zona</option>
-                                        {Object.entries(typeZones).map(([key,value])=>(
-                                            <option className={dangerColor[key]} value={key}>{danger[key]}</option>
-                                        ))}
-                                </select>
-                            </div>
-                            {amountPointZone == 0 && 
-                            <input type="submit" className=" btn btn-success w-100 " value={"Comenzar Zona"}/>
-                            } 
-                        </form> }                                             
-                        {amountPointZone >=1 && 
-                        <input type="button" className=" btn btn-outline-primary " value={"Expandir Zona"} onClick={onCreateEdge}/>
-                        }
-                        {amountPointZone>2 && 
-                        <input type="button" className=" btn btn-danger " value={"Terminar Zona"} onClick={onCloseZone}/>
-                        }
-                        {amountPointZone > 0 && 
-                        <input type="button" className=" btn btn-success " value={"Cancelar"} onClick={onCancelZone}/>
-                        }                         
-                    </div>)
+                            : <div className="d-flex flex-column gap-1">
+                                <p className=" m-1 text-info">Para crearlo minimo 3 puntos</p>
+                                {amountPointZone > 0 && <span className=" d-flex flex-column border border-3 shadow-lg rounded-2 p-1 mb-4 align-items-center">Creados {amountPointZone} punto{amountPointZone > 1 ? "s" : ""}</span>}
+
+                                {writtenData ?
+                                    <div>
+                                        <p>Zona: {dataNewZone.name}</p>
+                                        <p>Peligrosidad: {danger[dataNewZone.color]}</p>
+                                    </div>
+
+                                    : <form onSubmit={createZone} className=" d-flex flex-column gap-2">
+                                        <div>
+                                            <label>Nombre de la zona</label>
+                                            <input className=" form-control" type="text" value={nameZone} onChange={e => setNameZone(e.target.value)} required></input>
+                                        </div>
+                                        <div>
+                                            <label>Peligrosidad</label>
+                                            <select className={" form-control " + (dangerColor[typeZone])} value={typeZone} onChange={e => setTypeZone(e.target.value)} required>
+                                                <option value="" selected>Elegir un tipo de zona</option>
+                                                {Object.entries(typeZones).map(([key, value]) => (
+                                                    <option className={dangerColor[key]} value={key}>{danger[key]}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        {amountPointZone == 0 &&
+                                            <input type="submit" className=" btn btn-success w-100 " value={"Comenzar Zona"} />
+                                        }
+                                    </form>}
+                                {amountPointZone >= 1 &&
+                                    <input type="button" className=" btn btn-outline-primary " value={"Expandir Zona"} onClick={onCreateEdge} />
+                                }
+                                {amountPointZone > 2 &&
+                                    <input type="button" className=" btn btn-danger " value={"Terminar Zona"} onClick={onCloseZone} />
+                                }
+                                {amountPointZone > 0 &&
+                                    <input type="button" className=" btn btn-success " value={"Cancelar"} onClick={onCancelZone} />
+                                }
+                            </div>)
                 }
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="red" class="bi bi-geo-alt " viewBox="0 0 16 16">
+                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
+                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                </svg>
 
             </div>
 
