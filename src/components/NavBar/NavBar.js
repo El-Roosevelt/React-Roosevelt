@@ -141,31 +141,31 @@ export default function NavBar() {
             </NavLink>
           </li>
           <li className="nav-item col">
-            <span
+            <NavLink to="/my-routes"
               className={link("/my-routes")}
               onClick={() => protectedRoute("/my-routes")}
             >
               <i className="bi bi-geo-alt pe-1"></i>
               <span className="d-none d-lg-inline">Mis Rutas</span>
-            </span>
+            </NavLink>
           </li>
           <li className="nav-item col">
-            <span
+            <NavLink to="/fav-routes"
               className={link("/fav-routes")}
               onClick={() => protectedRoute("/fav-routes")}
             >
               <i className="bi bi-heart pe-1"></i>
               <span className=" d-none d-lg-inline">Rutas Favoritas</span>
-            </span>
+            </NavLink>
           </li>
           <li className="nav-item col">
-            <span
+            <NavLink to="/settings"
               className={link("/settings")}
               onClick={() => protectedRoute("/settings")}
             >
               <i className="bi bi-gear pe-1"></i>
               <span className="d-none d-lg-inline">Configuración</span>
-            </span>
+            </NavLink>
           </li>
           
 
@@ -180,7 +180,7 @@ export default function NavBar() {
 
           <li className="nav-item col">
             {user ? (
-              <span className="nav-links text-warning" onClick={handleLogout}>
+              <span role="button" className="nav-links text-light border-0 bg-transparent" onClick={handleLogout}>
                 <i className="bi bi-box-arrow-right me-1"></i>Cerrar sesión
               </span>
             ) : (
