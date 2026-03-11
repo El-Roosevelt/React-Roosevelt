@@ -110,7 +110,7 @@ export default function RegisterForm({ onSwitch }) {
         };
 
         await axios.post(
-          "http://localhost:8081/backend-rooselvelt/api/users",
+          "http://localhost:8080/roosevelt/api/users",
           userLoad
         );
 

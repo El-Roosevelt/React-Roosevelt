@@ -62,7 +62,7 @@ export default function LoginIniciar({ onSwitch }) {
     if (Object.keys(newErrors).length > 0) return;
     try {
       // mando datos
-      const response = await axios.post("http://localhost:8081/backend-rooselvelt/api/auth/login", {
+      const response = await axios.post("http://localhost:8080/roosevelt/api/auth/login", {
         username: credentials.username,
         password: credentials.password
       });
