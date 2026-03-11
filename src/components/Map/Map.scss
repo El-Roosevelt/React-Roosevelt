@@ -35,3 +35,22 @@
   border-radius: 10px;
   cursor: pointer;
 }
+
+.infoSide{
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+  padding: 6px 12px;
+  font-family: monospace;
+  z-index: 1;
+  position: absolute;
+  height: 400px;
+  top: 0;
+  right:0 ;
+  margin-top: 5px;
+  border-radius: 4px;
+  transform: translateX(380px);
+  transition: all 1s ease;
+}
+.infoSide:hover{
+  transform: translateX(-5px)
+}
