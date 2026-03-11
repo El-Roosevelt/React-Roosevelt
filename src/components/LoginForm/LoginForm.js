@@ -109,8 +109,8 @@ export default function RegisterForm({ onSwitch }) {
           foto: formData.foto || "default.png"
         };
 
-        await axios.post(
-          "http://localhost:8081/backend-rooselvelt/api/users",
+        const response = await axios.post(
+          "http://localhost:8080/roosevelt/api/users",
           userLoad
         );
 
