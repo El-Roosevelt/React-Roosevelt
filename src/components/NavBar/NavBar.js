@@ -105,7 +105,9 @@ export default function NavBar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+   
+    setUser(null);
+  localStorage.removeItem("user");
     setUser(null);
     navigate("/");
   };
