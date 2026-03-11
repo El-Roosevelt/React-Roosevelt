@@ -8,7 +8,25 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
 
     const [nameZone, setNameZone] = useState("");
     const [typeZone, setTypeZone] = useState("");
+
     const [writtenData, setWrittenData] = useState(false);
+
+    const [positionChange,setPositionChange] = useState(220);
+
+    const [showForm, setShowForm] = useState(false);
+
+    const [showZoneControl, setShowZoneControl] = useState(false)
+
+     const danger = Object.freeze({
+        rojo: "Alta",
+        amarillo: "Media",
+        verde: "Baja"
+    })
+    /*const dangerColor = Object.freeze({
+        rojo: " bg-danger",
+        amarillo: " bg-warning",
+        verde: " bg-success"
+    })*/
 
     const options = types.map(type => ({ name: type.name, color: type.color }));
 
@@ -30,6 +48,7 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
             name: nameZone,
             color: typeZone
         }
+        setPositionChange(228)
 
         onChangeDataZone(newZone)
         onOpenZone(newZone);
@@ -39,48 +58,44 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
     }
 
 
-
-    const danger = Object.freeze({
-        rojo: "Alta",
-        amarillo: "Media",
-        verde: "Baja"
-    })
-    const dangerColor = Object.freeze({
-        rojo: " bg-danger",
-        amarillo: " bg-warning",
-        verde: " bg-success"
-    })
+   
 
 
     const createMark = () => {
         onCreateMark();
         onClose();
     }
-    const [showForm, setShowForm] = useState(false);
-
-    const [showZoneControl, setShowZoneControl] = useState(false)
+    
 
     const toggleForm = () => {
         setShowForm(!showForm);
     };
 
     const toggleZoneControl = () => {
+        setPositionChange(254);
         setShowZoneControl(!showZoneControl);
     };
+
+    const closeZone=()=>{
+        setPositionChange(230);
+        onCloseZone()
+    }
+
+    
 
     return (
         <div
             style={{
                 position: "absolute",
                 visibility: positionContextMenu.visible ? "visible" : "hidden",
-                top: positionContextMenu.y - 180,
-                left: positionContextMenu.x,
+                top: positionContextMenu.y - positionChange,
+                left: positionContextMenu.x+3,
                 boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
                 background: "white",
                 zIndex: 1001,
                 padding: "2px",
                 borderRadius: "25px 25px 10px 0px",
-                height: "180px"
+                minHeight: writtenData?"280px":"200px"
             }}
         >
             <div className="  d-flex flex-column gap-2 p-2">
@@ -168,7 +183,7 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
                                     <input type="button" className=" btn btn-outline-primary " value={"Expandir Zona"} onClick={onCreateEdge} />
                                 }
                                 {amountPointZone > 2 &&
-                                    <input type="button" className=" btn btn-danger " value={"Terminar Zona"} onClick={onCloseZone} />
+                                    <input type="button" className=" btn btn-danger " value={"Terminar Zona"} onClick={()=>closeZone()} />
                                 }
                                 {amountPointZone > 0 &&
                                     <input type="button" className=" btn btn-success " value={"Cancelar"} onClick={onCancelZone} />

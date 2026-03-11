@@ -128,30 +128,30 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
                     // Al editar una zona
                     <div>
                       <form onSubmit={()=>editZone}>
-                        <div className=" m-2 p-2">
+                        <div className=" m-1 p-2">
                           <label className=" form-label">
                             Nombre zona:
                           </label>
                           <input className=" form-control w-75" value={nameZoneEdit} onChange={e => setNameZoneEdit(e.target.value)} />
                         </div>
-                        <div className=" m-2 p-2">
+                        <div className=" m-1 p-2">
                           <label className=" form-label">
                             Tipo de zona:
                           </label>
-                          <select className=" form-select" value={danger[typeZoneEdit]} onChange={e=>setTypeZoneEdit(e.target.value)}>
+                          <select className="form-select w-75" value={danger[typeZoneEdit]} onChange={e=>setTypeZoneEdit(e.target.value)}>
                           {Object.entries(types).map((key) => (
                                                     <option value={key}>{danger[key]}</option>
                                                 ))}
                           </select>
                         </div>
-                        <div className=" d-flex flex-row gap-1 m-3">
-                          <input className=" btn btn-info w-25" onClick={() => setSelectedZoneToEdit({
+                        <div className=" d-flex flex-row gap-1 p-2 m-1">
+                          <input className=" btn btn-info w-50" onClick={() => setSelectedZoneToEdit({
                             id: 0,
                             name: "",
                             type: "",
                             coordpol: [[]]
                           })} value={"Cancelar"} />
-                          <input type="submit" className=" btn btn-success w-25" value={"Editar"}/>
+                          <input type="submit" className=" btn btn-success w-auto" value={"Editar"}/>
                         </div>
 
                       </form>
