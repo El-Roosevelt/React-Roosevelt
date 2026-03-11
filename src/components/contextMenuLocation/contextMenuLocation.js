@@ -11,7 +11,7 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
 
     const [writtenData, setWrittenData] = useState(false);
 
-    const [positionChange,setPositionChange] = useState(220);
+    const [positionChange,setPositionChange] = useState(0);
 
     const [showForm, setShowForm] = useState(false);
 
@@ -48,17 +48,14 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
             name: nameZone,
             color: typeZone
         }
-        setPositionChange(228)
+        setPositionChange(86)
 
         onChangeDataZone(newZone)
         onOpenZone(newZone);
         setNameZone("");
         setTypeZone("");
         setWrittenData(true);
-    }
-
-
-   
+    }   
 
 
     const createMark = () => {
@@ -72,12 +69,12 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
     };
 
     const toggleZoneControl = () => {
-        setPositionChange(254);
+        setPositionChange(34);
         setShowZoneControl(!showZoneControl);
     };
 
     const closeZone=()=>{
-        setPositionChange(230);
+        setPositionChange(0);
         onCloseZone()
     }
 
@@ -113,7 +110,6 @@ export default function ContextMenuLocation({ positionContextMenu, onClose, onCr
                             <input className=" btn btn-sm btn-success" type="submit" value="Crear" />
                         </form>
                     </div>
-
                     : (
                         !showZoneControl ?
                             <div className=" d-flex flex-column gap-1 ">

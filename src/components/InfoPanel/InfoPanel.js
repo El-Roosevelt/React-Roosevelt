@@ -2,7 +2,7 @@ import React, { use, useState } from "react";
 import "./InfoPanel.scss";
 
 
-export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor, types }) {
+export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor, typesDanger}) {
   const [tabSwitched, setTabSwitched] = useState(false);
 
   const [selectedZoneToRemove, setSelectedZoneToRemove] = useState();
@@ -31,11 +31,11 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
     setSelectedZoneToEdit({
       id: zone.id,
       name: zone.name,
-      type: zone.color,
+      type: zone.type,
       coordpol: zone.coordpol
     })
     setNameZoneEdit(zone.name)
-    setTypeZoneEdit(zone.color)
+    setTypeZoneEdit(zone.type)
   }
   const editZone = () => {
     onEditZone(selectedZoneToEdit);
@@ -138,8 +138,8 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
                           <label className=" form-label">
                             Tipo de zona:
                           </label>
-                          <select className="form-select w-75" value={danger[typeZoneEdit]} onChange={e=>setTypeZoneEdit(e.target.value)}>
-                          {Object.entries(types).map((key) => (
+                          <select className="form-select w-75" value={typeZoneEdit} onChange={e=>setTypeZoneEdit(e.target.value)}>
+                          {Object.keys(typesDanger).map(key => (
                                                     <option value={key}>{danger[key]}</option>
                                                 ))}
                           </select>
@@ -151,7 +151,7 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
                             type: "",
                             coordpol: [[]]
                           })} value={"Cancelar"} />
-                          <input type="submit" className=" btn btn-success w-auto" value={"Editar"}/>
+                          <input type="submit" className=" btn btn-success w-auto" value={"Guardar"}/>
                         </div>
 
                       </form>

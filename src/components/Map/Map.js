@@ -26,7 +26,7 @@ export default function Map() {
   // marcadores punto a punto
   const markersRef = useRef([]);
 
-  const ColorTranslate = Object.freeze({
+  const dangerTranslate = Object.freeze({
     rojo: "red",
     amarillo: "yellow",
     verde: "green",
@@ -76,7 +76,7 @@ export default function Map() {
       properties: {
         id: zone.id,
         name: zone.name,
-        color: ColorTranslate[zone.color],
+        color: dangerTranslate[zone.color],
       },
     })),
   };
@@ -213,8 +213,10 @@ export default function Map() {
     setZonesRef((prev) => prev.filter((e) => e.id != id));    
   }
 
-  function handleEditZone(zone){
-
+  function handleEditZone(zone){    
+    setZonesRef(prev=>prev.map(z=>
+      z.id==zone.id?{id:zone.id,name:zone.name,color:zone.type,coordpol:zone.coordpol}:z
+    ))
   }
   const handleMouseMoveMap = (e) => {
     setCenterMouse([e.lngLat.lng, e.lngLat.lat]);
@@ -471,7 +473,7 @@ export default function Map() {
         properties: {
           id: zone.id,
           name: zone.name,
-          color: ColorTranslate[zone.color],
+          color: dangerTranslate[zone.color],
         },
       })),
     };
@@ -494,19 +496,11 @@ export default function Map() {
           onCreateEdge={handleCreatEdgeZone}
           onCloseZone={handleCloseZone}
           onCancelZone={handleRemoveZoneInCreation}
-          typeZones={ColorTranslate}
+          typeZones={dangerTranslate}
           dataNewZone={dataNewZone}
           onChangeDataZone={setDataNewZone}
         />
-      )}
-      <div className=" p-4">
-        <p>
-          longitud:{positionCreateElement.lng} latitud{" "}
-          {positionCreateElement.lat}
-        </p>
-        <p>{dataNewZone.name}</p>
-        <p>{dataNewZone.color}</p>
-      </div>
+      )}      
 
       <div
         id="map-container"
@@ -528,15 +522,15 @@ export default function Map() {
         />
        <div className="infoSide d-flex flex-row">
           <div className="d-flex flex-column align-items-start mx-3">
-            <i className="bi bi-chevron-left" style={{ fontSize: "1.5rem", cursor: "pointer" }}></i>
+            <i className="bi bi-chevron-left" style={{ fontSize: "1.5rem", cursor: "pointer"}}></i>
           </div>
           
-          <InfoPanel 
+          <InfoPanel
             zones={zonesRef} 
             onRemoveZone={handleRemoveZone} 
             onEditZone={handleEditZone}
             dangerColor={dangerColor} 
-            types={layerState}
+            types={dangerTranslate}
           />
           
         </div>
