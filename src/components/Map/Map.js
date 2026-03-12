@@ -263,7 +263,7 @@ export default function Map() {
     if (!mapRef.current) return;
 
     // Limpia todos los marcadores si ve que son mas de dos
-    if (routePoints.length === 3) {
+    if (routePoints.length === 2) {
       clearMarkers();
       setGoal(false);
     } else setGoal(true);
@@ -279,7 +279,7 @@ export default function Map() {
     setRoutePoints((prev) => {
       if (prev.length === 2) {
       }
-      if (prev.length === 3) return [coords];
+      if (prev.length === 2) return [coords];
       return [...prev, coords];
     });
   };
