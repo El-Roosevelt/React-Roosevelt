@@ -8,10 +8,14 @@ import NavBar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
 import AppRouter from "./pages/Router/AppRouter";
 import ScrollToTop from "./pages/Router/ScrollToTop";
+import { useState } from "react";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
+  
   return (
     <>
+    <AuthProvider>
       <BrowserRouter>
       <ScrollToTop />
         <Header />
@@ -19,6 +23,7 @@ function App() {
         <AppRouter />
         <Footer />
       </BrowserRouter>
+      </AuthProvider>
     </>
   );
 }

@@ -4,11 +4,11 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./Map.scss";
 import customMarkerPng from "../../assets/custom-marker.png";
-import restaurantsData from "../../assets/providence-restaurants.json";
+import interestPointData from "../../assets/providence-interestPoint.json";
 import ContextMenuLocation from "../contextMenuLocation/contextMenuLocation";
 import LayerCheckboxes from "../LayerCheckboxes/LayerCheckboxes";
 import Popup from "../Popup/Popup";
-
+import InfoPanel from "../../components/InfoPanel/InfoPanel";
 
 //38.361498735545176, -0.49144135129607736
 const INITIAL_CENTER = [-0.49144135129607736, 38.361498735545176];
@@ -17,85 +17,105 @@ const INITIAL_ZOOM = 15;
 export default function Map() {
   const mapRef = useRef();
   const mapContainerRef = useRef();
-  const markersRef = useRef([]);
 
-  const [popupData, setPopupData] = useState(null)
-
+  // VARIABLES DE MAPA
   const [center, setCenter] = useState(INITIAL_CENTER);
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
-
-  const [goal,setGoal]=useState(false)
-
   const [centerMouse, setCenterMouse] = useState(INITIAL_CENTER);
+
+  // marcadores punto a punto
+  const markersRef = useRef([]);
+
+  const ColorTranslate = Object.freeze({
+    rojo: "red",
+    amarillo: "yellow",
+    verde: "green",
+  });
+
+  const dangerColor = Object.freeze({
+    rojo: " bg-danger",
+    amarillo: " bg-warning",
+    verde: " bg-success",
+  });
+
+  // Datos que vendran de la api
+  const [zonesRef, setZonesRef] = useState([
+    {
+      id: Date.now(),
+      name: "Zona de Plaza Alfonso X",
+      color: "amarillo",
+      coordpol: [
+        [-0.49321027016051744, 38.36560377774532], // va de principio a fin
+        [-0.4924404263540225, 38.3626784200614],
+        [-0.4802074143640027, 38.36177478672232],
+        [-0.49321027016051744, 38.36560377774532], // hay que volverlo a unir con el primer punto
+      ],
+    },
+  ]);
+
+  const [rutesRef, setRutesRef] = useState({
+    id: 0,
+    coordinates: [[]],
+  });
+
+  const [dataNewZone, setDataNewZone] = useState({
+    id: zonesRef.length,
+    name: "",
+    color: "",
+  });
+
+  // Datos de zonas que se convertiran en poligonos para crear zonas
+  const datazones = {
+    type: "FeatureCollection",
+    features: zonesRef.map((zone) => ({
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [zone.coordpol],
+      },
+      properties: {
+        id: zone.id,
+        name: zone.name,
+        color: ColorTranslate[zone.color],
+      },
+    })),
+  };
+
+  const [popupData, setPopupData] = useState(null);
+
+  // MIS VARIABLES
+  const [goal, setGoal] = useState(false);
+
+  const [amountPointZone, setAmountPointZone] = useState(0);
 
   const [positionCreateElement, setPositionCreateElement] = useState({
     lng: 0,
     lat: 0,
   });
 
-  const [positionNewMark, setPositionNewMark] = useState({
-    lng: 0,
-    lat: 0
-  })
+  const [routePoints, setRoutePoints] = useState([]);
 
-  const [routePoints, setRoutePoints] = useState([])
-
-  const [geoData, setGeoData] = useState(restaurantsData);
+  const [geoData, setGeoData] = useState(interestPointData);
 
   const [layerState, setLayerState] = useState([
     {
-      name: "vegetarian",
+      name: "elevator",
       color: "#33a02c",
       isChecked: true,
     },
     {
-      name: "sandwich",
+      name: "ramp",
       color: "#ffff99",
       isChecked: true,
     },
     {
-      name: "asian",
+      name: "stairs",
       color: "#6a3d9a",
       isChecked: true,
     },
     {
-      name: "american",
+      name: "rebuild",
       color: "#a6cee3",
-      isChecked: true,
-    },
-    {
-      name: "coffee",
-      color: "#e31a1c",
-      isChecked: true,
-    },
-    {
-      name: "mexican",
-      color: "#cab2d6",
-      isChecked: true,
-    },
-    {
-      name: "seafood",
-      color: "#1f78b4",
-      isChecked: true,
-    },
-    {
-      name: "ice cream",
-      color: "#fb9a99",
-      isChecked: true,
-    },
-    {
-      name: "korean",
-      color: "#cab2d6",
-      isChecked: true,
-    },
-    {
-      name: "sushi",
-      color: "#b2df8a",
-      isChecked: true,
-    },
-    {
-      name: "italian",
-      color: "#ff7f00",
       isChecked: true,
     },
   ]);
@@ -127,40 +147,109 @@ export default function Map() {
       center: INITIAL_CENTER,
       zoom: INITIAL_ZOOM,
     });
+    clearMarkers();
   };
 
+  // Iniciar la creacion de la zona con un punto inicial
+  const handleOpenZone = (dataZone) => {
+    console.log("DATA ZONA:", dataZone);
+    setAmountPointZone(1);
+
+    const newZone = {
+      id: Date.now(),
+      name: dataZone.name,
+      color: dataZone.color,
+      coordpol: [[positionCreateElement.lng, positionCreateElement.lat]],
+    };
+
+    setZonesRef((prev) => [...prev, newZone]);
+  };
+  // Creando la arista de la zona en creacion
+  const handleCreatEdgeZone = () => {
+    setAmountPointZone(amountPointZone + 1);
+    const coords = [positionCreateElement.lng, positionCreateElement.lat];
+
+    if (!mapRef.current) return;
+
+    setZonesRef((prev) => {
+      const newZones = [...prev];
+      newZones[newZones.length - 1].coordpol.push(coords);
+      return newZones;
+    });
+  };
+  // Terminar de cerrar la zona en creacion y cierra el contextmenu
+  const handleCloseZone = () => {
+    setAmountPointZone(0);
+    handleCloseContextMenuMap();
+    setZonesRef((prev) => {
+      const newZones = [...prev];
+      newZones[newZones.length - 1].coordpol.push(
+        newZones[newZones.length - 1].coordpol[0],
+      );
+      return newZones;
+    });
+    setDataNewZone({
+      id: zonesRef.length,
+      name: "",
+      color: "",
+    });
+  };
+  // Cancelar la creacion de la zona
+  const handleRemoveZoneInCreation = () => {
+    setAmountPointZone(0);
+    handleCloseContextMenuMap();
+    setZonesRef((prev) => prev.slice(0, -1));
+
+    setDataNewZone({
+      id: zonesRef.length,
+      name: "",
+      color: "",
+    });
+  };
+
+  // Eliminar zona
+
+  function handleRemoveZone(id) {    
+    setZonesRef((prev) => prev.filter((e) => e.id != id));    
+  }
+
+  function handleEditZone(zone){
+
+  }
   const handleMouseMoveMap = (e) => {
     setCenterMouse([e.lngLat.lng, e.lngLat.lat]);
   };
 
   const handleMarkerClick = (e) => {
-    setPopupData({ lngLat: e.feature.geometry.coordinates, properties: e.feature.properties });
-  }
+    setPopupData({
+      lngLat: e.feature.geometry.coordinates,
+      properties: e.feature.properties,
+    });
+  };
 
-  const handleCreateMark = (e) => {
-    const coords = [e.lng, e.lat];
+  const handleCreateMark = () => {
+    const coords = [positionCreateElement.lng, positionCreateElement.lat];
 
     if (!mapRef.current) return;
-    if(routePoints.length===2){
+    if (routePoints.length === 2) {
       clearMarkers();
       setGoal(false);
-    }
-    else setGoal(true);
-    
+    } else setGoal(true);
+
     const marker = new mapboxgl.Marker()
       .setLngLat(coords)
       .addTo(mapRef.current);
 
     markersRef.current.push(marker);
 
-    setRoutePoints(prev => {
+    setRoutePoints((prev) => {
       if (prev.length === 2) return [coords];
       return [...prev, coords];
     });
   };
 
   const clearMarkers = () => {
-    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = [];
     setRoutePoints([]);
     if (mapRef.current.getLayer("route")) {
@@ -178,7 +267,7 @@ export default function Map() {
         cuisine: e.cuisine,
       },
       geometry: {
-        coordinates: [e.lng, e.lat],
+        coordinates: [positionCreateElement.lng, positionCreateElement.lat],
         type: "Point",
       },
     };
@@ -205,8 +294,8 @@ export default function Map() {
         mapRef.current.addImage("custom-marker", image, { sdf: true });
       });
 
-      // add a single source for all restaurants
-      mapRef.current.addSource("restaurants", {
+      // add a single source for all interestPoint
+      mapRef.current.addSource("interestPoint", {
         type: "geojson",
         data: geoData,
       });
@@ -215,21 +304,21 @@ export default function Map() {
       for (const layer of layerState) {
         const { name, color } = layer;
 
-        const layerId = `restaurants-${name}-symbol`;
+        const layerId = `interestPoint-${name}-symbol`;
 
         if (!mapRef.current.getLayer(layerId)) {
           // add a layer for each cuisine type, filtering to only show features with that cuisine type.
           for (const layer of layerState) {
             const { name, color } = layer;
 
-            const layerId = `restaurants-${name}-symbol`;
+            const layerId = `interestPoint-${name}-symbol`;
 
             // add a symbol layer for each cuisine type, filtering to only show features with that cuisine type.
             if (!mapRef.current.getLayer(layerId)) {
               mapRef.current.addLayer({
                 id: layerId,
                 type: "symbol",
-                source: "restaurants",
+                source: "interestPoint",
 
                 // Grabs local image for custom marker, allows markers to over lap and colors each marker based on the related cuisine color.
                 layout: {
@@ -272,58 +361,31 @@ export default function Map() {
           },
         });
       }
-
-      /*mapRef.current.addSource("points", {
+      mapRef.current.addSource("zones", {
         type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [
-            {
-              type: "Feature",
-              properties: {},
-              geometry: {
-                type: "Point",
-                coordinates: [-0.49144135129607737, 38.33989873554519],
-              },
-            },
-            {
-              type: "Feature",
-              properties: {},
-              geometry: {
-                type: "Point",
-                coordinates: [-0.489451351296075, 38.36949873554509],
-              },
-            },
-          ],
+        data: datazones,
+      });
+
+      mapRef.current.addLayer({
+        id: "zones",
+        type: "fill",
+        source: "zones",
+        paint: {
+          "fill-color": ["get", "color"],
+          "fill-opacity": 0.5,
         },
       });
 
       mapRef.current.addLayer({
-        id: "circle",
-        type: "circle",
-        source: "points",
+        id: "outline",
+        type: "line",
+        source: "zones",
         paint: {
-          "circle-color": "#4264fb",
-          "circle-radius": 8,
-          "circle-stroke-width": 2,
-          "circle-stroke-color": "#ffffff",
+          "line-color": "#000",
+          "line-width": 3,
         },
       });
-
-      mapRef.current.on("click", "circle", (e) => {
-        mapRef.current.flyTo({
-          center: e.features[0].geometry.coordinates,
-        });
-      });
-
-      mapRef.current.on("mouseenter", "circle", () => {
-        mapRef.current.getCanvas().style.cursor = "pointer";
-      });
-
-      mapRef.current.on("mouseleave", "circle", () => {
-        mapRef.current.getCanvas().style.cursor = "";
-      });*/
-    });   
+    });
 
     mapRef.current.on("move", () => {
       // get the current center coordinates and zoom level from the map
@@ -341,11 +403,10 @@ export default function Map() {
       mapRef.current.remove();
     };
   }, []);
-
   // Cuando se añada un nuevo punto de interes
   useEffect(() => {
-    if (mapRef.current?.getSource("restaurants")) {
-      mapRef.current.getSource("restaurants").setData(geoData);
+    if (mapRef.current?.getSource("interestPoint")) {
+      mapRef.current.getSource("interestPoint").setData(geoData);
     }
   }, [geoData]);
 
@@ -354,7 +415,7 @@ export default function Map() {
     if (!mapRef.current) return;
 
     layerState.forEach((layer) => {
-      const layerId = `restaurants-${layer.name}-symbol`;
+      const layerId = `interestPoint-${layer.name}-symbol`;
 
       if (mapRef.current.getLayer(layerId)) {
         mapRef.current.setLayoutProperty(
@@ -392,8 +453,30 @@ export default function Map() {
       }
     };
     fetchRoute();
-  }, [routePoints])
+  }, [routePoints]);
+  // creador de zonas nuevas
+  useEffect(() => {
+    if (!mapRef.current?.isStyleLoaded()) return;
+    // 
+    if (!mapRef || !mapRef.current.isStyleLoaded() || !mapRef.current.getSource("zones")) return;
 
+    const newData = {
+      type: "FeatureCollection",
+      features: zonesRef.map((zone) => ({
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [zone.coordpol],
+        },
+        properties: {
+          id: zone.id,
+          name: zone.name,
+          color: ColorTranslate[zone.color],
+        },
+      })),
+    };
+    mapRef.current.getSource("zones").setData(newData);
+  }, [zonesRef]);
 
   return (
     <>
@@ -406,8 +489,25 @@ export default function Map() {
           onCreateMark={handleCreateMark}
           types={layerState}
           goal={goal}
+          amountPointZone={amountPointZone}
+          onOpenZone={handleOpenZone}
+          onCreateEdge={handleCreatEdgeZone}
+          onCloseZone={handleCloseZone}
+          onCancelZone={handleRemoveZoneInCreation}
+          typeZones={ColorTranslate}
+          dataNewZone={dataNewZone}
+          onChangeDataZone={setDataNewZone}
         />
       )}
+      <div className=" p-4">
+        <p>
+          longitud:{positionCreateElement.lng} latitud{" "}
+          {positionCreateElement.lat}
+        </p>
+        <p>{dataNewZone.name}</p>
+        <p>{dataNewZone.color}</p>
+      </div>
+
       <div
         id="map-container"
         ref={mapContainerRef}
@@ -426,6 +526,20 @@ export default function Map() {
           layerState={layerState}
           setLayerState={setLayerState}
         />
+       <div className="infoSide d-flex flex-row">
+          <div className="d-flex flex-column align-items-start mx-3">
+            <i className="bi bi-chevron-left" style={{ fontSize: "1.5rem", cursor: "pointer" }}></i>
+          </div>
+          
+          <InfoPanel 
+            zones={zonesRef} 
+            onRemoveZone={handleRemoveZone} 
+            onEditZone={handleEditZone}
+            dangerColor={dangerColor} 
+            types={layerState}
+          />
+          
+        </div>
       </div>
     </>
   );
