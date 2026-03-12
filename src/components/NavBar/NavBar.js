@@ -143,22 +143,23 @@ export default function NavBar() {
             </NavLink>
           </li>
           <li className="nav-item col">
-            <NavLink to="/my-routes"
+            <span
+              to="/my-routes"
               className={link("/my-routes")}
               onClick={() => protectedRoute("/my-routes")}
             >
               <i className="bi bi-geo-alt pe-1"></i>
               <span className="d-none d-lg-inline">Mis Rutas</span>
-            </NavLink>
+            </span>
           </li>
           <li className="nav-item col">
-            <NavLink to="/fav-routes"
+            <span to="/fav-routes"
               className={link("/fav-routes")}
               onClick={() => protectedRoute("/fav-routes")}
             >
               <i className="bi bi-heart pe-1"></i>
               <span className=" d-none d-lg-inline">Rutas Favoritas</span>
-            </NavLink>
+            </span>
           </li>
           <li className="nav-item col">
             <NavLink to="/settings"

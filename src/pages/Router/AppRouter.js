@@ -17,20 +17,28 @@ export default function AppRouter() {
                 <Route path="/login" element={<Login view="iniciar" />} />
                 <Route path="/login/registro" element={<Login view="registro" />} />
                 <Route path="/login/recuperar" element={<Login view="recuperar" />} />
-                <Route path="/my-routes" element={<MisRutas />} />
-                <Route path="/fav-routes" element={<RutasFavoritas />} />
+                {/* <Route path="/my-routes" element={<MisRutas />} />
+                <Route path="/fav-routes" element={<RutasFavoritas />} /> */}
                 <Route path="/settings" element={<Settings />} />
-                <Route path="/map" element={<Mapa />} /> 
+                <Route path="/map" element={<Mapa />} />
                 <Route path="*" element={<NotFound />} />
                 <Route
-                    path="/settings"
+                    path="/my-routes"
                     element={
                         <ProtectedRoute>
-                            <Settings />
+                            <MisRutas />
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/map" element={<Mapa  view = "mapa"/>} />
+                <Route
+                    path="/fav-routes"
+                    element={
+                        <ProtectedRoute>
+                            <RutasFavoritas />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/map" element={<Mapa view="mapa" />} />
             </Routes>
 
         </>
