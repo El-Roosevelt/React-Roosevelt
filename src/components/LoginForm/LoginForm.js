@@ -57,28 +57,29 @@ export default function RegisterForm({ onSwitch }) {
 
     setLoading(true);
     try {
-      
+      // PAYLOAD CORREGIDO PARA EL BACKEND
       const payload = {
-        name: formData.username, // Envio username como 'name' para el backend
-        username: formData.username,
+        username: formData.username,      
         password: formData.password,
         email: formData.email,
-        email_sec: formData.email_sec || formData.email,
+        email_sec: formData.email_sec || formData.email, 
         tel: formData.tel,
-        fecha_nac: formData.fecha_nac,
+        fechaNac: formData.fecha_nac,   
         foto: formData.foto || "default.png",
-        administrador: false
+        administrador: false             
       };
 
+     
       await axios.post("http://localhost:8080/roosevelt/api/users", payload);
 
       setStatusMessage("Usuario registrado correctamente");
       setFormData(initialForm);
       setErrors({});
     } catch (error) {
-      console.error(error.response?.data);
-      // Mostrar el error específico que devuelve el servidor
-      setStatusMessage(error.response?.data?.error || "Error al registrar usuario");
+      console.error("Detalles del error:", error.response?.data);
+      //  el mensaje de error que viene del backend 
+      const errorMsg = error.response?.data?.message || "Error al registrar usuario";
+      setStatusMessage(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -198,7 +199,7 @@ export default function RegisterForm({ onSwitch }) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="btn btn-primary rounded-pill px-5 py-2 fw-bold text-uppercase"
+                  className="btn btn-primary border border-secondary border-2 rounded-pill px-5 py-3 fs-6 fw-bold text-uppercase"
                 >
                   {loading ? "Enviando..." : "Registrarme"}
                 </button>
