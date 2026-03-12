@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default function RegisterForm({ onSwitch }) {
 
-  const [formData, setFormData] = useState({
+  const initialForm = {
     username: "",
     password: "",
     confirmPassword: "",
@@ -12,8 +12,9 @@ export default function RegisterForm({ onSwitch }) {
     tel: "",
     fecha_nac: "",
     foto: ""
-  });
+  };
 
+  const [formData, setFormData] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [statusMessage, setStatusMessage] = useState("");
 
@@ -88,10 +89,9 @@ export default function RegisterForm({ onSwitch }) {
 
       setStatusMessage("Usuario registrado correctamente");
 
-        await axios.post(
-          "http://localhost:8080/roosevelt/api/users",
-          userLoad
-        );
+      // limpiar formulario
+      setFormData(initialForm);
+      setErrors({});
 
     } catch (error) {
 
@@ -105,70 +105,75 @@ export default function RegisterForm({ onSwitch }) {
   return (
 
     <div className="container py-5">
+
       <div className="row justify-content-center">
-        <div class="col-12 col-md-12 col-lg-11 col-xl-12">
 
-          <h2 className="text-center mb-4 text-primary">
-            Formulario de registro
-          </h2>
+        {/* FORM  responsive */}
+        <div className="col-12 col-sm-10 col-md-8 col-lg-12 col-xl-12">
 
-          <form onSubmit={handleSubmit} noValidate>
+          <div className="card shadow-lg border-0 rounded-4 p-4">
 
-            {/* USERNAME */}
-            <div className="mb-3">
+            <h2 className="text-center mb-4 text-primary">
+              Formulario de registro
+            </h2>
 
-              <input
-                type="text"
-                name="username"
-                placeholder="Nombre de usuario"
-                value={formData.username}
-                onChange={handleChange}
-                className={`form-control form-control-lg ${errors.username ? "is-invalid" : ""}`}
-              />
+            <form onSubmit={handleSubmit} noValidate>
 
-              <div className="invalid-feedback">
-                {errors.username}
+              {/* USERNAME */}
+              <div className="mb-3">
+
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Nombre de usuario"
+                  value={formData.username}
+                  onChange={handleChange}
+                  className={`form-control ${errors.username ? "is-invalid" : ""}`}
+                />
+
+                <div className="invalid-feedback">
+                  {errors.username}
+                </div>
+
               </div>
 
-            </div>
+              {/* EMAIL */}
+              <div className="mb-3">
 
-            {/* EMAIL */}
-            <div className="mb-3">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Correo electrónico"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`form-control ${errors.email ? "is-invalid" : ""}`}
+                />
 
-              <input
-                type="email"
-                name="email"
-                placeholder="Correo electrónico"
-                value={formData.email}
-                onChange={handleChange}
-                className={`form-control form-control-lg ${errors.email ? "is-invalid" : ""}`}
-              />
+                <div className="invalid-feedback">
+                  {errors.email}
+                </div>
 
-              <div className="invalid-feedback">
-                {errors.email}
               </div>
 
-            </div>
+              {/* PASSWORD */}
+              <div className="mb-3">
 
-            {/* PASSWORD */}
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Contraseña"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                />
 
+                <div className="invalid-feedback">
+                  {errors.password}
+                </div>
 
-            <div className="mb-3">
-
-              <input
-                type="password"
-                name="password"
-                placeholder="Contraseña"
-                value={formData.password}
-                onChange={handleChange}
-                className={`form-control form-control-lg ${errors.password ? "is-invalid" : ""}`}
-              />
-
-              <div className="invalid-feedback">
-                {errors.password}
               </div>
-            </div>
 
+              {/* CONFIRM PASSWORD */}
               <div className="mb-3">
 
                 <input
@@ -177,7 +182,7 @@ export default function RegisterForm({ onSwitch }) {
                   placeholder="Confirmar contraseña"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className={`form-control form-control-lg ${errors.confirmPassword ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
                 />
 
                 <div className="invalid-feedback">
@@ -189,7 +194,7 @@ export default function RegisterForm({ onSwitch }) {
               {/* PHONE + DATE */}
               <div className="row">
 
-                <div className="col-md-6 mb-3">
+                <div className="col-12 col-md-6 mb-3">
 
                   <input
                     type="text"
@@ -197,7 +202,7 @@ export default function RegisterForm({ onSwitch }) {
                     placeholder="Teléfono"
                     value={formData.tel}
                     onChange={handleChange}
-                    className={`form-control form-control-lg ${errors.tel ? "is-invalid" : ""}`}
+                    className={`form-control ${errors.tel ? "is-invalid" : ""}`}
                   />
 
                   <div className="invalid-feedback">
@@ -206,14 +211,14 @@ export default function RegisterForm({ onSwitch }) {
 
                 </div>
 
-                <div className="col-md-6 mb-3">
+                <div className="col-12 col-md-6 mb-3">
 
                   <input
                     type="date"
                     name="fecha_nac"
                     value={formData.fecha_nac}
                     onChange={handleChange}
-                    className={`form-control form-control-lg ${errors.fecha_nac ? "is-invalid" : ""}`}
+                    className={`form-control ${errors.fecha_nac ? "is-invalid" : ""}`}
                   />
 
                   <div className="invalid-feedback">
@@ -233,43 +238,52 @@ export default function RegisterForm({ onSwitch }) {
                   placeholder="URL de tu foto (opcional)"
                   value={formData.foto}
                   onChange={handleChange}
-                  className="form-control form-control-lg"
+                  className="form-control"
                 />
 
               </div>
 
-              {/* MENSAJE */}
+              {/* STATUS MESSAGE */}
               {statusMessage && (
-                <div className="alert alert-danger text-center">
+
+                <div className="alert alert-info text-center">
                   {statusMessage}
                 </div>
+
               )}
 
-              {/* BUTTON TU ESTILO */}
+              {/* BUTTON */}
               <div className="d-flex justify-content-center mt-4">
 
                 <button
                   type="submit"
-                  className="btn btn-primary rounded-pill px-5 py-3 fw-bold text-uppercase"
+                  className="btn btn-primary rounded-pill px-5 py-2 fw-bold text-uppercase"
                 >
                   Registrarme
                 </button>
 
               </div>
 
+              {/* LOGIN LINK */}
               <div className="text-center mt-4">
 
+                <p className="small mb-0">
+                  ¿Ya tienes cuenta?
+                </p>
+
                 <button
-                  type="button"
                   onClick={() => onSwitch("iniciar")}
-                  className="btn btn-link fw-semibold link-primary"
+                  type="button"
+                  className="btn btn-link fw-semibold"
                 >
-                  ¿Ya tienes cuenta? Login
+                  Login
                 </button>
 
               </div>
 
-          </form>
+            </form>
+
+          </div>
 
         </div>
 
