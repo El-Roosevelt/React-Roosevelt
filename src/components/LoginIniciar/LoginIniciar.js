@@ -77,7 +77,7 @@ export default function LoginIniciar({ onSwitch }) {
   return (
     <div className="animate-fade">
       <div className="row justify-content-center">
-        <div className="col-12 col-sm-11 col-md-10 col-lg-11">
+        <div className="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-8">
           <form onSubmit={handleSubmit} className="row g-4">
             {/* USERNAME */}
             <div className="col-12">

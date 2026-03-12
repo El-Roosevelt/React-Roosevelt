@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./LoginForm.scss";
 
 export default function RegisterForm({ onSwitch }) {
   const initialForm = {
@@ -17,6 +18,7 @@ export default function RegisterForm({ onSwitch }) {
   const [errors, setErrors] = useState({});
   const [statusMessage, setStatusMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [validated, setValidated] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -26,7 +28,7 @@ export default function RegisterForm({ onSwitch }) {
     if (!formData.email) {
       newErrors.email = "El correo es obligatorio";
     } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Correo no válido";
+      newErrors.email = "Correo no es válido";
     }
     if (!formData.password) {
       newErrors.password = "La contraseña es obligatoria";
@@ -53,28 +55,31 @@ export default function RegisterForm({ onSwitch }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setValidated(true);
     if (!validate()) return;
 
     setLoading(true);
     try {
-      // PAYLOAD CORREGIDO PARA EL BACKEND
-      const payload = {
-        username: formData.username,      
+
+      const userload = {
+        username: formData.username,
         password: formData.password,
         email: formData.email,
-        email_sec: formData.email_sec || formData.email, 
+        email_sec: formData.email_sec || formData.email,
         tel: formData.tel,
-        fechaNac: formData.fecha_nac,   
+        fechaNac: formData.fecha_nac,
         foto: formData.foto || "default.png",
-        administrador: false             
+        administrador: false
       };
 
-     
-      await axios.post("http://localhost:8080/roosevelt/api/users", payload);
+      await axios.post("http://localhost:8080/roosevelt/api/users", userload);
 
-      setStatusMessage("Usuario registrado correctamente");
-      setFormData(initialForm);
-      setErrors({});
+      setStatusMessage("Usuario se ha registrado correctamente");
+      setTimeout(() => {
+        onSwitch("iniciar")
+      }, 2000)
+      // setFormData(initialForm);
+      // setErrors({});
     } catch (error) {
       console.error("Detalles del error:", error.response?.data);
       //  el mensaje de error que viene del backend 
@@ -86,140 +91,142 @@ export default function RegisterForm({ onSwitch }) {
   };
 
   return (
-    <div className="container py-5">
+    <div className="container pb-2 pt-1">
       <div className="row justify-content-center">
-        <div className="col-12 col-sm-10 col-md-8 col-lg-6">
-          <div className="card shadow-lg border-0 rounded-4 p-4">
-            <h2 className="text-center mb-4 text-primary">Formulario de registro</h2>
-
-            <form onSubmit={handleSubmit} noValidate>
-              {/* USERNAME */}
-              <div className="mb-3">
-                <input
-                  type="text"
-                  name="username"
-                  autoComplete="username"
-                  placeholder="Nombre de usuario"
-                  value={formData.username}
-                  onChange={handleChange}
-                  className={`form-control ${errors.username ? "is-invalid" : ""}`}
-                />
-                <div className="invalid-feedback">{errors.username}</div>
-              </div>
-
-              {/* EMAIL */}
-              <div className="mb-3">
-                <input
-                  type="email"
-                  name="email"
-                  autoComplete="email"
-                  placeholder="Correo electrónico"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`form-control ${errors.email ? "is-invalid" : ""}`}
-                />
-                <div className="invalid-feedback">{errors.email}</div>
-              </div>
-
-              {/* PASSWORD */}
-              <div className="mb-3">
-                <input
-                  type="password"
-                  name="password"
-                  autoComplete="new-password"
-                  placeholder="Contraseña"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`form-control ${errors.password ? "is-invalid" : ""}`}
-                />
-                <div className="invalid-feedback">{errors.password}</div>
-              </div>
-
-              {/* CONFIRM PASSWORD */}
-              <div className="mb-3">
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  autoComplete="new-password"
-                  placeholder="Confirmar contraseña"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
-                />
-                <div className="invalid-feedback">{errors.confirmPassword}</div>
-              </div>
-
-              {/* PHONE + DATE */}
-              <div className="row">
-                <div className="col-12 col-md-6 mb-3">
-                  <input
-                    type="text"
-                    name="tel"
-                    autoComplete="tel"
-                    placeholder="Teléfono"
-                    value={formData.tel}
-                    onChange={handleChange}
-                    className={`form-control ${errors.tel ? "is-invalid" : ""}`}
-                  />
-                  <div className="invalid-feedback">{errors.tel}</div>
-                </div>
-                <div className="col-12 col-md-6 mb-3">
-                  <input
-                    type="date"
-                    name="fecha_nac"
-                    value={formData.fecha_nac}
-                    onChange={handleChange}
-                    className={`form-control ${errors.fecha_nac ? "is-invalid" : ""}`}
-                  />
-                  <div className="invalid-feedback">{errors.fecha_nac}</div>
-                </div>
-              </div>
-
-              {/* FOTO */}
-              <div className="mb-3">
-                <input
-                  type="text"
-                  name="foto"
-                  placeholder="URL de tu foto (opcional)"
-                  value={formData.foto}
-                  onChange={handleChange}
-                  className="form-control"
-                />
-              </div>
-
-              {/* MENSAJE DE ESTADO */}
-              {statusMessage && (
-                <div className={`alert ${statusMessage.includes("correctamente") ? "alert-success" : "alert-danger"} text-center`}>
-                  {statusMessage}
-                </div>
-              )}
-
-              {/* BOTÓN */}
-              <div className="d-flex justify-content-center mt-4">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="btn btn-primary border border-secondary border-2 rounded-pill px-5 py-3 fs-6 fw-bold text-uppercase"
-                >
-                  {loading ? "Enviando..." : "Registrarme"}
-                </button>
-              </div>
-
-              {/* LOGIN LINK */}
-              <div className="text-center mt-4">
-                <p className="small mb-0">¿Ya tienes cuenta?</p>
-                <button
-                  onClick={() => onSwitch("iniciar")}
-                  type="button"
-                  className="btn btn-link fw-semibold"
-                >
-                  Login
-                </button>
-              </div>
-            </form>
+            {/* <div className="col-12 col-lg-11"> */}
+             <div className="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-11">
+          <div className="pt-1 pb-1">
+            <h2 className="mb-4 text-center text-primary fw-bold">Registracion</h2>
           </div>
-        </div>
+        <form 
+          className={`row g-4 p-5 rounded-4 shadow-sm bg-white border border-primary-subtle ${validated ? "was-validated" : "needs-validation"}`}
+          noValidate
+          onSubmit={handleSubmit}
+        >
+          {/* username */}
+          <div className="col-md-12 col-lg-6">
+            <input
+              type="text"
+              name="username"
+              placeholder="Nombre de usuario"
+              required
+              value={formData.username}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 shadow-none ${errors.username ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.username}</div>
+          </div>
+          {/* EMAIL */}
+          <div className="col-md-12 col-lg-6">
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="Correo electrónico"
+              value={formData.email}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 ${errors.email ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.email}</div>
+          </div>
+          {/* PASSWORD */}
+
+          <div className="col-md-12 col-lg-6">
+            <input
+              type="password"
+              name="password"
+              placeholder="Contraseña"
+              value={formData.password}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 shadow-none ${errors.password ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.password}</div>
+          </div>
+          {/* CONFIRM PASSWORD */}
+
+          <div className="col-md-12 col-lg-6">
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirmar contraseña"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 shadow-none  ${errors.confirmPassword ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.confirmPassword}</div>
+          </div>
+
+          {/* tel */}
+
+          <div className="col-12 ">
+            <input
+              type="text"
+              name="tel"
+              required
+              placeholder="Teléfono"
+              value={formData.tel}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 shadow-none ${errors.tel ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.tel}</div>
+          </div>
+          <div className="col-12 ">
+            <input
+              type="date"
+              name="fecha_nac"
+              required
+              value={formData.fecha_nac}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 shadow-none ${errors.fecha_nac ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.fecha_nac}</div>
+          </div>
+          {/* FOTO */}
+
+          <div className="col-md-12">
+            <input
+              type="text"
+              name="foto"
+              placeholder="URL de tu foto (opcional)"
+              value={formData.foto}
+              onChange={handleChange}
+              className="form-control rounded-3 p-3 shadow-none "
+            />
+          </div>
+          {/* MENSAJE DE ESTADO */}
+          {statusMessage && (
+            <div className="col-12">
+            <div className={`alert ${statusMessage.includes("correctamente") ? "alert-success" : "alert-danger"} text-center`}>
+              {statusMessage}
+            </div>
+            </div>
+          )}
+          {/* btn*/}
+
+          <div className="col-12 text-center mt-4">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary border border-secondary border-2 rounded-pill px-5 py-3 fs-6 fw-bold text-uppercase"
+            >
+              {loading ? "Enviando..." : "Registrarme"}
+            </button>
+          </div>
+          {/* LOGIN LINK */}
+          <div className="col-12 text-center mt-2">
+
+            <p className="text-muted small">¿Ya tienes cuenta?</p>
+            <button
+              onClick={() => onSwitch("iniciar")}
+              type="button"
+              className="btn link-hover fw-semibold"
+            >
+              Login
+            </button>
+          </div>
+        </form>
       </div>
+    </div>
     </div>
   );
 }
