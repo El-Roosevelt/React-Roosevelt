@@ -53,10 +53,29 @@ export default function Map() {
     },
   ]);
 
-  const [rutesRef, setRutesRef] = useState({
-    id: 0,
-    coordinates: [[]],
-  });
+  const [rutesRef, setRutesRef] = useState([
+    {
+      id: Date.now(),
+      ruteName: "camino confortante",
+      description: "",
+      coordinates: [
+        [-0.4823535037734814, 38.34775791453754],
+        [-0.47852430655979106, 38.34935405748996],
+      ],
+      authorUser: {
+        id: 1,
+        username: "admin",
+        email: "admin@balmis.com",
+        password:
+          "$2a$10$fzcGgF.8xODz7ptkmZC.OeX1Kj5GDI//FhW2sG0vlshW6ZAKJky0e",
+        email_sec: "admin1@balmis.com",
+        administrador: true,
+        tel: "100000000",
+        fechaNac: "1990-01-01",
+        foto: "admin.jpg"
+      }
+    },
+  ]);
 
   const [dataNewZone, setDataNewZone] = useState({
     id: zonesRef.length,
@@ -209,14 +228,23 @@ export default function Map() {
 
   // Eliminar zona
 
-  function handleRemoveZone(id) {    
-    setZonesRef((prev) => prev.filter((e) => e.id != id));    
+  function handleRemoveZone(id) {
+    setZonesRef((prev) => prev.filter((e) => e.id != id));
   }
 
-  function handleEditZone(zone){    
-    setZonesRef(prev=>prev.map(z=>
-      z.id==zone.id?{id:zone.id,name:zone.name,color:zone.type,coordpol:zone.coordpol}:z
-    ))
+  function handleEditZone(zone) {
+    setZonesRef((prev) =>
+      prev.map((z) =>
+        z.id == zone.id
+          ? {
+              id: zone.id,
+              name: zone.name,
+              color: zone.color,
+              coordpol: zone.coordpol,
+            }
+          : z,
+      ),
+    );
   }
   const handleMouseMoveMap = (e) => {
     setCenterMouse([e.lngLat.lng, e.lngLat.lat]);
@@ -233,19 +261,25 @@ export default function Map() {
     const coords = [positionCreateElement.lng, positionCreateElement.lat];
 
     if (!mapRef.current) return;
-    if (routePoints.length === 2) {
+
+    // Limpia todos los marcadores si ve que son mas de dos
+    if (routePoints.length === 3) {
       clearMarkers();
       setGoal(false);
     } else setGoal(true);
 
+    //Crea el marcador
     const marker = new mapboxgl.Marker()
       .setLngLat(coords)
       .addTo(mapRef.current);
 
     markersRef.current.push(marker);
 
+    //mete coordenadas para luego formar la ruta, al tener dos pares de coordenadas, se dibuja la ruta
     setRoutePoints((prev) => {
-      if (prev.length === 2) return [coords];
+      if (prev.length === 2) {
+      }
+      if (prev.length === 3) return [coords];
       return [...prev, coords];
     });
   };
@@ -288,7 +322,7 @@ export default function Map() {
       center: center,
       zoom: zoom,
     });
-
+    // Al cargar, se comenzaran a crear los puntos de interes
     mapRef.current.on("load", () => {
       // load image to use as a custom marker
       mapRef.current.loadImage(customMarkerPng, (error, image) => {
@@ -308,37 +342,28 @@ export default function Map() {
 
         const layerId = `interestPoint-${name}-symbol`;
 
+        // Comprueba que no exita un punto de interes ya existente
         if (!mapRef.current.getLayer(layerId)) {
-          // add a layer for each cuisine type, filtering to only show features with that cuisine type.
-          for (const layer of layerState) {
-            const { name, color } = layer;
-
-            const layerId = `interestPoint-${name}-symbol`;
-
-            // add a symbol layer for each cuisine type, filtering to only show features with that cuisine type.
-            if (!mapRef.current.getLayer(layerId)) {
-              mapRef.current.addLayer({
-                id: layerId,
-                type: "symbol",
-                source: "interestPoint",
-
-                // Grabs local image for custom marker, allows markers to over lap and colors each marker based on the related cuisine color.
-                layout: {
-                  "icon-image": "custom-marker",
-                  "icon-size": 1,
-                  "icon-allow-overlap": true,
-                },
-                paint: {
-                  "icon-color": color,
-                  "icon-opacity": 0.8,
-                  "icon-halo-color": "#ffffff",
-                  "icon-halo-width": 2.5,
-                  "icon-halo-blur": 1,
-                },
-                filter: ["in", ["get", "cuisine"], ["literal", [name]]],
-              });
-            }
-          }
+          //Creando el cuerpo del layer (punto de interes)
+          mapRef.current.addLayer({
+            id: layerId,
+            type: "symbol",
+            source: "interestPoint",
+            // Coger la imagen de assets y el color de la propiedad del Layer para darsela al nuevo punto de interes
+            layout: {
+              "icon-image": "custom-marker",
+              "icon-size": 1,
+              "icon-allow-overlap": true,
+            },
+            paint: {
+              "icon-color": color,
+              "icon-opacity": 0.8,
+              "icon-halo-color": "#ffffff",
+              "icon-halo-width": 2.5,
+              "icon-halo-blur": 1,
+            },
+            filter: ["in", ["get", "cuisine"], ["literal", [name]]],
+          });
         }
         // add a click interaction for each of the layers to be used to render the popup
         mapRef.current.addInteraction(`${layerId}-click`, {
@@ -459,8 +484,13 @@ export default function Map() {
   // creador de zonas nuevas
   useEffect(() => {
     if (!mapRef.current?.isStyleLoaded()) return;
-    // 
-    if (!mapRef || !mapRef.current.isStyleLoaded() || !mapRef.current.getSource("zones")) return;
+    //
+    if (
+      !mapRef ||
+      !mapRef.current.isStyleLoaded() ||
+      !mapRef.current.getSource("zones")
+    )
+      return;
 
     const newData = {
       type: "FeatureCollection",
@@ -500,7 +530,12 @@ export default function Map() {
           dataNewZone={dataNewZone}
           onChangeDataZone={setDataNewZone}
         />
-      )}      
+      )}
+      <div>
+        <p>
+          {positionCreateElement.lng} {positionCreateElement.lat}
+        </p>
+      </div>
 
       <div
         id="map-container"
@@ -520,19 +555,21 @@ export default function Map() {
           layerState={layerState}
           setLayerState={setLayerState}
         />
-       <div className="infoSide d-flex flex-row">
+        <div className="infoSide d-flex flex-row">
           <div className="d-flex flex-column align-items-start mx-3">
-            <i className="bi bi-chevron-left" style={{ fontSize: "1.5rem", cursor: "pointer"}}></i>
+            <i
+              className="bi bi-chevron-left"
+              style={{ fontSize: "1.5rem", cursor: "pointer" }}
+            ></i>
           </div>
-          
+
           <InfoPanel
-            zones={zonesRef} 
-            onRemoveZone={handleRemoveZone} 
+            zones={zonesRef}
+            onRemoveZone={handleRemoveZone}
             onEditZone={handleEditZone}
-            dangerColor={dangerColor} 
-            types={dangerTranslate}
+            dangerColor={dangerColor}
+            typesDanger={dangerTranslate}
           />
-          
         </div>
       </div>
     </>
