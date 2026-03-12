@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./LoginForm.scss";
 
 export default function RegisterForm({ onSwitch }) {
-
-  const [formData, setFormData] = useState({
+  const initialForm = {
     username: "",
     password: "",
     confirmPassword: "",
@@ -12,266 +12,221 @@ export default function RegisterForm({ onSwitch }) {
     tel: "",
     fecha_nac: "",
     foto: ""
-  });
+  };
 
+  const [formData, setFormData] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [statusMessage, setStatusMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [validated, setValidated] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const validate = () => {
-
     let newErrors = {};
-
-    if (!formData.username)
-      newErrors.username = "El nombre de usuario es obligatorio";
-
-    if (!formData.email)
+    if (!formData.username) newErrors.username = "El nombre de usuario es obligatorio";
+    if (!formData.email) {
       newErrors.email = "El correo es obligatorio";
-    else if (!emailRegex.test(formData.email))
-      newErrors.email = "Correo no válido";
-
-    if (!formData.password)
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Correo no es válido";
+    }
+    if (!formData.password) {
       newErrors.password = "La contraseña es obligatoria";
-    else if (formData.password.length < 4)
+    } else if (formData.password.length < 4) {
       newErrors.password = "La contraseña debe tener mínimo 4 caracteres";
-
-    if (formData.password !== formData.confirmPassword)
+    }
+    if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Las contraseñas no coinciden";
-
-    if (!formData.tel)
-      newErrors.tel = "El teléfono es obligatorio";
-
-    if (!formData.fecha_nac)
-      newErrors.fecha_nac = "La fecha de nacimiento es obligatoria";
+    }
+    if (!formData.tel) newErrors.tel = "El teléfono es obligatorio";
+    if (!formData.fecha_nac) newErrors.fecha_nac = "La fecha de nacimiento es obligatoria";
 
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
-
     const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-
+    setFormData({ ...formData, [name]: value });
+    // Limpiar error del campo actual al escribir
+    if (errors[name]) setErrors({ ...errors, [name]: "" });
     if (statusMessage) setStatusMessage("");
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
-
+    setValidated(true);
     if (!validate()) return;
 
+    setLoading(true);
     try {
 
-      const payload = {
+      const userload = {
         username: formData.username,
         password: formData.password,
         email: formData.email,
         email_sec: formData.email_sec || formData.email,
         tel: formData.tel,
-        fecha_nac: formData.fecha_nac,
+        fechaNac: formData.fecha_nac,
         foto: formData.foto || "default.png",
         administrador: false
       };
 
-      await axios.post(
-        "http://localhost:8080/roosevelt/api/users",
-        payload
-      );
+      await axios.post("http://localhost:8080/roosevelt/api/users", userload);
 
-      setStatusMessage("Usuario registrado correctamente");
-
-      setTimeout(() => onSwitch("iniciar"), 1500);
-
+      setStatusMessage("Usuario se ha registrado correctamente");
+      setTimeout(() => {
+        onSwitch("iniciar")
+      }, 2000)
+      // setFormData(initialForm);
+      // setErrors({});
     } catch (error) {
-
-      setStatusMessage(
-        error.response?.data?.error ||
-        "Error al registrar usuario"
-      );
+      console.error("Detalles del error:", error.response?.data);
+      //  el mensaje de error que viene del backend 
+      const errorMsg = error.response?.data?.message || "Error al registrar usuario";
+      setStatusMessage(errorMsg);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-
-    <div className="container py-5">
+    <div className="container pb-2 pt-1">
       <div className="row justify-content-center">
-        <div class="col-12 col-md-12 col-lg-11 col-xl-12">
+            {/* <div className="col-12 col-lg-11"> */}
+             <div className="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-11">
+          <div className="pt-1 pb-1">
+            <h2 className="mb-4 text-center text-primary fw-bold">Registracion</h2>
+          </div>
+        <form 
+          className={`row g-4 p-5 rounded-4 shadow-sm bg-white border border-primary-subtle ${validated ? "was-validated" : "needs-validation"}`}
+          noValidate
+          onSubmit={handleSubmit}
+        >
+          {/* username */}
+          <div className="col-md-12 col-lg-6">
+            <input
+              type="text"
+              name="username"
+              placeholder="Nombre de usuario"
+              required
+              value={formData.username}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 shadow-none ${errors.username ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.username}</div>
+          </div>
+          {/* EMAIL */}
+          <div className="col-md-12 col-lg-6">
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="Correo electrónico"
+              value={formData.email}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 ${errors.email ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.email}</div>
+          </div>
+          {/* PASSWORD */}
 
-          <h2 className="text-center mb-4 text-primary">
-            Formulario de registro
-          </h2>
+          <div className="col-md-12 col-lg-6">
+            <input
+              type="password"
+              name="password"
+              placeholder="Contraseña"
+              value={formData.password}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 shadow-none ${errors.password ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.password}</div>
+          </div>
+          {/* CONFIRM PASSWORD */}
 
-          <form onSubmit={handleSubmit} noValidate>
+          <div className="col-md-12 col-lg-6">
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirmar contraseña"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 shadow-none  ${errors.confirmPassword ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.confirmPassword}</div>
+          </div>
 
-            {/* USERNAME */}
-            <div className="mb-3">
+          {/* tel */}
 
-              <input
-                type="text"
-                name="username"
-                placeholder="Nombre de usuario"
-                value={formData.username}
-                onChange={handleChange}
-                className={`form-control form-control-lg ${errors.username ? "is-invalid" : ""}`}
-              />
+          <div className="col-12 ">
+            <input
+              type="text"
+              name="tel"
+              required
+              placeholder="Teléfono"
+              value={formData.tel}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 shadow-none ${errors.tel ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.tel}</div>
+          </div>
+          <div className="col-12 ">
+            <input
+              type="date"
+              name="fecha_nac"
+              required
+              value={formData.fecha_nac}
+              onChange={handleChange}
+              className={`form-control rounded-3 p-3 shadow-none ${errors.fecha_nac ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.fecha_nac}</div>
+          </div>
+          {/* FOTO */}
 
-              <div className="invalid-feedback">
-                {errors.username}
-              </div>
-
+          <div className="col-md-12">
+            <input
+              type="text"
+              name="foto"
+              placeholder="URL de tu foto (opcional)"
+              value={formData.foto}
+              onChange={handleChange}
+              className="form-control rounded-3 p-3 shadow-none "
+            />
+          </div>
+          {/* MENSAJE DE ESTADO */}
+          {statusMessage && (
+            <div className="col-12">
+            <div className={`alert ${statusMessage.includes("correctamente") ? "alert-success" : "alert-danger"} text-center`}>
+              {statusMessage}
             </div>
-
-            {/* EMAIL */}
-            <div className="mb-3">
-
-              <input
-                type="email"
-                name="email"
-                placeholder="Correo electrónico"
-                value={formData.email}
-                onChange={handleChange}
-                className={`form-control form-control-lg ${errors.email ? "is-invalid" : ""}`}
-              />
-
-              <div className="invalid-feedback">
-                {errors.email}
-              </div>
-
             </div>
+          )}
+          {/* btn*/}
 
-            {/* PASSWORD */}
+          <div className="col-12 text-center mt-4">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary border border-secondary border-2 rounded-pill px-5 py-3 fs-6 fw-bold text-uppercase"
+            >
+              {loading ? "Enviando..." : "Registrarme"}
+            </button>
+          </div>
+          {/* LOGIN LINK */}
+          <div className="col-12 text-center mt-2">
 
-
-            <div className="mb-3">
-
-              <input
-                type="password"
-                name="password"
-                placeholder="Contraseña"
-                value={formData.password}
-                onChange={handleChange}
-                className={`form-control form-control-lg ${errors.password ? "is-invalid" : ""}`}
-              />
-
-              <div className="invalid-feedback">
-                {errors.password}
-              </div>
-            </div>
-
-              <div className="mb-3">
-
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  placeholder="Confirmar contraseña"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={`form-control form-control-lg ${errors.confirmPassword ? "is-invalid" : ""}`}
-                />
-
-                <div className="invalid-feedback">
-                  {errors.confirmPassword}
-                </div>
-
-              </div>
-
-              {/* PHONE + DATE */}
-              <div className="row">
-
-                <div className="col-md-6 mb-3">
-
-                  <input
-                    type="text"
-                    name="tel"
-                    placeholder="Teléfono"
-                    value={formData.tel}
-                    onChange={handleChange}
-                    className={`form-control form-control-lg ${errors.tel ? "is-invalid" : ""}`}
-                  />
-
-                  <div className="invalid-feedback">
-                    {errors.tel}
-                  </div>
-
-                </div>
-
-                <div className="col-md-6 mb-3">
-
-                  <input
-                    type="date"
-                    name="fecha_nac"
-                    value={formData.fecha_nac}
-                    onChange={handleChange}
-                    className={`form-control form-control-lg ${errors.fecha_nac ? "is-invalid" : ""}`}
-                  />
-
-                  <div className="invalid-feedback">
-                    {errors.fecha_nac}
-                  </div>
-
-                </div>
-
-              </div>
-
-              {/* FOTO */}
-              <div className="mb-3">
-
-                <input
-                  type="text"
-                  name="foto"
-                  placeholder="URL de tu foto (opcional)"
-                  value={formData.foto}
-                  onChange={handleChange}
-                  className="form-control form-control-lg"
-                />
-
-              </div>
-
-              {/* MENSAJE */}
-              {statusMessage && (
-                <div className="alert alert-danger text-center">
-                  {statusMessage}
-                </div>
-              )}
-
-              {/* BUTTON TU ESTILO */}
-              <div className="d-flex justify-content-center mt-4">
-
-                <button
-                  type="submit"
-                  className="btn btn-primary rounded-pill px-5 py-3 fw-bold text-uppercase"
-                >
-                  Registrarme
-                </button>
-
-              </div>
-
-              <div className="text-center mt-4">
-
-                <button
-                  type="button"
-                  onClick={() => onSwitch("iniciar")}
-                  className="btn btn-link fw-semibold link-primary"
-                >
-                  ¿Ya tienes cuenta? Login
-                </button>
-
-              </div>
-
-          </form>
-
-        </div>
-
+            <p className="text-muted small">¿Ya tienes cuenta?</p>
+            <button
+              onClick={() => onSwitch("iniciar")}
+              type="button"
+              className="btn link-hover fw-semibold"
+            >
+              Login
+            </button>
+          </div>
+        </form>
       </div>
-
+    </div>
     </div>
   );
 }

@@ -16,9 +16,10 @@ export default function Login({ view }) {
         <div className="row justify-content-center">
           
           {/* Responsive ancho automático */}
-          <div className="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+         
+            {/*<div className="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">*/}
 
-            <div className="bg-form p-4 p-md-5 rounded-4 shadow border">
+            <div className="bg-form p-4 p-md-5 rounded-4 shadow border col-xl-8">
 
               {/* Header */}
               <div className="text-center mb-4 mb-md-5">
@@ -97,7 +98,7 @@ export default function Login({ view }) {
           </div>
 
         </div>
-      </div>
+     
     </section>
   );
 }
