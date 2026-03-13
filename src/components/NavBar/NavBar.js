@@ -170,7 +170,7 @@ export default function NavBar() {
               <span className="d-none d-lg-inline">Configuración</span>
             </NavLink>
           </li>
-{/* 
+
           <li className="nav-item col">
             {user ? (
               <span role="button" className=" nav-link text-light fs-5" onClick={handleLogout}> 
@@ -182,7 +182,7 @@ export default function NavBar() {
                 <i className="bi bi-person-circle pe-1"></i>Login
               </NavLink>
             )}
-          </li> */}
+          </li> 
         </ul>
       </div>
 
