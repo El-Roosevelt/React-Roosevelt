@@ -129,7 +129,7 @@ export default function NavBar() {
     <>
       {/* Desktop */}
       <div className="d-none d-md-flex w-100 justify-content-center">
-        <ul className="container-fluid nav nav-pills nav-fill justify-content-between p-1 bg-secondary">
+        <ul className="container-fluid nav nav-pills nav-fill justify-content-between p-1 mi-nav">
           <li className="nav-item col">
             <NavLink to="/" className={link("/")}>
               <i className="bi bi-house-door pe-1"></i>
@@ -170,17 +170,7 @@ export default function NavBar() {
               <span className="d-none d-lg-inline">Configuración</span>
             </NavLink>
           </li>
-          
-
-          {/* {user && (
-            <li className="nav-item col">
-              <NavLink to="/settings" className={link("/settings")}>
-                <i className="bi bi-gear pe-1"></i>
-                <span className="d-none d-lg-inline">Configuración</span>
-              </NavLink>
-            </li>
-          )} */}
-
+{/* 
           <li className="nav-item col">
             {user ? (
               <span role="button" className="nav-links text-light border-0 bg-transparent" onClick={handleLogout}>
@@ -191,7 +181,7 @@ export default function NavBar() {
                 <i className="bi bi-person-circle pe-1"></i>Login
               </NavLink>
             )}
-          </li>
+          </li> */}
         </ul>
       </div>
 
