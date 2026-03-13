@@ -77,6 +77,7 @@ export default function RecuperarContrasena({ onSwitch }) {
             <input
               type="email"
               name="email"
+              required
               value={formData.email}
               onChange={handleChange}
               placeholder="Correo electronico"
