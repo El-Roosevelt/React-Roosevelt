@@ -7,13 +7,28 @@ export default function LoginIniciar({ onSwitch }) {
   const { credentials, setCredentials, setUser } = useContext(AuthContext);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [errors, setErrors] = useState({});
+  const [validated, setValidated] = useState(false);
   const navigate = useNavigate();
 
   const validateField = (name, value) => {
     let error = "";
-    if (name === "username" && !value) error = "El usuario es obligatorio";
-    if (name === "password" && !value) error = "La contraseña es obligatoria";
+    const cleanValue = value ? value.trim() : "";
+    if (name === "username") {
+      if (!cleanValue) {
+        error = "El usuario es obligatorio";
+      } else if (cleanValue.length < 3) {
+        error = "El usuario debe tener al menos 3 caracteres";
+      }
+    }
+    if (name === "password") {
+      if (!cleanValue) {
+        error = "La contraseña es obligatoria";
+      } else if (cleanValue.length < 4) {
+        error = "La contraseña debe tener al menos 4 caracteres";
+      }
+    }
     setErrors(prev => ({ ...prev, [name]: error }));
+    return error;
   };
 
   const handleChange = e => {
@@ -25,17 +40,28 @@ export default function LoginIniciar({ onSwitch }) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    let newErrors = {};
-    if (!credentials.username) newErrors.username = "El usuario es obligatorio";
-    if (!credentials.password) newErrors.password = "La contraseña es obligatoria";
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
+    const form = e.currentTarget;
+
+    //  campo por campo
+    const userError = validateField("username", credentials.username);
+    const passError = validateField("password", credentials.password);
+
+    // Si hay errores en lógica o en el form 
+    if (userError || passError || form.checkValidity() === false) {
+      setValidated(true); 
+      return;
+    }
+    // let newErrors = {};
+    // if (!credentials.username) newErrors.username = "El usuario es obligatorio";
+    // if (!credentials.password) newErrors.password = "La contraseña es obligatoria";
+    // setErrors(newErrors);
+    // if (Object.keys(newErrors).length > 0) return;
 
     try {
       // mando datos
       const response = await axios.post("http://localhost:8080/roosevelt/api/auth/login", {
-        username: credentials.username,
-        password: credentials.password
+        username: credentials.username.trim(),
+        password: credentials.password.trim()
       });
 
       if (response.status === 200) {
@@ -56,16 +82,18 @@ export default function LoginIniciar({ onSwitch }) {
 
         // Mostrar mensaje usando el username del formulario
         setMessage({
-          text: `¡Hola, ${mappedUser.username}! Sesión iniciada con éxito.`,
+          text: `Hola, ${mappedUser.username}! Sesión iniciada con éxito.`,
           type: "success"
         });
 
         // Limpiar formulario
         setCredentials({ username: "", password: "" });
+        setValidated(false);
 
         setTimeout(() => navigate("/"), 1500);
       }
     } catch (error) {
+      setValidated(false);
       if (error.response?.status === 401 || error.response?.status === 404) {
         setMessage({ text: "Usuario o contraseña incorrectos.", type: "danger" });
       } else {
@@ -78,7 +106,7 @@ export default function LoginIniciar({ onSwitch }) {
     <div className="animate-fade">
       <div className="row justify-content-center">
         <div className="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-8">
-          <form onSubmit={handleSubmit} className="row g-4">
+          <form onSubmit={handleSubmit} className={`row g-4 ${validated ? "was-validated" : ""}`} noValidate>
             {/* USERNAME */}
             <div className="col-12">
               <div className="row align-items-center">
@@ -138,7 +166,7 @@ export default function LoginIniciar({ onSwitch }) {
             <button
               onClick={() => onSwitch("registro")}
               type="button"
-              className="btn btn-link fw-semibold link-primary"
+              className=" btn link-hover fw-bold"
             >
               Regístrate aquí
             </button>

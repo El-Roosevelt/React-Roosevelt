@@ -112,7 +112,7 @@ export default function RegisterForm({ onSwitch }) {
               required
               value={formData.username}
               onChange={handleChange}
-              className={`form-control rounded-3 p-3 shadow-none ${errors.username ? "is-invalid" : ""}`}
+              className={`form-control rounded-3 p-3 ${errors.username ? "is-invalid" : ""}`}
             />
             <div className="invalid-feedback">{errors.username}</div>
           </div>
@@ -138,7 +138,7 @@ export default function RegisterForm({ onSwitch }) {
               placeholder="Contraseña"
               value={formData.password}
               onChange={handleChange}
-              className={`form-control rounded-3 p-3 shadow-none ${errors.password ? "is-invalid" : ""}`}
+              className={`form-control rounded-3 p-3 ${errors.password ? "is-invalid" : ""}`}
             />
             <div className="invalid-feedback">{errors.password}</div>
           </div>
@@ -151,7 +151,7 @@ export default function RegisterForm({ onSwitch }) {
               placeholder="Confirmar contraseña"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={`form-control rounded-3 p-3 shadow-none  ${errors.confirmPassword ? "is-invalid" : ""}`}
+              className={`form-control rounded-3 p-3 ${errors.confirmPassword ? "is-invalid" : ""}`}
             />
             <div className="invalid-feedback">{errors.confirmPassword}</div>
           </div>
@@ -166,7 +166,7 @@ export default function RegisterForm({ onSwitch }) {
               placeholder="Teléfono"
               value={formData.tel}
               onChange={handleChange}
-              className={`form-control rounded-3 p-3 shadow-none ${errors.tel ? "is-invalid" : ""}`}
+              className={`form-control rounded-3 p-3 ${errors.tel ? "is-invalid" : ""}`}
             />
             <div className="invalid-feedback">{errors.tel}</div>
           </div>
@@ -177,7 +177,7 @@ export default function RegisterForm({ onSwitch }) {
               required
               value={formData.fecha_nac}
               onChange={handleChange}
-              className={`form-control rounded-3 p-3 shadow-none ${errors.fecha_nac ? "is-invalid" : ""}`}
+              className={`form-control rounded-3 p-3 ${errors.fecha_nac ? "is-invalid" : ""}`}
             />
             <div className="invalid-feedback">{errors.fecha_nac}</div>
           </div>
@@ -190,7 +190,7 @@ export default function RegisterForm({ onSwitch }) {
               placeholder="URL de tu foto (opcional)"
               value={formData.foto}
               onChange={handleChange}
-              className="form-control rounded-3 p-3 shadow-none "
+              className="form-control rounded-3 p-3"
             />
           </div>
           {/* MENSAJE DE ESTADO */}

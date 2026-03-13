@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import LoginIniciar from "../../components/LoginIniciar/LoginIniciar";
 import LoginForm from "../../components/LoginForm/LoginForm";
 import RecuperarContrasena from "../../components/Recuperacion/RecuperarContrasena";
+import "./Login.scss";
 
 export default function Login({ view }) {
   const [activeTab, setActiveTab] = useState(view || "iniciar");
@@ -26,7 +27,7 @@ export default function Login({ view }) {
                 <p className="text-uppercase fw-bold text-primary fs-4 fs-md-3 ">
                   Bienvenido!
                 </p>
-                <h2 className="fw-bold text-primary fs-4 fs-md-3">
+                <h2 className="title-login fw-bold text-primary fs-4 fs-md-3">
                   Accede a tu cuenta
                 </h2>
               </div>
@@ -38,7 +39,7 @@ export default function Login({ view }) {
                   <button
                     type="button"
                     onClick={() => setActiveTab("iniciar")}
-                    className={`w-100 btn rounded-pill fw-bold text-uppercase border border-secondary border-2 ${
+                    className={`navigacion-btn w-100 btn rounded-pill fw-bold text-uppercase border border-secondary border-2 ${
                       activeTab === "iniciar"
                         ? "btn-primary"
                         : "btn-outline-secondary"
@@ -52,7 +53,7 @@ export default function Login({ view }) {
                   <button
                     type="button"
                     onClick={() => setActiveTab("registro")}
-                    className={`w-100 btn rounded-pill fw-bold text-uppercase border border-secondary border-2 ${
+                    className={`w-100 navigacion-btn btn rounded-pill fw-bold text-uppercase border border-secondary border-2 ${
                       activeTab === "registro"
                         ? "btn-primary"
                         : "btn-outline-secondary "
@@ -66,7 +67,7 @@ export default function Login({ view }) {
                   <button
                     type="button"
                     onClick={() => setActiveTab("recuperar")}
-                    className={`w-100 btn rounded-pill fw-bold text-uppercase border 
+                    className={`w-100 navigacion-btn btn rounded-pill fw-bold text-uppercase border 
                       border-secondary border-2 ${
                       activeTab === "recuperar"
                         ? "btn-primary"
@@ -93,12 +94,9 @@ export default function Login({ view }) {
                   <RecuperarContrasena onSwitch={setActiveTab} />
                 )}
               </div>
-
             </div>
           </div>
-
         </div>
-     
     </section>
   );
 }

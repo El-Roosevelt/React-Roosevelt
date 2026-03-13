@@ -7,7 +7,7 @@ $danger: #af251b;
 $warning: #ffa023;
 $info: #a0C562;
 $color_primary-accento: #84329B;
-// $light:
+$light: white;
 // $dark:
 $text-nav: #736100;
 
@@ -16,6 +16,7 @@ $text-nav: #736100;
 
 $color_form_bg: #f8f9fa;
 $border-form: $primary-light;
+$navigacion-btn-text:$light;
 //$btn-form: #c216db;
 
 $btn-hover-bg: darken($primary, 10%);

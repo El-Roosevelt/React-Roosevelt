@@ -26,7 +26,7 @@
 }
 
 .hero-title {
-  $font-family: $font-family-sans-serif;
+  font-family: $font-family-sans-serif;
   //  línea debajo del título
   &::after {
     content: "";

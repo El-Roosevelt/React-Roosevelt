@@ -169,7 +169,7 @@
                                         <input
                                             type="text"
                                             name="titulo"
-                                            className={`form-control ${errors.titulo ? "is-invalid" : ""}`}
+                                            className={`form-control rounded-3 p-3 ${errors.titulo ? "is-invalid" : ""}`}
                                             placeholder="Título"
                                             value={form.titulo}
                                             onChange={onChange}
