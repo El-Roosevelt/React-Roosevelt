@@ -27,7 +27,7 @@ const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
   return (
     <div className="d-flex justify-content-center align-items-center my-5">
-      <div className="col-12 col-sm-10 col-md-10 col-lg-11">
+      <div className="col-12 col-sm-10 col-md-9 col-lg-8">
         <h2 className="text-center mb-4 text-primary">Recuperar contraseña</h2>
 
         <form onSubmit={handleSubmitForm}>
@@ -48,16 +48,16 @@ const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
             )}
           </div>
 
-          <div className="d-flex justify-content-center mt-4">
+          <div className="col-12 text-center mt-3">
             <button
               type="submit"
-              className="btn btn-primary border border-secondary border-2 rounded-pill px-5 py-3 fs-6 fw-bold text-uppercase w-100"
+              className="btn btn-primary border border-secondary border-2 rounded-pill px-5 py-3 fs-6 fw-bold text-uppercase"
             >
               Enviar
             </button>
           </div>
 
-          <div className="text-center mt-3">
+          <div className="text-center mt-3 ">
            <button
               onClick={() => onSwitch("iniciar")}
               type="button"
