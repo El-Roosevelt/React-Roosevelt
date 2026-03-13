@@ -183,7 +183,8 @@ export default function NavBar() {
 
           <li className="nav-item col">
             {user ? (
-              <span role="button" className="nav-links text-light border-0 bg-transparent" onClick={handleLogout}>
+              <span role="button" className=" nav-link text-light fs-5" onClick={handleLogout}> 
+              {/* nav-links text-light border-0 bg-transparent  */}
                 <i className="bi bi-box-arrow-right me-1"></i>Cerrar sesión
               </span>
             ) : (
@@ -261,7 +262,7 @@ export default function NavBar() {
               onClick={() => protectedRoute("/settings")}
             >
               <i className="bi bi-gear pe-1"></i>
-              <span className="d-none d-lg-inline">Configuración</span>
+              Configuración
             </span>
           </li>
           </ul>
