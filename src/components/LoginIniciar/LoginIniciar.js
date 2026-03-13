@@ -7,43 +7,72 @@ export default function LoginIniciar({ onSwitch }) {
   const { credentials, setCredentials, setUser } = useContext(AuthContext);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [errors, setErrors] = useState({});
+  const [validated, setValidated] = useState(false);
   const navigate = useNavigate();
 
   const validateField = (name, value) => {
     let error = "";
-    if (name === "username" && !value) error = "El usuario es obligatorio";
-    if (name === "password" && !value) error = "La contraseña es obligatoria";
-    setErrors(prev => ({ ...prev, [name]: error }));
+    const cleanValue = value ? value.trim() : "";
+    if (name === "username") {
+      if (!cleanValue) {
+        error = "El usuario es obligatorio";
+      } else if (cleanValue.length < 3) {
+        error = "El usuario debe tener al menos 3 caracteres";
+      }
+    }
+    if (name === "password") {
+      if (!cleanValue) {
+        error = "La contraseña es obligatoria";
+      } else if (cleanValue.length < 4) {
+        error = "La contraseña debe tener al menos 4 caracteres";
+      }
+    }
+    setErrors((prev) => ({ ...prev, [name]: error }));
+    return error;
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setCredentials(prev => ({ ...prev, [name]: value }));
+    setCredentials((prev) => ({ ...prev, [name]: value }));
     validateField(name, value);
     if (message.text) setMessage({ text: "", type: "" });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    let newErrors = {};
-    if (!credentials.username) newErrors.username = "El usuario es obligatorio";
-    if (!credentials.password) newErrors.password = "La contraseña es obligatoria";
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
+    const form = e.currentTarget;
+
+    //  campo por campo
+    const userError = validateField("username", credentials.username);
+    const passError = validateField("password", credentials.password);
+
+    // Si hay errores en lógica o en el form
+    if (userError || passError || form.checkValidity() === false) {
+      setValidated(true);
+      return;
+    }
+    // let newErrors = {};
+    // if (!credentials.username) newErrors.username = "El usuario es obligatorio";
+    // if (!credentials.password) newErrors.password = "La contraseña es obligatoria";
+    // setErrors(newErrors);
+    // if (Object.keys(newErrors).length > 0) return;
 
     try {
       // mando datos
-      const response = await axios.post("http://localhost:8080/roosevelt/api/auth/login", {
-        username: credentials.username,
-        password: credentials.password
-      });
+      const response = await axios.post(
+        "http://localhost:8080/roosevelt/api/auth/login",
+        {
+          username: credentials.username.trim(),
+          password: credentials.password.trim(),
+        },
+      );
 
       if (response.status === 200) {
         const loggedUser = response.data;
         const mappedUser = {
-    ...loggedUser,
-    username: loggedUser.user, // asignar user a username
-  };
+          ...loggedUser,
+          username: loggedUser.user, // asignar user a username
+        };
 
         console.log("Usuario recibido del backend:", loggedUser);
 
@@ -56,18 +85,23 @@ export default function LoginIniciar({ onSwitch }) {
 
         // Mostrar mensaje usando el username del formulario
         setMessage({
-          text: `¡Hola, ${mappedUser.username}! Sesión iniciada con éxito.`,
-          type: "success"
+          text: `Hola, ${mappedUser.username}! Sesión iniciada con éxito.`,
+          type: "success",
         });
 
         // Limpiar formulario
         setCredentials({ username: "", password: "" });
+        setValidated(false);
 
         setTimeout(() => navigate("/"), 1500);
       }
     } catch (error) {
+      setValidated(false);
       if (error.response?.status === 401 || error.response?.status === 404) {
-        setMessage({ text: "Usuario o contraseña incorrectos.", type: "danger" });
+        setMessage({
+          text: "Usuario o contraseña incorrectos.",
+          type: "danger",
+        });
       } else {
         setMessage({ text: "Error en el servidor", type: "danger" });
       }
@@ -78,7 +112,11 @@ export default function LoginIniciar({ onSwitch }) {
     <div className="animate-fade">
       <div className="row justify-content-center">
         <div className="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-8">
-          <form onSubmit={handleSubmit} className="row g-4">
+          <form
+            onSubmit={handleSubmit}
+            className={`row g-4 ${validated ? "was-validated" : ""}`}
+            noValidate
+          >
             {/* USERNAME */}
             <div className="col-12">
               <div className="row align-items-center">
@@ -91,12 +129,17 @@ export default function LoginIniciar({ onSwitch }) {
                   <input
                     type="text"
                     name="username"
+                    required
                     value={credentials.username}
                     onChange={handleChange}
                     placeholder="nombre de usuario"
-                    className={`form-control rounded-3 p-3 ${errors.username ? "is-invalid" : ""}`}
+                    // className={`form-control rounded-3 p-3 ${errors.username ? "is-invalid" : ""}`}
+                    className={`form-control rounded-3 p-3 
+    ${errors.username ? "is-invalid" : credentials.username ? "is-valid" : ""}`}
                   />
-                  {errors.username && <div className="invalid-feedback">{errors.username}</div>}
+                  {errors.username && (
+                    <div className="invalid-feedback">{errors.username}</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -105,18 +148,24 @@ export default function LoginIniciar({ onSwitch }) {
             <div className="col-12">
               <div className="row align-items-center">
                 <div className="col-12 col-md-4">
-                  <label className="form-label fw-semibold mb-md-0 text-primary">Contraseña</label>
+                  <label className="form-label fw-semibold mb-md-0 text-primary">
+                    Contraseña
+                  </label>
                 </div>
                 <div className="col-12 col-md-8">
                   <input
                     type="password"
                     name="password"
+                    required
                     value={credentials.password}
                     onChange={handleChange}
                     placeholder="Tu contraseña"
-                    className={`form-control rounded-3 p-3 ${errors.password ? "is-invalid" : ""}`}
+                    className={`form-control rounded-3 p-3 
+    ${errors.password ? "is-invalid" : credentials.password ? "is-valid" : ""}`}
                   />
-                  {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+                  {errors.password && (
+                    <div className="invalid-feedback">{errors.password}</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -138,7 +187,7 @@ export default function LoginIniciar({ onSwitch }) {
             <button
               onClick={() => onSwitch("registro")}
               type="button"
-              className="btn btn-link fw-semibold link-primary"
+              className=" btn link-hover fw-bold"
             >
               Regístrate aquí
             </button>
@@ -234,9 +283,9 @@ export default function LoginIniciar({ onSwitch }) {
 //       }
 //     } catch (error) {
 //       if (error.response?.status === 401 || error.response?.status === 404) {
-//         setMessage({ 
-//           text: "Usuario no encontrado. Por favor, regístrate.", 
-//           type: "danger" 
+//         setMessage({
+//           text: "Usuario no encontrado. Por favor, regístrate.",
+//           type: "danger"
 //         });
 //         //onSwitch("registro");
 //       } else {
@@ -244,7 +293,6 @@ export default function LoginIniciar({ onSwitch }) {
 //       }
 //     }
 //   };
-
 
 //   //   if (credentials.username && credentials.password) {
 //   //     console.log("datos:", credentials);
@@ -278,7 +326,7 @@ export default function LoginIniciar({ onSwitch }) {
 //                   <input
 //                     type="text"
 //                     name="username"
-                    
+
 //                     value={credentials.username}
 //                     onChange={handleChange}
 //                     placeholder="nombre de usuario"
@@ -309,7 +357,7 @@ export default function LoginIniciar({ onSwitch }) {
 //                   <input
 //                     type="password"
 //                     name="password"
-                   
+
 //                     value={credentials.password}
 //                     onChange={handleChange}
 //                     placeholder="Tu contraseña"
