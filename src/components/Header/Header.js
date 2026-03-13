@@ -16,6 +16,12 @@ function Header() {
       <div className="col-lg-6 align-self-stretch">
         <div className="d-none d-lg-flex h-100 justify-content-end align-items-center text-light px-3">
 
+          {/* Saludo si el usuario está logueado */}
+          {user ? (
+            <span className="fw-bold px-2">Hola, {user.username}!</span>
+          ) : (
+            <span className="fw-bold px-2">Bienvenido, invitado</span>
+          )}
           <NavLink to="/login">
 
             <svg
@@ -35,12 +41,6 @@ function Header() {
               />
             </svg>
           </NavLink>
-          {/* Saludo si el usuario está logueado */}
-          {user ? (
-            <span className="fw-bold">Hola, {user.username}!</span>
-          ) : (
-            <span>Bienvenido, invitado</span>
-          )}
 
         </div>
       </div>
