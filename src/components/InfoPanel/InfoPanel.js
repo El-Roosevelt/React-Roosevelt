@@ -2,7 +2,7 @@ import React, { use, useState } from "react";
 import "./InfoPanel.scss";
 
 
-export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor, typesDanger}) {
+export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor, typesDanger,zoneSelected,setZoneSelected}) {
   const [tabSwitched, setTabSwitched] = useState(false);
 
   const [selectedZoneToRemove, setSelectedZoneToRemove] = useState();
@@ -22,6 +22,8 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
 
   const [nameZoneEdit, setNameZoneEdit] = useState();
   const [typeZoneEdit, setTypeZoneEdit] = useState();
+
+  
 
   const removeZone = () => {
     onRemoveZone(selectedZoneToRemove);
@@ -84,7 +86,7 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
               : "bg-secondary";
 
             return (
-              <div key={z.id}>
+              <div key={z.id} onClick={()=>setZoneSelected(z.id)} className="">
                 {selectedZoneToRemove !== z.id ?
                   (selectedZoneToEdit.id !== z.id ?
                     <div className="zone-item">

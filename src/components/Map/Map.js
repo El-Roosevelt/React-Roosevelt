@@ -112,6 +112,9 @@ export default function Map() {
   const [popupData, setPopupData] = useState(null);
 
   // MIS VARIABLES
+
+  const [idZoneSelected,setIdZoneSelected] = useState("n")
+
   const [goal, setGoal] = useState(false);
 
   const [amountPointZone, setAmountPointZone] = useState(0);
@@ -544,6 +547,7 @@ export default function Map() {
         <p>
           {positionCreateElement.lng} {positionCreateElement.lat}
         </p>
+        <p>{idZoneSelected}</p>
       </div>
 
       <div
@@ -556,6 +560,7 @@ export default function Map() {
         <div className="sidebar">
           Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} |
           Zoom: {zoom.toFixed(2)}
+          
         </div>
         <button className="reset-button" onClick={handleButtonClick}>
           Reset
@@ -578,6 +583,8 @@ export default function Map() {
             onEditZone={handleEditZone}
             dangerColor={dangerColor}
             typesDanger={dangerTranslate}
+            zoneSelected={idZoneSelected}
+            setZoneSelected={setIdZoneSelected}
           />
         </div>
       </div>
