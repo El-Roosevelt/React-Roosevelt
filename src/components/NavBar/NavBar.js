@@ -105,7 +105,9 @@ export default function NavBar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+   
+    setUser(null);
+  localStorage.removeItem("user");
     setUser(null);
     navigate("/");
   };
@@ -127,7 +129,7 @@ export default function NavBar() {
     <>
       {/* Desktop */}
       <div className="d-none d-md-flex w-100 justify-content-center">
-        <ul className="container-fluid nav nav-pills nav-fill justify-content-between p-1 bg-secondary">
+        <ul className="container-fluid nav nav-pills nav-fill justify-content-between p-1 mi-nav">
           <li className="nav-item col">
             <NavLink to="/" className={link("/")}>
               <i className="bi bi-house-door pe-1"></i>
@@ -141,22 +143,23 @@ export default function NavBar() {
             </NavLink>
           </li>
           <li className="nav-item col">
-            <NavLink to="/my-routes"
+            <span
+              to="/my-routes"
               className={link("/my-routes")}
               onClick={() => protectedRoute("/my-routes")}
             >
               <i className="bi bi-geo-alt pe-1"></i>
               <span className="d-none d-lg-inline">Mis Rutas</span>
-            </NavLink>
+            </span>
           </li>
           <li className="nav-item col">
-            <NavLink to="/fav-routes"
+            <span to="/fav-routes"
               className={link("/fav-routes")}
               onClick={() => protectedRoute("/fav-routes")}
             >
               <i className="bi bi-heart pe-1"></i>
               <span className=" d-none d-lg-inline">Rutas Favoritas</span>
-            </NavLink>
+            </span>
           </li>
           <li className="nav-item col">
             <NavLink to="/settings"
@@ -167,20 +170,11 @@ export default function NavBar() {
               <span className="d-none d-lg-inline">Configuración</span>
             </NavLink>
           </li>
-          
-
-          {/* {user && (
-            <li className="nav-item col">
-              <NavLink to="/settings" className={link("/settings")}>
-                <i className="bi bi-gear pe-1"></i>
-                <span className="d-none d-lg-inline">Configuración</span>
-              </NavLink>
-            </li>
-          )} */}
 
           <li className="nav-item col">
             {user ? (
-              <span role="button" className="nav-links text-light border-0 bg-transparent" onClick={handleLogout}>
+              <span role="button" className=" nav-link text-light fs-5" onClick={handleLogout}> 
+              {/* nav-links text-light border-0 bg-transparent  */}
                 <i className="bi bi-box-arrow-right me-1"></i>Cerrar sesión
               </span>
             ) : (
@@ -188,7 +182,7 @@ export default function NavBar() {
                 <i className="bi bi-person-circle pe-1"></i>Login
               </NavLink>
             )}
-          </li>
+          </li> 
         </ul>
       </div>
 
@@ -258,7 +252,7 @@ export default function NavBar() {
               onClick={() => protectedRoute("/settings")}
             >
               <i className="bi bi-gear pe-1"></i>
-              <span className="d-none d-lg-inline">Configuración</span>
+              Configuración
             </span>
           </li>
           </ul>
