@@ -99,7 +99,7 @@ export default function LoginIniciar({ onSwitch }) {
       setValidated(false);
       if (error.response?.status === 401 || error.response?.status === 404) {
         setMessage({
-          text: "Usuario o contraseña incorrectos.",
+          text: "Usuario o contraseña incorrectos o no esta registrado.",
           type: "danger",
         });
       } else {
