@@ -57,7 +57,7 @@ export default function RegisterForm({ onSwitch }) {
         administrador: false
       };
 
-      await axios.post("http://localhost:8080/roosevelt/api/users", userload);
+      await axios.post("http://localhost:8080/roosevelt/api/usuarios", userload);
 
       setStatusMessage("Usuario se ha registrado correctamente");
 

@@ -84,10 +84,12 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./NavBar.scss";
+import { useContext } from "react";
+import {AuthContext} from "../../context/AuthContext";
 
 export default function NavBar() {
   const [click, setClick] = useState(false);
-  const [user, setUser] = useState(null);
+  const {user, setUser} = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -106,7 +108,6 @@ export default function NavBar() {
 
   const handleLogout = () => {
    
-    setUser(null);
   localStorage.removeItem("user");
     setUser(null);
     navigate("/");
