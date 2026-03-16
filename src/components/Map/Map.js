@@ -11,7 +11,7 @@ import Popup from "../Popup/Popup";
 import InfoPanel from "../../components/InfoPanel/InfoPanel";
 
 //38.361498735545176, -0.49144135129607736
-const INITIAL_CENTER = [-0.49144135129607736, 38.361498735545176];
+const INITIAL_CENTER = [-0.4785025754158312, 38.34963385315302];
 const INITIAL_ZOOM = 15;
 
 export default function Map() {
@@ -42,26 +42,35 @@ export default function Map() {
   const [zonesRef, setZonesRef] = useState([
     {
       id: Date.now(),
-      name: "Zona de Plaza Alfonso X",
+      name: "Castillo Santa Barbara",
       color: "amarillo",
       coordpol: [
-        [-0.49321027016051744, 38.36560377774532], // va de principio a fin
-        [-0.4924404263540225, 38.3626784200614],
-        [-0.4802074143640027, 38.36177478672232],
-        [-0.49321027016051744, 38.36560377774532], // hay que volverlo a unir con el primer punto
+        [-0.4839169233197822, 38.348417685652805], // va de principio a fin
+        [-0.4815677123779949, 38.351167830649786],
+        [-0.47943497326687634, 38.352399496274614],
+        [-0.4764586191535898, 38.352214305703114],
+        [-0.4744590379772262, 38.3513590435428],
+        [-0.4738797240611916, 38.350433588899364],
+        [-0.4756391534831437, 38.34807779066267],
+        [-0.47731673286693876, 38.34687253370336],
+        [-0.4807042435479332, 38.346724526574945],
+        [-0.48359247420486895, 38.347785773621325],
+        [-0.4839169233197822, 38.348417685652805], // hay que volverlo a unir con el primer punto
       ],
+      rutes:[]
     },
   ]);
 
   const [rutesRef, setRutesRef] = useState([
     {
       id: Date.now(),
-      ruteName: "camino confortante",
-      description: "",
+      ruteName: "camino confortante",      
       coordinates: [
         [-0.4823535037734814, 38.34775791453754],
         [-0.47852430655979106, 38.34935405748996],
       ],
+      description: "",
+      date_upload:"",
       authorUser: {
         id: 1,
         username: "admin",
