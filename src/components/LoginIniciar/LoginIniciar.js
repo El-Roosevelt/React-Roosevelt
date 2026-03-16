@@ -59,8 +59,12 @@ export default function LoginIniciar({ onSwitch }) {
 
     try {
       // mando datos
+      const apiUrl = process.env.REACT_APP_API_URL;
       const response = await axios.post(
-        "http://localhost:8080/roosevelt/api/auth/login",
+        
+        `${apiUrl}/api/auth/login`,
+        //"http://localhost:8080/roosevelt/api/auth/login",
+
         {
           username: credentials.username.trim(),
           password: credentials.password.trim(),

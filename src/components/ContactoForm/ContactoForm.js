@@ -106,7 +106,9 @@ export default function ContactoForm() {
                     ...form,
                     fecha_pub: new Date().toISOString().split('T')[0] // 2026-03-10
                 };
-                const response = await fetch("http://localhost:8080/roosevelt/api/mensajes", {
+                const apiUrl = process.env.REACT_APP_API_URL;
+                //const response = await fetch("http://localhost:8080/roosevelt/api/mensajes"
+                const response = await fetch(`${apiUrl}/api/mensajes`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(dataToSend),

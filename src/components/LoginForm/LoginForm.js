@@ -56,8 +56,10 @@ export default function RegisterForm({ onSwitch }) {
         foto: formData.foto || "default.png",
         administrador: false
       };
+      const apiUrl = process.env.REACT_APP_API_URL;
+      await axios.post(`${apiUrl}/api/usuarios`, userload);
 
-      await axios.post("http://localhost:8080/roosevelt/api/usuarios", userload);
+      //await axios.post("http://localhost:8080/roosevelt/api/usuarios", userload);
 
       setStatusMessage("Usuario se ha registrado correctamente");
 
