@@ -37,11 +37,28 @@ export default function Map() {
     amarillo: " bg-warning",
     verde: " bg-success",
   });
+  //CONVERTIDORES DE DATOS
+
+  const coodprueba="[-0.4785025754158312, 38.34963385315302],[-0.4785025754158312, 38.34963385315302]"
+  
+  const stringToJsonArray=(s)=>{
+    const patron = /[\d,\d],/g
+    return s.match(patron);
+  }
 
   // Datos que vendran de la api
+
+  //Tipo peligrosidad
+  const idToDanger = Object.freeze({
+    0: "verde",
+    1: "amarillo",
+    2: "rojo",
+  });
+
+  //Zonas
   const [zonesRef, setZonesRef] = useState([
     {
-      id: Date.now(),
+      id: 0,
       name: "Castillo Santa Barbara",
       color: "amarillo",
       coordpol: [
@@ -57,34 +74,72 @@ export default function Map() {
         [-0.48359247420486895, 38.347785773621325],
         [-0.4839169233197822, 38.348417685652805], // hay que volverlo a unir con el primer punto
       ],
-      rutes:[]
     },
   ]);
-
+  //Rutas
   const [rutesRef, setRutesRef] = useState([
     {
       id: Date.now(),
-      ruteName: "camino confortante",      
+      ruteName: "camino confortante",
       coordinates: [
         [-0.4823535037734814, 38.34775791453754],
         [-0.47852430655979106, 38.34935405748996],
       ],
       description: "",
-      date_upload:"",
-      authorUser: {
-        id: 1,
-        username: "admin",
-        email: "admin@balmis.com",
-        password:
-          "$2a$10$fzcGgF.8xODz7ptkmZC.OeX1Kj5GDI//FhW2sG0vlshW6ZAKJky0e",
-        email_sec: "admin1@balmis.com",
-        administrador: true,
-        tel: "100000000",
-        fechaNac: "1990-01-01",
-        foto: "admin.jpg"
-      }
+      date_upload: "",
+      id_zone: 0,
+      id_user_author: 0,
     },
   ]);
+  //Relaciones punto interes y ruta
+  const [LinesObjects, setLinesObjects] = useState([
+    {
+      id_object: 0,
+      id_rute: 0,
+    },
+    {
+      id_object: 1,
+      id_rute: 0,
+    },
+  ]);
+  //Objectos ruta (puntos de interes)
+  const [objectRute, setObjectRute] = useState([
+    {
+      id: 0,
+      name: "Elevador del castillo",
+      img: "",
+      coordpol:"[-0.4773503018700467, 38.34712845540338]",
+      description: "Te subira directamente hasta la suma del castillo",
+      peligrosidad: idToDanger[0],
+      id_zone: 0,
+      id_type_object: 0,
+    },
+  ]);
+  //Tipos Objecto (tipos de punto interes)
+  const [typeObject, setTypeObject] = useState([
+    {
+      id: 0,
+      name: "elevator",
+      icono: "",
+    },
+    {
+      id: 1,
+      name: "stairs",
+      icono: "",
+    },
+    {
+      id: 3,
+      name: "ramp",
+      icono: "",
+    },
+    {
+      id: 4,
+      name: "rebuilds",
+      icono: "",
+    },
+  ]);
+
+  
 
   const [dataNewZone, setDataNewZone] = useState({
     id: zonesRef.length,
@@ -113,7 +168,7 @@ export default function Map() {
 
   // MIS VARIABLES
 
-  const [idZoneSelected,setIdZoneSelected] = useState("n")
+  const [idZoneSelected, setIdZoneSelected] = useState("n");
 
   const [goal, setGoal] = useState(false);
 
@@ -548,6 +603,7 @@ export default function Map() {
           {positionCreateElement.lng} {positionCreateElement.lat}
         </p>
         <p>{idZoneSelected}</p>
+        <p>{stringToJsonArray(coodprueba)}</p>
       </div>
 
       <div
@@ -560,7 +616,6 @@ export default function Map() {
         <div className="sidebar">
           Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} |
           Zoom: {zoom.toFixed(2)}
-          
         </div>
         <button className="reset-button" onClick={handleButtonClick}>
           Reset
