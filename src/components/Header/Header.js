@@ -1,10 +1,17 @@
 import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
 function Header() {
   const logo = "/assets/logo.png";
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/");
+  };
 
   return (
     <header className="d-none d-md-flex bg-primary py-3">
@@ -15,15 +22,18 @@ function Header() {
       </div>
       <div className="col-lg-6 align-self-stretch">
         <div className="d-none d-lg-flex h-100 justify-content-end align-items-center text-light px-3">
-
           {/* Saludo si el usuario está logueado */}
           {user ? (
-            <span className="fw-bold px-2">Hola, {user.username}!</span>
+            <div className="d-flex flex-column text-center h-100 justify-content-center">
+              <span className="fw-bold px-2">Hola, {user.username}!</span>
+              <span role="button" className="px-2" onClick={handleLogout}> 
+                <i className="bi bi-box-arrow-right me-1"></i>Cerrar sesión
+              </span>
+            </div>
           ) : (
             <span className="fw-bold px-2">Bienvenido, invitado</span>
           )}
           <NavLink to="/login">
-
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="70"
@@ -41,7 +51,6 @@ function Header() {
               />
             </svg>
           </NavLink>
-
         </div>
       </div>
     </header>
