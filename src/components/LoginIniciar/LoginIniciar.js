@@ -58,9 +58,14 @@ export default function LoginIniciar({ onSwitch }) {
     // if (Object.keys(newErrors).length > 0) return;
 
     try {
+        
       // mando datos
+      const apiUrl = process.env.REACT_APP_API_URL;
       const response = await axios.post(
-        "http://localhost:8080/roosevelt/api/auth/login",
+        
+        `${apiUrl}/api/auth/login`,
+        //"http://localhost:8080/roosevelt/api/auth/login",
+
         {
           username: credentials.username.trim(),
           password: credentials.password.trim(),
@@ -99,7 +104,7 @@ export default function LoginIniciar({ onSwitch }) {
       setValidated(false);
       if (error.response?.status === 401 || error.response?.status === 404) {
         setMessage({
-          text: "Usuario o contraseña incorrectos.",
+          text: "Usuario o contraseña incorrectos o no esta registrado.",
           type: "danger",
         });
       } else {

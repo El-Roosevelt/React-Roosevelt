@@ -56,8 +56,10 @@ export default function RegisterForm({ onSwitch }) {
         foto: formData.foto || "default.png",
         administrador: false
       };
+      const apiUrl = process.env.REACT_APP_API_URL;
+      await axios.post(`${apiUrl}/api/usuarios`, userload);
 
-      await axios.post("http://localhost:8080/roosevelt/api/users", userload);
+      //await axios.post("http://localhost:8080/roosevelt/api/usuarios", userload);
 
       setStatusMessage("Usuario se ha registrado correctamente");
 
@@ -105,7 +107,7 @@ export default function RegisterForm({ onSwitch }) {
                 placeholder="Nombre de usuario"
                 value={formData.username}
                 onChange={handleChange}
-                className="form-control rounded-3 p-3"
+                className="form-control rounded-3 p-4"
               />
 
               <div className="invalid-feedback">
@@ -122,7 +124,7 @@ export default function RegisterForm({ onSwitch }) {
                 placeholder="Correo electrónico"
                 value={formData.email}
                 onChange={handleChange}
-                className="form-control rounded-3 p-3"
+                className="form-control rounded-3 p-4"
               />
 
               <div className="invalid-feedback">
@@ -140,7 +142,7 @@ export default function RegisterForm({ onSwitch }) {
                 placeholder="Contraseña"
                 value={formData.password}
                 onChange={handleChange}
-                className="form-control rounded-3 p-3"
+                className="form-control rounded-3 p-4"
               />
 
               <div className="invalid-feedback">
@@ -157,7 +159,7 @@ export default function RegisterForm({ onSwitch }) {
                 placeholder="Confirmar contraseña"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`form-control rounded-3 p-3 ${
+                className={`form-control rounded-3 p-4 ${
                   validated && formData.password !== formData.confirmPassword
                     ? "is-invalid"
                     : ""
@@ -179,7 +181,7 @@ export default function RegisterForm({ onSwitch }) {
                 placeholder="Teléfono"
                 value={formData.tel}
                 onChange={handleChange}
-                className="form-control rounded-3 p-3"
+                className="form-control rounded-3 p-4"
               />
 
               <div className="invalid-feedback">
@@ -195,7 +197,7 @@ export default function RegisterForm({ onSwitch }) {
                 required
                 value={formData.fecha_nac}
                 onChange={handleChange}
-                className="form-control rounded-3 p-3"
+                className="form-control rounded-3 p-4"
               />
 
               <div className="invalid-feedback">
@@ -211,7 +213,7 @@ export default function RegisterForm({ onSwitch }) {
                 placeholder="URL de tu foto (opcional)"
                 value={formData.foto}
                 onChange={handleChange}
-                className="form-control rounded-3 p-3"
+                className="form-control rounded-3 p-4"
               />
             </div>
 
