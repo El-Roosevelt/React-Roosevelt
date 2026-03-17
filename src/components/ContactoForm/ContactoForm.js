@@ -90,8 +90,11 @@
                         const dataToSend = {
             ...form,
             fecha_pub: new Date().toISOString().split('T')[0] // 2026-03-10
+
         };
-                        const response = await fetch("http://localhost:8080/roosevelt/mensajes", {
+        const API_URL = process.env.REACT_APP_API_URL;
+
+                        const response = await fetch(`${API_URL}mensajes`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(dataToSend),
