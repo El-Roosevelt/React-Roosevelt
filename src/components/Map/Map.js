@@ -11,7 +11,7 @@ import Popup from "../Popup/Popup";
 import InfoPanel from "../../components/InfoPanel/InfoPanel";
 
 //38.361498735545176, -0.49144135129607736
-const INITIAL_CENTER = [-0.49144135129607736, 38.361498735545176];
+const INITIAL_CENTER = [-0.4785025754158312, 38.34963385315302];
 const INITIAL_ZOOM = 15;
 
 export default function Map() {
@@ -26,7 +26,7 @@ export default function Map() {
   // marcadores punto a punto
   const markersRef = useRef([]);
 
-  const ColorTranslate = Object.freeze({
+  const dangerTranslate = Object.freeze({
     rojo: "red",
     amarillo: "yellow",
     verde: "green",
@@ -42,21 +42,49 @@ export default function Map() {
   const [zonesRef, setZonesRef] = useState([
     {
       id: Date.now(),
-      name: "Zona de Plaza Alfonso X",
+      name: "Castillo Santa Barbara",
       color: "amarillo",
       coordpol: [
-        [-0.49321027016051744, 38.36560377774532], // va de principio a fin
-        [-0.4924404263540225, 38.3626784200614],
-        [-0.4802074143640027, 38.36177478672232],
-        [-0.49321027016051744, 38.36560377774532], // hay que volverlo a unir con el primer punto
+        [-0.4839169233197822, 38.348417685652805], // va de principio a fin
+        [-0.4815677123779949, 38.351167830649786],
+        [-0.47943497326687634, 38.352399496274614],
+        [-0.4764586191535898, 38.352214305703114],
+        [-0.4744590379772262, 38.3513590435428],
+        [-0.4738797240611916, 38.350433588899364],
+        [-0.4756391534831437, 38.34807779066267],
+        [-0.47731673286693876, 38.34687253370336],
+        [-0.4807042435479332, 38.346724526574945],
+        [-0.48359247420486895, 38.347785773621325],
+        [-0.4839169233197822, 38.348417685652805], // hay que volverlo a unir con el primer punto
       ],
+      rutes:[]
     },
   ]);
 
-  const [rutesRef, setRutesRef] = useState({
-    id: 0,
-    coordinates: [[]],
-  });
+  const [rutesRef, setRutesRef] = useState([
+    {
+      id: Date.now(),
+      ruteName: "camino confortante",      
+      coordinates: [
+        [-0.4823535037734814, 38.34775791453754],
+        [-0.47852430655979106, 38.34935405748996],
+      ],
+      description: "",
+      date_upload:"",
+      authorUser: {
+        id: 1,
+        username: "admin",
+        email: "admin@balmis.com",
+        password:
+          "$2a$10$fzcGgF.8xODz7ptkmZC.OeX1Kj5GDI//FhW2sG0vlshW6ZAKJky0e",
+        email_sec: "admin1@balmis.com",
+        administrador: true,
+        tel: "100000000",
+        fechaNac: "1990-01-01",
+        foto: "admin.jpg"
+      }
+    },
+  ]);
 
   const [dataNewZone, setDataNewZone] = useState({
     id: zonesRef.length,
@@ -76,7 +104,7 @@ export default function Map() {
       properties: {
         id: zone.id,
         name: zone.name,
-        color: ColorTranslate[zone.color],
+        color: dangerTranslate[zone.color],
       },
     })),
   };
@@ -84,6 +112,9 @@ export default function Map() {
   const [popupData, setPopupData] = useState(null);
 
   // MIS VARIABLES
+
+  const [idZoneSelected,setIdZoneSelected] = useState("n")
+
   const [goal, setGoal] = useState(false);
 
   const [amountPointZone, setAmountPointZone] = useState(0);
@@ -209,12 +240,23 @@ export default function Map() {
 
   // Eliminar zona
 
-  function handleRemoveZone(id) {    
-    setZonesRef((prev) => prev.filter((e) => e.id != id));    
+  function handleRemoveZone(id) {
+    setZonesRef((prev) => prev.filter((e) => e.id != id));
   }
 
-  function handleEditZone(zone){
-
+  function handleEditZone(zone) {
+    setZonesRef((prev) =>
+      prev.map((z) =>
+        z.id == zone.id
+          ? {
+              id: zone.id,
+              name: zone.name,
+              color: zone.color,
+              coordpol: zone.coordpol,
+            }
+          : z,
+      ),
+    );
   }
   const handleMouseMoveMap = (e) => {
     setCenterMouse([e.lngLat.lng, e.lngLat.lat]);
@@ -231,18 +273,24 @@ export default function Map() {
     const coords = [positionCreateElement.lng, positionCreateElement.lat];
 
     if (!mapRef.current) return;
+
+    // Limpia todos los marcadores si ve que son mas de dos
     if (routePoints.length === 2) {
       clearMarkers();
       setGoal(false);
     } else setGoal(true);
 
+    //Crea el marcador
     const marker = new mapboxgl.Marker()
       .setLngLat(coords)
       .addTo(mapRef.current);
 
     markersRef.current.push(marker);
 
+    //mete coordenadas para luego formar la ruta, al tener dos pares de coordenadas, se dibuja la ruta
     setRoutePoints((prev) => {
+      if (prev.length === 2) {
+      }
       if (prev.length === 2) return [coords];
       return [...prev, coords];
     });
@@ -286,7 +334,7 @@ export default function Map() {
       center: center,
       zoom: zoom,
     });
-
+    // Al cargar, se comenzaran a crear los puntos de interes
     mapRef.current.on("load", () => {
       // load image to use as a custom marker
       mapRef.current.loadImage(customMarkerPng, (error, image) => {
@@ -306,37 +354,28 @@ export default function Map() {
 
         const layerId = `interestPoint-${name}-symbol`;
 
+        // Comprueba que no exita un punto de interes ya existente
         if (!mapRef.current.getLayer(layerId)) {
-          // add a layer for each cuisine type, filtering to only show features with that cuisine type.
-          for (const layer of layerState) {
-            const { name, color } = layer;
-
-            const layerId = `interestPoint-${name}-symbol`;
-
-            // add a symbol layer for each cuisine type, filtering to only show features with that cuisine type.
-            if (!mapRef.current.getLayer(layerId)) {
-              mapRef.current.addLayer({
-                id: layerId,
-                type: "symbol",
-                source: "interestPoint",
-
-                // Grabs local image for custom marker, allows markers to over lap and colors each marker based on the related cuisine color.
-                layout: {
-                  "icon-image": "custom-marker",
-                  "icon-size": 1,
-                  "icon-allow-overlap": true,
-                },
-                paint: {
-                  "icon-color": color,
-                  "icon-opacity": 0.8,
-                  "icon-halo-color": "#ffffff",
-                  "icon-halo-width": 2.5,
-                  "icon-halo-blur": 1,
-                },
-                filter: ["in", ["get", "cuisine"], ["literal", [name]]],
-              });
-            }
-          }
+          //Creando el cuerpo del layer (punto de interes)
+          mapRef.current.addLayer({
+            id: layerId,
+            type: "symbol",
+            source: "interestPoint",
+            // Coger la imagen de assets y el color de la propiedad del Layer para darsela al nuevo punto de interes
+            layout: {
+              "icon-image": "custom-marker",
+              "icon-size": 1,
+              "icon-allow-overlap": true,
+            },
+            paint: {
+              "icon-color": color,
+              "icon-opacity": 0.8,
+              "icon-halo-color": "#ffffff",
+              "icon-halo-width": 2.5,
+              "icon-halo-blur": 1,
+            },
+            filter: ["in", ["get", "cuisine"], ["literal", [name]]],
+          });
         }
         // add a click interaction for each of the layers to be used to render the popup
         mapRef.current.addInteraction(`${layerId}-click`, {
@@ -457,8 +496,13 @@ export default function Map() {
   // creador de zonas nuevas
   useEffect(() => {
     if (!mapRef.current?.isStyleLoaded()) return;
-    // 
-    if (!mapRef || !mapRef.current.isStyleLoaded() || !mapRef.current.getSource("zones")) return;
+    //
+    if (
+      !mapRef ||
+      !mapRef.current.isStyleLoaded() ||
+      !mapRef.current.getSource("zones")
+    )
+      return;
 
     const newData = {
       type: "FeatureCollection",
@@ -471,7 +515,7 @@ export default function Map() {
         properties: {
           id: zone.id,
           name: zone.name,
-          color: ColorTranslate[zone.color],
+          color: dangerTranslate[zone.color],
         },
       })),
     };
@@ -494,18 +538,16 @@ export default function Map() {
           onCreateEdge={handleCreatEdgeZone}
           onCloseZone={handleCloseZone}
           onCancelZone={handleRemoveZoneInCreation}
-          typeZones={ColorTranslate}
+          typeZones={dangerTranslate}
           dataNewZone={dataNewZone}
           onChangeDataZone={setDataNewZone}
         />
       )}
-      <div className=" p-4">
+      <div>
         <p>
-          longitud:{positionCreateElement.lng} latitud{" "}
-          {positionCreateElement.lat}
+          {positionCreateElement.lng} {positionCreateElement.lat}
         </p>
-        <p>{dataNewZone.name}</p>
-        <p>{dataNewZone.color}</p>
+        <p>{idZoneSelected}</p>
       </div>
 
       <div
@@ -518,6 +560,7 @@ export default function Map() {
         <div className="sidebar">
           Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} |
           Zoom: {zoom.toFixed(2)}
+          
         </div>
         <button className="reset-button" onClick={handleButtonClick}>
           Reset
@@ -526,19 +569,23 @@ export default function Map() {
           layerState={layerState}
           setLayerState={setLayerState}
         />
-       <div className="infoSide d-flex flex-row">
+        <div className="infoSide d-flex flex-row">
           <div className="d-flex flex-column align-items-start mx-3">
-            <i className="bi bi-chevron-left" style={{ fontSize: "1.5rem", cursor: "pointer" }}></i>
+            <i
+              className="bi bi-chevron-left"
+              style={{ fontSize: "1.5rem", cursor: "pointer" }}
+            ></i>
           </div>
-          
-          <InfoPanel 
-            zones={zonesRef} 
-            onRemoveZone={handleRemoveZone} 
+
+          <InfoPanel
+            zones={zonesRef}
+            onRemoveZone={handleRemoveZone}
             onEditZone={handleEditZone}
-            dangerColor={dangerColor} 
-            types={layerState}
+            dangerColor={dangerColor}
+            typesDanger={dangerTranslate}
+            zoneSelected={idZoneSelected}
+            setZoneSelected={setIdZoneSelected}
           />
-          
         </div>
       </div>
     </>

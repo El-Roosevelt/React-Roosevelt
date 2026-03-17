@@ -2,7 +2,7 @@ import React, { use, useState } from "react";
 import "./InfoPanel.scss";
 
 
-export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor, types }) {
+export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor, typesDanger,zoneSelected,setZoneSelected}) {
   const [tabSwitched, setTabSwitched] = useState(false);
 
   const [selectedZoneToRemove, setSelectedZoneToRemove] = useState();
@@ -10,7 +10,7 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
   const [selectedZoneToEdit, setSelectedZoneToEdit] = useState({
     id: 0,
     name: "",
-    type: "",
+    color: "",
     coordpol: [[]]
   });
 
@@ -18,10 +18,12 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
         rojo: "Alta",
         amarillo: "Media",
         verde: "Baja"
-    })
+  })
 
   const [nameZoneEdit, setNameZoneEdit] = useState();
   const [typeZoneEdit, setTypeZoneEdit] = useState();
+
+  
 
   const removeZone = () => {
     onRemoveZone(selectedZoneToRemove);
@@ -31,20 +33,27 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
     setSelectedZoneToEdit({
       id: zone.id,
       name: zone.name,
-      type: zone.color,
+      color: zone.color,
       coordpol: zone.coordpol
     })
     setNameZoneEdit(zone.name)
     setTypeZoneEdit(zone.color)
   }
-  const editZone = () => {
-    onEditZone(selectedZoneToEdit);
+  const editZone = () => {    
+    onEditZone(
+      {
+        id:selectedZoneToEdit.id,
+        name:selectedZoneToEdit.name!=nameZoneEdit?nameZoneEdit:selectedZoneToEdit.name,
+        color:selectedZoneToEdit.color!=typeZoneEdit?typeZoneEdit:selectedZoneToEdit.color,
+        coordpol:selectedZoneToEdit.coordpol
+      });
     setSelectedZoneToEdit({
-      id: 0,
+      id: null,
       name: "",
-      type: "",
+      color: "",
       coordpol: [[]]
     });
+    
   }
 
   return (
@@ -77,7 +86,7 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
               : "bg-secondary";
 
             return (
-              <div key={z.id}>
+              <div key={z.id} onClick={()=>setZoneSelected(z.id)} className="">
                 {selectedZoneToRemove !== z.id ?
                   (selectedZoneToEdit.id !== z.id ?
                     <div className="zone-item">
@@ -86,7 +95,7 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
                           <div className={`color-dot ${dotColorClass}`}></div>
                           <h4 className="item-title">{z.name || `Zona ${z.id + 1}`}</h4>
                         </div>
-                        <button className=" btn-edit" onClick={() => prepareToEdit({id:z.id,name:z.name,type:z.color,coordpol:z.coordpol})}>
+                        <button className=" btn-edit" onClick={() => prepareToEdit({id:z.id,name:z.name,color:z.color,coordpol:z.coordpol})}>
                           <i class="bi bi-pencil"></i>
                         </button>
                         <button className="btn-close" onClick={() => setSelectedZoneToRemove(z.id)}>
@@ -127,7 +136,7 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
                     </div> :
                     // Al editar una zona
                     <div>
-                      <form onSubmit={()=>editZone}>
+                      <form onSubmit={editZone}>
                         <div className=" m-1 p-2">
                           <label className=" form-label">
                             Nombre zona:
@@ -138,22 +147,21 @@ export default function InfoPanel({ zones, onRemoveZone, onEditZone, dangerColor
                           <label className=" form-label">
                             Tipo de zona:
                           </label>
-                          <select className="form-select w-75" value={danger[typeZoneEdit]} onChange={e=>setTypeZoneEdit(e.target.value)}>
-                          {Object.entries(types).map((key) => (
-                                                    <option value={key}>{danger[key]}</option>
-                                                ))}
+                          <select className="form-select w-75" value={typeZoneEdit} onChange={e=>setTypeZoneEdit(e.target.value)}>
+                            {Object.keys(typesDanger).map(key => (
+                                    <option key={key} value={key}>{danger[key]}</option>
+                            ))}
                           </select>
                         </div>
                         <div className=" d-flex flex-row gap-1 p-2 m-1">
                           <input className=" btn btn-info w-50" onClick={() => setSelectedZoneToEdit({
                             id: 0,
                             name: "",
-                            type: "",
+                            color: "",
                             coordpol: [[]]
                           })} value={"Cancelar"} />
-                          <input type="submit" className=" btn btn-success w-auto" value={"Editar"}/>
+                          <input type="submit" className=" btn btn-success w-auto" value={"Guardar"}/>
                         </div>
-
                       </form>
                     </div>
                   ) :

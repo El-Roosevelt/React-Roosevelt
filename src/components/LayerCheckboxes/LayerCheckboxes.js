@@ -14,6 +14,13 @@ const LayerCheckboxes = ({ layerState, setLayerState }) => {
         })
     }
 
+    const dataTranslate={
+        elevator:"Elevador",
+        ramp:"Rampa",
+        stairs:"Escaleras",
+        rebuild:"Reconstruccion"
+    }
+
     // Handles when "All" checkbox is toggled, turning all layers on or off.
     const handleAllCheckboxChange = (event) => {
         const { checked } = event.target
@@ -28,20 +35,7 @@ const LayerCheckboxes = ({ layerState, setLayerState }) => {
 
     return (
         <div className="layer-checkboxes">
-            {/* "All" checkbox with indeterminate state */}
-            <h5>Tipos de zonas</h5>
-            <div className=' checkbox'>
-                <input type='checkbox' className=' checkbox-input'/>
-                <label className=' checkbox-label'>Zonas peligrosas</label>
-            </div>
-            <div className=' checkbox'>
-                <input type='checkbox' className=' checkbox-input'/>
-                <label className=' checkbox-label'>Zonas medianamente peligrosas</label>
-            </div>
-            <div className=' checkbox'>
-                <input type='checkbox' className=' checkbox-input'/>
-                <label className=' checkbox-label'>Zonas no peligrosas</label>
-            </div>
+            {/* "All" checkbox with indeterminate state */}            
             <h5>Puntos de Interes</h5>
             <div className="checkbox">
                 <input
@@ -85,7 +79,7 @@ const LayerCheckboxes = ({ layerState, setLayerState }) => {
                         }}
                     />
                     <span style={{ color: layer.isChecked ? 'inherit' : '#ccc' }}>
-                        {layer.name}
+                        {dataTranslate[layer.name]}
                     </span>
                 </div>
             ))}
