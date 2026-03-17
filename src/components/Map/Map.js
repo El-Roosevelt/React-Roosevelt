@@ -10,7 +10,7 @@ import LayerCheckboxes from "../LayerCheckboxes/LayerCheckboxes";
 import Popup from "../Popup/Popup";
 import InfoPanel from "../../components/InfoPanel/InfoPanel";
 
-//38.361498735545176, -0.49144135129607736
+
 const INITIAL_CENTER = [-0.4785025754158312, 38.34963385315302];
 const INITIAL_ZOOM = 15;
 
@@ -39,13 +39,9 @@ export default function Map() {
   });
   //CONVERTIDORES DE DATOS
 
-  const coodprueba="[-0.4785025754158312, 38.34963385315302],[-0.4785025754158312, 38.34963385315302]"
-  
-  const stringToJsonArray=(s)=>{
-    const patron = /[\d,\d],/g
-    return s.match(patron);
+  const stringToJsonArray = (s) => {
+    return JSON.parse(s);
   }
-
   // Datos que vendran de la api
 
   //Tipo peligrosidad
@@ -59,34 +55,26 @@ export default function Map() {
   const [zonesRef, setZonesRef] = useState([
     {
       id: 0,
+      name: "Castillo San Fernando",
+      color: "rojo",
+      coordpol: stringToJsonArray("[[-0.49053749327177343, 38.357542351070265],[-0.4892823587223063, 38.35519423939252],[-0.48906662626768593, 38.35347156925499],[-0.4900417687209426, 38.350738188429716],[-0.49259854688597215, 38.3495294122186],[-0.49474245216632085, 38.35089461624432],[-0.49515075878613857, 38.35288183092004],[-0.49053749327177343, 38.357542351070265]]")
+    },
+    {
+      id: 1,
       name: "Castillo Santa Barbara",
       color: "amarillo",
-      coordpol: [
-        [-0.4839169233197822, 38.348417685652805], // va de principio a fin
-        [-0.4815677123779949, 38.351167830649786],
-        [-0.47943497326687634, 38.352399496274614],
-        [-0.4764586191535898, 38.352214305703114],
-        [-0.4744590379772262, 38.3513590435428],
-        [-0.4738797240611916, 38.350433588899364],
-        [-0.4756391534831437, 38.34807779066267],
-        [-0.47731673286693876, 38.34687253370336],
-        [-0.4807042435479332, 38.346724526574945],
-        [-0.48359247420486895, 38.347785773621325],
-        [-0.4839169233197822, 38.348417685652805], // hay que volverlo a unir con el primer punto
-      ],
+      coordpol: stringToJsonArray("[[-0.4839169233197822, 38.348417685652805],[-0.4815677123779949, 38.351167830649786],[-0.47943497326687634, 38.352399496274614],[-0.4764586191535898, 38.352214305703114],[-0.4744590379772262, 38.3513590435428],[-0.4738797240611916, 38.350433588899364],[-0.4756391534831437, 38.34807779066267],[-0.47731673286693876, 38.34687253370336],[-0.4807042435479332, 38.346724526574945],[-0.48359247420486895, 38.347785773621325],[-0.4839169233197822, 38.348417685652805]]")
     },
   ]);
   //Rutas
   const [rutesRef, setRutesRef] = useState([
     {
       id: Date.now(),
-      ruteName: "camino confortante",
-      coordinates: [
-        [-0.4823535037734814, 38.34775791453754],
-        [-0.47852430655979106, 38.34935405748996],
-      ],
-      description: "",
-      date_upload: "",
+      name: "Camino confortante",
+      coordpol: stringToJsonArray("[[-0.4823535037734814, 38.34775791453754],[-0.47852430655979106, 38.34935405748996]]"),
+      description: "Un facil acceso a la planta alta del castillo",
+      date_upload: "10/12/2022",
+      likes_count: 2,
       id_zone: 0,
       id_user_author: 0,
     },
@@ -108,13 +96,16 @@ export default function Map() {
       id: 0,
       name: "Elevador del castillo",
       img: "",
-      coordpol:"[-0.4773503018700467, 38.34712845540338]",
+      coordpol: stringToJsonArray("[-0.4773503018700467, 38.34712845540338]"),
       description: "Te subira directamente hasta la suma del castillo",
       peligrosidad: idToDanger[0],
       id_zone: 0,
       id_type_object: 0,
     },
   ]);
+
+
+
   //Tipos Objecto (tipos de punto interes)
   const [typeObject, setTypeObject] = useState([
     {
@@ -139,18 +130,34 @@ export default function Map() {
     },
   ]);
 
-  
-
   const [dataNewZone, setDataNewZone] = useState({
     id: zonesRef.length,
     name: "",
     color: "",
   });
 
+  const [dataZoneSelected, setDataZoneSelected] = useState({
+    id:null,
+    name:"",
+    color:"",
+    coordpol:[[]]
+  })
+
   // Datos de zonas que se convertiran en poligonos para crear zonas
   const datazones = {
-    type: "FeatureCollection",
-    features: zonesRef.map((zone) => ({
+    type: dataZoneSelected==null ? "FeatureCollection" : "Feature",
+    features: dataZoneSelected!=null ? {
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [dataZoneSelected.coordpol],
+      },
+      properties: {
+        id: dataZoneSelected.id,
+        name: dataZoneSelected.name,
+        color: dangerTranslate[dataZoneSelected.color],
+      },
+    } : zonesRef.map((zone) => ({
       type: "Feature",
       geometry: {
         type: "Polygon",
@@ -168,7 +175,7 @@ export default function Map() {
 
   // MIS VARIABLES
 
-  const [idZoneSelected, setIdZoneSelected] = useState("n");
+  const [coords, setCoords] = useState([])
 
   const [goal, setGoal] = useState(false);
 
@@ -304,11 +311,11 @@ export default function Map() {
       prev.map((z) =>
         z.id == zone.id
           ? {
-              id: zone.id,
-              name: zone.name,
-              color: zone.color,
-              coordpol: zone.coordpol,
-            }
+            id: zone.id,
+            name: zone.name,
+            color: zone.color,
+            coordpol: zone.coordpol,
+          }
           : z,
       ),
     );
@@ -466,7 +473,7 @@ export default function Map() {
         source: "zones",
         paint: {
           "fill-color": ["get", "color"],
-          "fill-opacity": 0.5,
+          "fill-opacity": 0.3,
         },
       });
 
@@ -560,19 +567,30 @@ export default function Map() {
       return;
 
     const newData = {
-      type: "FeatureCollection",
-      features: zonesRef.map((zone) => ({
-        type: "Feature",
-        geometry: {
-          type: "Polygon",
-          coordinates: [zone.coordpol],
-        },
-        properties: {
-          id: zone.id,
-          name: zone.name,
-          color: dangerTranslate[zone.color],
-        },
-      })),
+      type: dataZoneSelected==null ? "FeatureCollection" : "Feature",
+    features: dataZoneSelected!=null ? {
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [dataZoneSelected.coordpol],
+      },
+      properties: {
+        id: dataZoneSelected.id,
+        name: dataZoneSelected.name,
+        color: dangerTranslate[dataZoneSelected.color],
+      },
+    } : zonesRef.map((zone) => ({
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [zone.coordpol],
+      },
+      properties: {
+        id: zone.id,
+        name: zone.name,
+        color: dangerTranslate[zone.color],
+      },
+    })),
     };
     mapRef.current.getSource("zones").setData(newData);
   }, [zonesRef]);
@@ -602,8 +620,7 @@ export default function Map() {
         <p>
           {positionCreateElement.lng} {positionCreateElement.lat}
         </p>
-        <p>{idZoneSelected}</p>
-        <p>{stringToJsonArray(coodprueba)}</p>
+        <p>{dataZoneSelected.id}</p>
       </div>
 
       <div
@@ -634,12 +651,13 @@ export default function Map() {
 
           <InfoPanel
             zones={zonesRef}
+            rutes={rutesRef}
             onRemoveZone={handleRemoveZone}
             onEditZone={handleEditZone}
             dangerColor={dangerColor}
             typesDanger={dangerTranslate}
-            zoneSelected={idZoneSelected}
-            setZoneSelected={setIdZoneSelected}
+            zoneSelected={dataZoneSelected}
+            setZoneSelected={setDataZoneSelected}
           />
         </div>
       </div>
