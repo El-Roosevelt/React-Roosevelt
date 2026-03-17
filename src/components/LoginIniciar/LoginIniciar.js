@@ -37,7 +37,7 @@ export default function LoginIniciar({ onSwitch }) {
     validateField(name, value);
     if (message.text) setMessage({ text: "", type: "" });
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -61,11 +61,9 @@ export default function LoginIniciar({ onSwitch }) {
         
       // mando datos
       const apiUrl = process.env.REACT_APP_API_URL;
-      const response = await axios.post(
-        
+      const response = await axios.post(        
         `${apiUrl}/api/auth/login`,
         //"http://localhost:8080/roosevelt/api/auth/login",
-
         {
           username: credentials.username.trim(),
           password: credentials.password.trim(),
