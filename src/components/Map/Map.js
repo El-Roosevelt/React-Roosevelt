@@ -20,7 +20,7 @@ export default function Map() {
   const mapRef = useRef();
   const mapContainerRef = useRef();
 
-  const { credentials, setCredentials, setUser } = useContext(AuthContext);
+  const { user} = useContext(AuthContext);
   
   // VARIABLES DE MAPA
   const [center, setCenter] = useState(INITIAL_CENTER);
@@ -599,11 +599,11 @@ export default function Map() {
     mapRef.current.getSource("zones").setData(newData);
   }, [zonesRef]);
 
-  console.log("hola "+credentials.username)
+  console.log("hola "+user.username)
 
   return (
     <>
-      {credentials.username==="admin" && ( menu.visible && (
+      {user?.username==="admin" && ( menu.visible && (
         <ContextMenuLocation
           positionState={positionCreateElement}
           positionContextMenu={menu}
@@ -635,7 +635,7 @@ export default function Map() {
         onContextMenu={handleContentMenu}
         onClick={handleCloseContextMenuMap}
       >
-        {credentials.username === "admin" &&
+        {user?.username === "admin" &&
           <Popup popupData={popupData} mapRef={mapRef} />
         }
         <div className="sidebar">
@@ -645,13 +645,13 @@ export default function Map() {
         <button className="reset-button" onClick={handleButtonClick}>
           Reset
         </button>
-        {credentials.username === "admin" &&
+        {user?.username === "admin" &&
           <LayerCheckboxes
             layerState={layerState}
             setLayerState={setLayerState}
           />
         }
-        {credentials.username === "admin" &&
+        {user?.username === "admin" &&
           <div className="infoSide d-flex flex-row">
             <div className="d-flex flex-column align-items-start mx-3">
               <i

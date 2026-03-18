@@ -72,11 +72,7 @@ export default function LoginIniciar({ onSwitch }) {
 
       if (response.status === 200) {
         const loggedUser = response.data;
-
-        if(loggedUser.token){
-          localStorage.setItem("token",loggedUser.token);
-        }
-        
+               
         const mappedUser = {
           ...loggedUser,
           username: loggedUser.user, // asignar user a username

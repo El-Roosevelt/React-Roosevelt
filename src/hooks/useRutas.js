@@ -5,7 +5,7 @@ import { getRutas } from "../services/ruteService";
 export function useRutas() {
   const [rutas, setRutas] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     getRutas()
       .then(data => {
