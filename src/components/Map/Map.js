@@ -20,7 +20,7 @@ export default function Map() {
   const mapRef = useRef();
   const mapContainerRef = useRef();
 
-  const { user} = useContext(AuthContext);
+  const { user} = useContext(AuthContext?AuthContext:"");
   
   // VARIABLES DE MAPA
   const [center, setCenter] = useState(INITIAL_CENTER);
@@ -181,6 +181,7 @@ export default function Map() {
 
   const [coords, setCoords] = useState([])
 
+  const [init, setInit] = useState(false);
   const [goal, setGoal] = useState(false);
 
   const [amountPointZone, setAmountPointZone] = useState(0);
@@ -227,6 +228,9 @@ export default function Map() {
   // Funcion para desaparecer el menu al hacer click en el mapa
   const handleCloseContextMenuMap = () => {
     setMenu({ ...menu, visible: false });
+    clearMarkers();
+    setInit(false)
+    setGoal(false)
   };
 
   // Funcion para mostrar el menu al hacer click derecho en el mapa
@@ -274,6 +278,10 @@ export default function Map() {
       return newZones;
     });
   };
+
+  const handleCreateRute=()=>{
+    alert("guardada ruta")
+  }
   // Terminar de cerrar la zona en creacion y cierra el contextmenu
   const handleCloseZone = () => {
     setAmountPointZone(0);
@@ -341,6 +349,7 @@ export default function Map() {
     if (!mapRef.current) return;
 
     // Limpia todos los marcadores si ve que son mas de dos
+    if(routePoints.length ===1) setInit(true)
     if (routePoints.length === 2) {
       clearMarkers();
       setGoal(false);
@@ -543,7 +552,8 @@ export default function Map() {
       const data = await res.json();
       const route = data.routes[0].geometry;
 
-      // agregar o actualizar layer "route"
+      // agregar o actualizar layer "route" 
+      // ESTO DIBUJA LA LINEA
       if (mapRef.current.getSource("route")) {
         mapRef.current.getSource("route").setData(route);
       } else {
@@ -599,7 +609,6 @@ export default function Map() {
     mapRef.current.getSource("zones").setData(newData);
   }, [zonesRef]);
 
-  console.log("hola "+user.username)
 
   return (
     <>
@@ -611,6 +620,7 @@ export default function Map() {
           onCreateInterestPoint={handleCreateInteresPoint}
           onCreateMark={handleCreateMark}
           types={layerState}
+          init={init}
           goal={goal}
           amountPointZone={amountPointZone}
           onOpenZone={handleOpenZone}
@@ -620,6 +630,7 @@ export default function Map() {
           typeZones={dangerTranslate}
           dataNewZone={dataNewZone}
           onChangeDataZone={setDataNewZone}
+          onSaveRute={handleCreateRute}
         />
       ))}
       <div>
@@ -659,8 +670,6 @@ export default function Map() {
                 style={{ fontSize: "1.5rem", cursor: "pointer" }}
               ></i>
             </div>
-
-
             <InfoPanel
               zones={zonesRef}
               rutes={rutesRef}

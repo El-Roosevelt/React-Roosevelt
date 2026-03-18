@@ -7,6 +7,7 @@ export default function ContextMenuLocation({
   onCreateInterestPoint,
   onCreateMark,
   types,
+  init,
   goal,
   amountPointZone,
   onOpenZone,
@@ -29,7 +30,7 @@ export default function ContextMenuLocation({
 
   const [writtenData, setWrittenData] = useState(false);
 
-  const [positionChange, setPositionChange] = useState(0);
+  const [positionChange, setPositionChange] = useState(200);
 
   const [showInteresPointControl, setShowInteresPointControl] = useState(false);
 
@@ -64,13 +65,13 @@ export default function ContextMenuLocation({
       name: nameZone,
       color: typeZone,
     };
-    setPositionChange(86);
+    setPositionChange(286);
 
     onChangeDataZone(newZone);
     onOpenZone(newZone);
     setNameZone("");
     setTypeZone("");
-    setWrittenData(true);
+    setWrittenData(true);    
   }
   const createFirtMark = () => {
     setShowToggleControl(true);
@@ -79,28 +80,32 @@ export default function ContextMenuLocation({
 
   const createLastMark = () => {
     onCreateMark();
-    if (goal) setShowRuteControl(true);
-    //onClose();
+    if (goal) setShowRuteControl(true);    
   };
 
-  const saveRute = () => {
+  function saveRute(e){
+    e.preventDefault();
     onSaveRute({
       name: nameRute,
       description: descriptionRute
     });
     setNameRute("");
     setDescriptionRute("");
+    onClose();
   }
 
 
   const toggleZoneControl = () => {
-    setPositionChange(34);
+    setPositionChange(234);
     setShowZoneControl(!showZoneControl);
   };
 
   const closeZone = () => {
-    setPositionChange(0);
-    onCloseZone();
+    setPositionChange(200);
+    if(!showToggleControl){
+      onCloseZone();
+    }
+    
   };
 
   return (
@@ -268,7 +273,7 @@ export default function ContextMenuLocation({
                   value="X"
                 />
               </div>
-              <form onSubmit={() => saveRute()}>
+              <form onSubmit={saveRute}>
                 <h5 className=" text-info">Creando nueva ruta</h5>
                 <div>
                   <label>Nombre de la ruta</label>
