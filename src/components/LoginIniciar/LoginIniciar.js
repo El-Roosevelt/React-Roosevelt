@@ -119,7 +119,7 @@ export default function LoginIniciar({ onSwitch }) {
         <div className="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-8">
           <form
             onSubmit={handleSubmit}
-            className={`row g-4 ${validated ? "was-validated" : ""}`}
+            className={`row g-4 rounded-4 shadow-sm bg-white border border-primary-subtle p-3 m-1 ${validated ? "was-validated" : ""}`}
             noValidate
           >
             {/* USERNAME */}

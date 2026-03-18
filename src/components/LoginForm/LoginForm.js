@@ -210,7 +210,7 @@ export default function RegisterForm({ onSwitch }) {
               <input
                 type="url"
                 name="foto"
-                placeholder="URL de tu foto (opcional)"
+                placeholder="URL de tu foto"
                 value={formData.foto}
                 onChange={handleChange}
                 className="form-control rounded-3 p-4"

@@ -70,7 +70,7 @@ export default function RecuperarContrasena({ onSwitch }) {
   return (
     <div className="d-flex justify-content-center align-items-center my-5">
       <div className="col-12 col-sm-10 col-md-9 col-lg-8">
-        <h2 className="text-center mb-4 text-primary">Recuperar contraseña</h2>
+        <h2 className="text-center mb-4 text-primary fw-bold">Recuperar contraseña</h2>
 
         <form onSubmit={handleSubmitForm} className={`row g-4 ${validated ? "was-validated" : ""}`} noValidate>
           <div className="mb-3">
