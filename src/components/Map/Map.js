@@ -1,5 +1,6 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, use } from "react";
 import mapboxgl from "mapbox-gl";
+import { useContext } from "react";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./Map.scss";
@@ -9,15 +10,18 @@ import ContextMenuLocation from "../contextMenuLocation/contextMenuLocation";
 import LayerCheckboxes from "../LayerCheckboxes/LayerCheckboxes";
 import Popup from "../Popup/Popup";
 import InfoPanel from "../../components/InfoPanel/InfoPanel";
+import { AuthContext } from "../../context/AuthContext";
 
-//38.361498735545176, -0.49144135129607736
+
 const INITIAL_CENTER = [-0.4785025754158312, 38.34963385315302];
-const INITIAL_ZOOM = 15;
+const INITIAL_ZOOM = 16.5;
 
 export default function Map() {
   const mapRef = useRef();
   const mapContainerRef = useRef();
 
+  const { user} = useContext(AuthContext);
+  
   // VARIABLES DE MAPA
   const [center, setCenter] = useState(INITIAL_CENTER);
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
@@ -37,52 +41,96 @@ export default function Map() {
     amarillo: " bg-warning",
     verde: " bg-success",
   });
+  //CONVERTIDORES DE DATOS
 
+  const stringToJsonArray = (s) => {
+    return JSON.parse(s);
+  }
   // Datos que vendran de la api
+
+  //Tipo peligrosidad
+  const idToDanger = Object.freeze({
+    0: "verde",
+    1: "amarillo",
+    2: "rojo",
+  });
+
+  //Zonas
   const [zonesRef, setZonesRef] = useState([
     {
-      id: Date.now(),
+      id: 0,
+      name: "Castillo San Fernando",
+      color: "rojo",
+      coordpol: stringToJsonArray("[[-0.49053749327177343, 38.357542351070265],[-0.4892823587223063, 38.35519423939252],[-0.48906662626768593, 38.35347156925499],[-0.4900417687209426, 38.350738188429716],[-0.49259854688597215, 38.3495294122186],[-0.49474245216632085, 38.35089461624432],[-0.49515075878613857, 38.35288183092004],[-0.49053749327177343, 38.357542351070265]]")
+    },
+    {
+      id: 1,
       name: "Castillo Santa Barbara",
       color: "amarillo",
-      coordpol: [
-        [-0.4839169233197822, 38.348417685652805], // va de principio a fin
-        [-0.4815677123779949, 38.351167830649786],
-        [-0.47943497326687634, 38.352399496274614],
-        [-0.4764586191535898, 38.352214305703114],
-        [-0.4744590379772262, 38.3513590435428],
-        [-0.4738797240611916, 38.350433588899364],
-        [-0.4756391534831437, 38.34807779066267],
-        [-0.47731673286693876, 38.34687253370336],
-        [-0.4807042435479332, 38.346724526574945],
-        [-0.48359247420486895, 38.347785773621325],
-        [-0.4839169233197822, 38.348417685652805], // hay que volverlo a unir con el primer punto
-      ],
-      rutes:[]
+      coordpol: stringToJsonArray("[[-0.4839169233197822, 38.348417685652805],[-0.4815677123779949, 38.351167830649786],[-0.47943497326687634, 38.352399496274614],[-0.4764586191535898, 38.352214305703114],[-0.4744590379772262, 38.3513590435428],[-0.4738797240611916, 38.350433588899364],[-0.4756391534831437, 38.34807779066267],[-0.47731673286693876, 38.34687253370336],[-0.4807042435479332, 38.346724526574945],[-0.48359247420486895, 38.347785773621325],[-0.4839169233197822, 38.348417685652805]]")
     },
   ]);
-
+  //Rutas
   const [rutesRef, setRutesRef] = useState([
     {
       id: Date.now(),
-      ruteName: "camino confortante",      
-      coordinates: [
-        [-0.4823535037734814, 38.34775791453754],
-        [-0.47852430655979106, 38.34935405748996],
-      ],
-      description: "",
-      date_upload:"",
-      authorUser: {
-        id: 1,
-        username: "admin",
-        email: "admin@balmis.com",
-        password:
-          "$2a$10$fzcGgF.8xODz7ptkmZC.OeX1Kj5GDI//FhW2sG0vlshW6ZAKJky0e",
-        email_sec: "admin1@balmis.com",
-        administrador: true,
-        tel: "100000000",
-        fechaNac: "1990-01-01",
-        foto: "admin.jpg"
-      }
+      name: "Camino confortante",
+      coordpol: stringToJsonArray("[[-0.4823535037734814, 38.34775791453754],[-0.47852430655979106, 38.34935405748996]]"),
+      description: "Un facil acceso a la planta alta del castillo",
+      date_upload: "10/12/2022",
+      likes_count: 2,
+      id_zone: 0,
+      id_user_author: 0,
+    },
+  ]);
+  //Relaciones punto interes y ruta
+  const [LinesObjects, setLinesObjects] = useState([
+    {
+      id_object: 0,
+      id_rute: 0,
+    },
+    {
+      id_object: 1,
+      id_rute: 0,
+    },
+  ]);
+  //Objectos ruta (puntos de interes)
+  const [objectRute, setObjectRute] = useState([
+    {
+      id: 0,
+      name: "Elevador del castillo",
+      img: "",
+      coordpol: stringToJsonArray("[-0.4773503018700467, 38.34712845540338]"),
+      description: "Te subira directamente hasta la suma del castillo",
+      peligrosidad: idToDanger[0],
+      id_zone: 0,
+      id_type_object: 0,
+    },
+  ]);
+
+
+
+  //Tipos Objecto (tipos de punto interes)
+  const [typeObject, setTypeObject] = useState([
+    {
+      id: 0,
+      name: "elevator",
+      icono: "",
+    },
+    {
+      id: 1,
+      name: "stairs",
+      icono: "",
+    },
+    {
+      id: 3,
+      name: "ramp",
+      icono: "",
+    },
+    {
+      id: 4,
+      name: "rebuilds",
+      icono: "",
     },
   ]);
 
@@ -92,10 +140,28 @@ export default function Map() {
     color: "",
   });
 
+  const [dataZoneSelected, setDataZoneSelected] = useState({
+    id: null,
+    name: "",
+    color: "",
+    coordpol: [[]]
+  })
+
   // Datos de zonas que se convertiran en poligonos para crear zonas
   const datazones = {
-    type: "FeatureCollection",
-    features: zonesRef.map((zone) => ({
+    type: dataZoneSelected.id == null ? "FeatureCollection" : "Feature",
+    features: dataZoneSelected.id != null ? {
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [dataZoneSelected.coordpol],
+      },
+      properties: {
+        id: dataZoneSelected.id,
+        name: dataZoneSelected.name,
+        color: dangerTranslate[dataZoneSelected.color],
+      },
+    } : zonesRef.map((zone) => ({
       type: "Feature",
       geometry: {
         type: "Polygon",
@@ -113,7 +179,7 @@ export default function Map() {
 
   // MIS VARIABLES
 
-  const [idZoneSelected,setIdZoneSelected] = useState("n")
+  const [coords, setCoords] = useState([])
 
   const [goal, setGoal] = useState(false);
 
@@ -249,11 +315,11 @@ export default function Map() {
       prev.map((z) =>
         z.id == zone.id
           ? {
-              id: zone.id,
-              name: zone.name,
-              color: zone.color,
-              coordpol: zone.coordpol,
-            }
+            id: zone.id,
+            name: zone.name,
+            color: zone.color,
+            coordpol: zone.coordpol,
+          }
           : z,
       ),
     );
@@ -411,7 +477,7 @@ export default function Map() {
         source: "zones",
         paint: {
           "fill-color": ["get", "color"],
-          "fill-opacity": 0.5,
+          "fill-opacity": 0.3,
         },
       });
 
@@ -505,8 +571,19 @@ export default function Map() {
       return;
 
     const newData = {
-      type: "FeatureCollection",
-      features: zonesRef.map((zone) => ({
+      type: dataZoneSelected == null ? "FeatureCollection" : "Feature",
+      features: dataZoneSelected != null ? {
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [dataZoneSelected.coordpol],
+        },
+        properties: {
+          id: dataZoneSelected.id,
+          name: dataZoneSelected.name,
+          color: dangerTranslate[dataZoneSelected.color],
+        },
+      } : zonesRef.map((zone) => ({
         type: "Feature",
         geometry: {
           type: "Polygon",
@@ -522,9 +599,11 @@ export default function Map() {
     mapRef.current.getSource("zones").setData(newData);
   }, [zonesRef]);
 
+  console.log("hola "+user.username)
+
   return (
     <>
-      {menu.visible && (
+      {user?.username==="admin" && ( menu.visible && (
         <ContextMenuLocation
           positionState={positionCreateElement}
           positionContextMenu={menu}
@@ -542,12 +621,12 @@ export default function Map() {
           dataNewZone={dataNewZone}
           onChangeDataZone={setDataNewZone}
         />
-      )}
+      ))}
       <div>
         <p>
           {positionCreateElement.lng} {positionCreateElement.lat}
         </p>
-        <p>{idZoneSelected}</p>
+        <p>{dataZoneSelected.id}</p>
       </div>
 
       <div
@@ -556,37 +635,44 @@ export default function Map() {
         onContextMenu={handleContentMenu}
         onClick={handleCloseContextMenuMap}
       >
-        <Popup popupData={popupData} mapRef={mapRef} />
+        {user?.username === "admin" &&
+          <Popup popupData={popupData} mapRef={mapRef} />
+        }
         <div className="sidebar">
           Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} |
           Zoom: {zoom.toFixed(2)}
-          
         </div>
         <button className="reset-button" onClick={handleButtonClick}>
           Reset
         </button>
-        <LayerCheckboxes
-          layerState={layerState}
-          setLayerState={setLayerState}
-        />
-        <div className="infoSide d-flex flex-row">
-          <div className="d-flex flex-column align-items-start mx-3">
-            <i
-              className="bi bi-chevron-left"
-              style={{ fontSize: "1.5rem", cursor: "pointer" }}
-            ></i>
-          </div>
-
-          <InfoPanel
-            zones={zonesRef}
-            onRemoveZone={handleRemoveZone}
-            onEditZone={handleEditZone}
-            dangerColor={dangerColor}
-            typesDanger={dangerTranslate}
-            zoneSelected={idZoneSelected}
-            setZoneSelected={setIdZoneSelected}
+        {user?.username === "admin" &&
+          <LayerCheckboxes
+            layerState={layerState}
+            setLayerState={setLayerState}
           />
-        </div>
+        }
+        {user?.username === "admin" &&
+          <div className="infoSide d-flex flex-row">
+            <div className="d-flex flex-column align-items-start mx-3">
+              <i
+                className="bi bi-chevron-left"
+                style={{ fontSize: "1.5rem", cursor: "pointer" }}
+              ></i>
+            </div>
+
+
+            <InfoPanel
+              zones={zonesRef}
+              rutes={rutesRef}
+              onRemoveZone={handleRemoveZone}
+              onEditZone={handleEditZone}
+              dangerColor={dangerColor}
+              typesDanger={dangerTranslate}
+              zoneSelected={dataZoneSelected}
+              setZoneSelected={setDataZoneSelected}
+            />
+
+          </div>}
       </div>
     </>
   );

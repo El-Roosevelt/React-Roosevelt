@@ -11,7 +11,7 @@ import ScrollToTop from "./pages/Router/ScrollToTop";
 import { useState } from "react";
 import { AuthProvider } from "./context/AuthContext";
 
-function App() {
+function App() {  
   return (
     <>
       <AuthProvider>
