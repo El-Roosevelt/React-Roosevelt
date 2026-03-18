@@ -182,54 +182,57 @@ export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dang
                   }
                 </div>
               );
-            })) : (
-            rutes.map((r) => {
-              return (
-                <div key={r.id}>
-                  <div className="zone-item">
-                    <div className="item-header">
-                      <div className="item-title-group p-2">
-                        <h4 className="item-title">{r.name}</h4>
+            })) : (rutes.length == 0 ? 
+            <div>
+              <h5>No hay rutas disponibles</h5>
+            </div> :
+              rutes.map((r) => {
+                return (
+                  <div key={r.id}>
+                    <div className="zone-item">
+                      <div className="item-header">
+                        <div className="item-title-group p-2">
+                          <h4 className="item-title">{r.name}</h4>
+                        </div>
+                        <button className=" btn-edit">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button className="btn-close">
+                          <i className="bi bi-x"></i>
+                        </button>
                       </div>
-                      <button className=" btn-edit">
-                        <i class="bi bi-pencil"></i>
-                      </button>
-                      <button className="btn-close">
-                        <i className="bi bi-x"></i>
-                      </button>
-                    </div>
-                    <div className="item-meta">
-                      <p>{r.description}</p>
-                    </div>
-                    <div className="coords-box">
-                      {r.coordpol && r.coordpol.map((c, index) => {
-                        if (typeof c[0] === 'number') {
-                          return (
-                            <div key={index} style={{ marginBottom: "4px" }}>
-                              <strong style={{ color: "#1a73e8" }}>P{index + 1}:</strong> {c[0].toFixed(5)}, {c[1].toFixed(5)}
-                            </div>
-                          );
-                        }
+                      <div className="item-meta">
+                        <p>{r.description}</p>
+                      </div>
+                      <div className="coords-box">
+                        {r.coordpol && r.coordpol.map((c, index) => {
+                          if (typeof c[0] === 'number') {
+                            return (
+                              <div key={index} style={{ marginBottom: "4px" }}>
+                                <strong style={{ color: "#1a73e8" }}>P{index + 1}:</strong> {c[0].toFixed(5)}, {c[1].toFixed(5)}
+                              </div>
+                            );
+                          }
 
-                        if (Array.isArray(c[0])) {
-                          return (
-                            <div key={index} style={{ marginBottom: "8px" }}>
-                              <strong style={{ color: "#1a73e8" }}>Tramo {index + 1}:</strong>
-                              {c.map((e, idx) => (
-                                <div key={idx} style={{ marginLeft: "12px" }}>
-                                  ↳ {e[0]?.toFixed(5)}, {e[1]?.toFixed(5)}
-                                </div>
-                              ))}
-                            </div>
-                          );
-                        }
-                        return null;
-                      })}
+                          if (Array.isArray(c[0])) {
+                            return (
+                              <div key={index} style={{ marginBottom: "8px" }}>
+                                <strong style={{ color: "#1a73e8" }}>Tramo {index + 1}:</strong>
+                                {c.map((e, idx) => (
+                                  <div key={idx} style={{ marginLeft: "12px" }}>
+                                    ↳ {e[0]?.toFixed(5)}, {e[1]?.toFixed(5)}
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          }
+                          return null;
+                        })}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })
+                )
+              })
           )
         )}
       </div>

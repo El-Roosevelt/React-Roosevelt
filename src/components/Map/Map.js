@@ -1,5 +1,6 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, use } from "react";
 import mapboxgl from "mapbox-gl";
+import { useContext } from "react";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./Map.scss";
@@ -9,15 +10,18 @@ import ContextMenuLocation from "../contextMenuLocation/contextMenuLocation";
 import LayerCheckboxes from "../LayerCheckboxes/LayerCheckboxes";
 import Popup from "../Popup/Popup";
 import InfoPanel from "../../components/InfoPanel/InfoPanel";
+import { AuthContext } from "../../context/AuthContext";
 
 
 const INITIAL_CENTER = [-0.4785025754158312, 38.34963385315302];
-const INITIAL_ZOOM = 15;
+const INITIAL_ZOOM = 16.5;
 
 export default function Map() {
   const mapRef = useRef();
   const mapContainerRef = useRef();
 
+  const { credentials, setCredentials, setUser } = useContext(AuthContext);
+  
   // VARIABLES DE MAPA
   const [center, setCenter] = useState(INITIAL_CENTER);
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
@@ -137,16 +141,16 @@ export default function Map() {
   });
 
   const [dataZoneSelected, setDataZoneSelected] = useState({
-    id:null,
-    name:"",
-    color:"",
-    coordpol:[[]]
+    id: null,
+    name: "",
+    color: "",
+    coordpol: [[]]
   })
 
   // Datos de zonas que se convertiran en poligonos para crear zonas
   const datazones = {
-    type: dataZoneSelected==null ? "FeatureCollection" : "Feature",
-    features: dataZoneSelected!=null ? {
+    type: dataZoneSelected.id == null ? "FeatureCollection" : "Feature",
+    features: dataZoneSelected.id != null ? {
       type: "Feature",
       geometry: {
         type: "Polygon",
@@ -567,37 +571,39 @@ export default function Map() {
       return;
 
     const newData = {
-      type: dataZoneSelected==null ? "FeatureCollection" : "Feature",
-    features: dataZoneSelected!=null ? {
-      type: "Feature",
-      geometry: {
-        type: "Polygon",
-        coordinates: [dataZoneSelected.coordpol],
-      },
-      properties: {
-        id: dataZoneSelected.id,
-        name: dataZoneSelected.name,
-        color: dangerTranslate[dataZoneSelected.color],
-      },
-    } : zonesRef.map((zone) => ({
-      type: "Feature",
-      geometry: {
-        type: "Polygon",
-        coordinates: [zone.coordpol],
-      },
-      properties: {
-        id: zone.id,
-        name: zone.name,
-        color: dangerTranslate[zone.color],
-      },
-    })),
+      type: dataZoneSelected == null ? "FeatureCollection" : "Feature",
+      features: dataZoneSelected != null ? {
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [dataZoneSelected.coordpol],
+        },
+        properties: {
+          id: dataZoneSelected.id,
+          name: dataZoneSelected.name,
+          color: dangerTranslate[dataZoneSelected.color],
+        },
+      } : zonesRef.map((zone) => ({
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [zone.coordpol],
+        },
+        properties: {
+          id: zone.id,
+          name: zone.name,
+          color: dangerTranslate[zone.color],
+        },
+      })),
     };
     mapRef.current.getSource("zones").setData(newData);
   }, [zonesRef]);
 
+  console.log("hola "+credentials.username)
+
   return (
     <>
-      {menu.visible && (
+      {credentials.username==="admin" && ( menu.visible && (
         <ContextMenuLocation
           positionState={positionCreateElement}
           positionContextMenu={menu}
@@ -615,7 +621,7 @@ export default function Map() {
           dataNewZone={dataNewZone}
           onChangeDataZone={setDataNewZone}
         />
-      )}
+      ))}
       <div>
         <p>
           {positionCreateElement.lng} {positionCreateElement.lat}
@@ -629,7 +635,9 @@ export default function Map() {
         onContextMenu={handleContentMenu}
         onClick={handleCloseContextMenuMap}
       >
-        <Popup popupData={popupData} mapRef={mapRef} />
+        {credentials.username === "admin" &&
+          <Popup popupData={popupData} mapRef={mapRef} />
+        }
         <div className="sidebar">
           Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} |
           Zoom: {zoom.toFixed(2)}
@@ -637,29 +645,34 @@ export default function Map() {
         <button className="reset-button" onClick={handleButtonClick}>
           Reset
         </button>
-        <LayerCheckboxes
-          layerState={layerState}
-          setLayerState={setLayerState}
-        />
-        <div className="infoSide d-flex flex-row">
-          <div className="d-flex flex-column align-items-start mx-3">
-            <i
-              className="bi bi-chevron-left"
-              style={{ fontSize: "1.5rem", cursor: "pointer" }}
-            ></i>
-          </div>
-
-          <InfoPanel
-            zones={zonesRef}
-            rutes={rutesRef}
-            onRemoveZone={handleRemoveZone}
-            onEditZone={handleEditZone}
-            dangerColor={dangerColor}
-            typesDanger={dangerTranslate}
-            zoneSelected={dataZoneSelected}
-            setZoneSelected={setDataZoneSelected}
+        {credentials.username === "admin" &&
+          <LayerCheckboxes
+            layerState={layerState}
+            setLayerState={setLayerState}
           />
-        </div>
+        }
+        {credentials.username === "admin" &&
+          <div className="infoSide d-flex flex-row">
+            <div className="d-flex flex-column align-items-start mx-3">
+              <i
+                className="bi bi-chevron-left"
+                style={{ fontSize: "1.5rem", cursor: "pointer" }}
+              ></i>
+            </div>
+
+
+            <InfoPanel
+              zones={zonesRef}
+              rutes={rutesRef}
+              onRemoveZone={handleRemoveZone}
+              onEditZone={handleEditZone}
+              dangerColor={dangerColor}
+              typesDanger={dangerTranslate}
+              zoneSelected={dataZoneSelected}
+              setZoneSelected={setDataZoneSelected}
+            />
+
+          </div>}
       </div>
     </>
   );

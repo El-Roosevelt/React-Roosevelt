@@ -10,14 +10,9 @@ import AppRouter from "./pages/Router/AppRouter";
 import ScrollToTop from "./pages/Router/ScrollToTop";
 import { useState } from "react";
 import { AuthProvider } from "./context/AuthContext";
-import PagePrueba from "./pages/PagePrueba/PagePrueba.js";
 
-function App() {
-  return(
-  <PagePrueba>
-
-  </PagePrueba>)
-  /*return (
+function App() {  
+  return (
     <>
       <AuthProvider>
         <BrowserRouter>
@@ -29,7 +24,7 @@ function App() {
         </BrowserRouter>
       </AuthProvider>
     </>
-  );*/
+  );
 }
 
 export default App;

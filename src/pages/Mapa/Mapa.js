@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import Map from "../../components/Map/Map"
+import PagePrueba from "../PagePrueba/PagePrueba";  
 
 export default function Mapa() {
 
@@ -7,6 +8,8 @@ export default function Mapa() {
         e.preventDefault();
     }
     return (
+        //<PagePrueba/>
+        
         <div className=" d-flex flex-column align-items-center map-container min-vh-100 m-2 mb-4 mt-4" onContextMenu={disableContextMenuPag}>
             <Map></Map>
         </div>
