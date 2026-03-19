@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, use } from "react";
+import React, { useRef, useEffect, useState, use, useEffectEvent } from "react";
 import mapboxgl from "mapbox-gl";
 import { useContext } from "react";
 
@@ -13,7 +13,8 @@ import SelectorRutes from "../SelectorRutes/SelectorRutes";
 import InfoPanel from "../../components/InfoPanel/InfoPanel";
 import { AuthContext } from "../../context/AuthContext";
 import { useZonas } from "../../hooks/useZonas";
-import { useRutas} from "../../hooks/useRutas";
+import { useRutas } from "../../hooks/useRutas";
+import { useLineasObjetos } from "../../hooks/useLineasObjetos";
 
 
 const INITIAL_CENTER = [-0.4785025754158312, 38.34963385315302];
@@ -66,83 +67,73 @@ export default function Map() {
       return [];
     }
   }
-  // Datos que vendran de la api
+
+  //DATOS DE API
 
 
   //Zonas
-  const {zonas:zones,loading:loadingZones}= useZonas();
-  const [zonesRef, setZonesRef] = useState([]/*[
-    {
-      id: 0,
-      name: "Castillo San Fernando",
-      color: "rojo",
-      coordpol: stringToJsonArray("[[-0.49053749327177343, 38.357542351070265],[-0.4892823587223063, 38.35519423939252],[-0.48906662626768593, 38.35347156925499],[-0.4900417687209426, 38.350738188429716],[-0.49259854688597215, 38.3495294122186],[-0.49474245216632085, 38.35089461624432],[-0.49515075878613857, 38.35288183092004],[-0.49053749327177343, 38.357542351070265]]")
-    },
-    {
-      id: 1,
-      name: "Castillo Santa Barbara",
-      color: "amarillo",
-      coordpol: stringToJsonArray("[[-0.4839169233197822, 38.348417685652805],[-0.4815677123779949, 38.351167830649786],[-0.47943497326687634, 38.352399496274614],[-0.4764586191535898, 38.352214305703114],[-0.4744590379772262, 38.3513590435428],[-0.4738797240611916, 38.350433588899364],[-0.4756391534831437, 38.34807779066267],[-0.47731673286693876, 38.34687253370336],[-0.4807042435479332, 38.346724526574945],[-0.48359247420486895, 38.347785773621325],[-0.4839169233197822, 38.348417685652805]]")
-    },
-  ]*/
-  );
-  //CARGAR LOS DATOS DE ZONAS
-  useEffect(()=>{
-    if(zones.length>0){
-      const zonasCargadas=zones.map(z=>({
-        id:z.id,
-        name:z.nombre_zona,
-        color:dangerTranslate[z.peligrosidad.toLowerCase()],
-        coordpol:stringToJsonArray(z.mapbox_json)
+  const { zonas: zones, loading: loadingZones } = useZonas();
+  const [zonesRef, setZonesRef] = useState([]);
+
+  //Cargar datos zonas
+  useEffect(() => {
+    if (zones.length > 0) {
+      const zonasCargadas = zones.map(z => ({
+        id: z.id,
+        name: z.nombre_zona,
+        color: dangerTranslate[z.peligrosidad.toLowerCase()],
+        coordpol: stringToJsonArray(z.mapbox_json)
       }))
       setZonesRef(zonasCargadas);
-    }    
-  },[zones])
+    }
+  }, [zones])
 
   //Rutas
-  const {rutas:rutes,loading:loadingRutes}= useRutas();
-  const [rutesRef, setRutesRef] = useState([]
-    /*[
-    {
-      id: Date.now(),
-      name: "Camino confortante",
-      coordpol: stringToJsonArray("[[-0.4823535037734814, 38.34775791453754],[-0.47852430655979106, 38.34935405748996]]"),
-      description: "Un facil acceso a la planta alta del castillo",
-      date_upload: "10/12/2022",
-      likes_count: 2,
-      id_zone: 0,
-      id_user_author: 0,
-    },
-  ]*/);
-   //CARGAR LOS DATOS DE RUTAS
-   useEffect(()=>{
-    if(rutes.length>0){
-      const rutasCargadas=rutes.map(r=>({
-        id:r.id,
-        name:r.nombre_zona, 
-        coordpol:stringToJsonArray(r.mapbox_json),
-        description:r.descripcion,
-        date_update:r.fecha_pub,
-        likes_count:r.likesCount,
-        id_zone:{id:r.zona.id,nameRute:r.zona.nombre_zona},
-        id_user_author:{id:r.usuario_autor.id,nameRute:r.usuario_autor.username}       
+  const { rutas: rutes, loading: loadingRutes } = useRutas();
+  const [rutesRef, setRutesRef] = useState([]);
+  //Cargar datos rutas
+  useEffect(() => {
+    if (rutes.length > 0) {
+      const rutasCargadas = rutes.map(r => ({
+        id: r.id,
+        name: r.nombreRuta,
+        coordpol: stringToJsonArray(r.mapboxJSON),
+        description: r.descripcion,
+        date_update: r.fecha_pub,
+        likes_count: r.likesCount,
+        id_zone: { id: r.zona.id, nameRute: r.zona.nombre_zona },
+        id_user_author: { id: r.usuario_autor.id, nameRute: r.usuario_autor.username }
       }))
       setRutesRef(rutasCargadas);
-    }    
-  },[rutes])
+    }
+  }, [rutes])
   //Relaciones punto interes y ruta
-  const [LinesObjects, setLinesObjects] = useState([
-    {
-      id_object: 0,
-      id_rute: 0,
-    },
-    {
-      id_object: 1,
-      id_rute: 0,
-    },
-  ]);
+  const [linesObjectsRef, setLinesObjectsRef] = useState([]);
+  const { lineasObjetos: linesObjects, loading: loadingLinesObjects } = useLineasObjetos();
+
+  useEffect(() => {
+    if (linesObjects && linesObjects.length > 0) {
+      const lineasObjetosCargados = linesObjects.map(l => ({
+        idRuta: l.lineaObjetosId.ruta.id,
+        objeto: {
+          id: l.lineaObjetosId.objeto.id,
+          coordpol: stringToJsonArray(l.lineaObjetosId.objeto.mapBoxJSON),
+          name: l.lineaObjetosId.objeto.nombre_objeto,
+          descripcion: l.lineaObjetosId.objeto.descripcion,
+          img: l.lineaObjetosId.objeto.imagen,
+          danger: l.lineaObjetosId.objeto.peligrosidad,
+          idZona: l.lineaObjetosId.objeto.zona.id,
+          typeObject: l.lineaObjetosId.objeto.tipoObjeto.nombre_tipo
+        }
+      }))
+      setLinesObjectsRef(lineasObjetosCargados)
+    }
+
+  }, [linesObjects])
+
+
   //Objectos ruta (puntos de interes)
-  const [objectRute, setObjectRute] = useState([
+  /*const [objectRute, setObjectRute] = useState([
     {
       id: 0,
       name: "Elevador del castillo",
@@ -153,12 +144,12 @@ export default function Map() {
       id_zone: 0,
       id_type_object: 0,
     },
-  ]);
+  ]);*/
 
 
 
   //Tipos Objecto (tipos de punto interes)
-  const [typeObject, setTypeObject] = useState([
+  /*const [typeObject, setTypeObject] = useState([
     {
       id: 0,
       name: "elevator",
@@ -179,50 +170,88 @@ export default function Map() {
       name: "rebuilds",
       icono: "",
     },
-  ]);
+  ]);*/
 
   const [dataNewZone, setDataNewZone] = useState({
-    id: zonesRef.length,
+    id: null,
     name: "",
     color: "",
+    coordpol: [[]]
   });
 
+
+  // Zona a mostrar al ser seleccionada por el usuario 
   const [dataZoneSelected, setDataZoneSelected] = useState({
     id: null,
     name: "",
     color: "",
     coordpol: [[]]
   })
+  // Ruta a mostrar al ser seleccionada por el usuario 
+  const [dataRuteSelected, setDataRuteSelected] = useState({
+    id: null,
+    name: "",
+    coordpol: [[]]
+  })
+
 
   // Datos de zonas que se convertiran en poligonos para crear zonas
-  const datazones = {
-    type: dataZoneSelected.id == null ? "FeatureCollection" : "Feature",
-    features: dataZoneSelected.id != null ? {
-      type: "Feature",
-      geometry: {
-        type: "Polygon",
-        coordinates: [dataZoneSelected.coordpol],
-      },
-      properties: {
-        id: dataZoneSelected.id,
-        name: dataZoneSelected.name,
-        color: dangerTranslate[dataZoneSelected.color],
-      },
-    } : zonesRef.map((zone) => ({
-      type: "Feature",
-      geometry: {
-        type: "Polygon",
-        coordinates: [zone.coordpol],
-      },
-      properties: {
-        id: zone.id,
-        name: zone.name,
-        color: dangerTranslate[zone.color],
-      },
-    })),
-  };
+  const [dataZones, setDataZones] = useState();
+
+  useEffectEvent(() => {
+    if (zonesRef.length > 0) {
+      const dataZonesCargados = {
+        type: "FeatureCollection",
+        features: zonesRef.map((zone) => ({
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: [zone.coordpol],
+          },
+          properties: {
+            id: zone.id,
+            name: zone.name,
+            color: dangerTranslate[zone.color],
+          },
+        }))
+      }
+      console.log("dataZonesCargados");
+      console.log(dataZonesCargados);
+      setDataZones(dataZonesCargados)
+    }
+  }, [zonesRef])
 
   
+
+
+
+  /*type: dataZoneSelected.id == null ? "FeatureCollection" : "Feature",
+  features: dataZoneSelected.id != null ? {
+    type: "Feature",
+    geometry: {
+      type: "Polygon",
+      coordinates: [dataZoneSelected.coordpol],
+    },
+    properties: {
+      id: dataZoneSelected.id,
+      name: dataZoneSelected.name,
+      color: dangerTranslate[dataZoneSelected.color],
+    },
+  } : zonesRef.map((zone) => ({
+    type: "Feature",
+    geometry: {
+      type: "Polygon",
+      coordinates: [zone.coordpol],
+    },
+    properties: {
+      id: zone.id,
+      name: zone.name,
+      color: dangerTranslate[zone.color],
+    },
+  })),*/
+
+
+
 
   // MIS VARIABLES
 
@@ -517,7 +546,7 @@ export default function Map() {
       }
       mapRef.current.addSource("zones", {
         type: "geojson",
-        data: datazones,
+        data: dataZones,
       });
 
       mapRef.current.addLayer({
@@ -620,6 +649,21 @@ export default function Map() {
       return;
 
     const newData = {
+      type:"FeatureCollection",
+      features: zonesRef.map((zone) => ({
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [zone.coordpol],
+        },
+        properties: {
+          id: zone.id,
+          name: zone.name,
+          color: dangerTranslate[zone.color],
+        },
+      })),
+    };
+    /*const newData = {
       type: dataZoneSelected == null ? "FeatureCollection" : "Feature",
       features: dataZoneSelected != null ? {
         type: "Feature",
@@ -644,11 +688,12 @@ export default function Map() {
           color: dangerTranslate[zone.color],
         },
       })),
-    };
+    };*/
     mapRef.current.getSource("zones").setData(newData);
   }, [zonesRef]);
 
-  console.log("hola " + user.username)
+  console.log("ZONAS")
+  console.log(zonesRef)
 
   return (
     <>
@@ -675,7 +720,8 @@ export default function Map() {
         <p>
           {positionCreateElement.lng} {positionCreateElement.lat}
         </p>
-        <p>{dataZoneSelected.id}</p>
+        <p>Zona Seleccionada: {dataZoneSelected.id}</p>
+        <p>Ruta Seleccionada: {dataRuteSelected.id}</p>
       </div>
 
       <div
@@ -708,8 +754,6 @@ export default function Map() {
                 style={{ fontSize: "1.5rem", cursor: "pointer" }}
               ></i>
             </div>
-
-
             <InfoPanel
               zones={zonesRef}
               rutes={rutesRef}
@@ -720,10 +764,9 @@ export default function Map() {
               zoneSelected={dataZoneSelected}
               setZoneSelected={setDataZoneSelected}
             />
-
           </div>}
       </div>
-      <SelectorRutes rutesList={rutes} lineasObjetosList={LinesObjects}/>
+      <SelectorRutes rutesList={rutesRef} lineasObjetosList={linesObjectsRef} onSelectRute={setDataRuteSelected} />
     </>
   );
 }

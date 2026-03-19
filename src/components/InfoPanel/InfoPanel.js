@@ -2,7 +2,7 @@ import React, { use, useState } from "react";
 import "./InfoPanel.scss";
 
 
-export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dangerColor, typesDanger, zoneSelected, setZoneSelected }) {
+export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dangerColor, typesDanger, zoneSelected, onZoneSelected,onRuteSelected}) {
 
   const [tabSwitched, setTabSwitched] = useState(false);
 
@@ -58,9 +58,6 @@ export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dang
       coordpol: [[]]
     });
   }
-  const getOneZone = (zone) => {
-    setZoneSelected({ id: zone.id, name: zone.name, color: zone.color, coordpol: zone.coordpol })
-  }
 
   return (
     <div className="info-panel-container">
@@ -96,7 +93,7 @@ export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dang
                 <div key={z.id} >
                   {selectedZoneToRemove !== z.id ?
                     (selectedZoneToEdit.id !== z.id ?
-                      <div className={`zone-item ${zoneSelected.id != null ? "active" : ""}`} onClick={() => getOneZone({ id: z.id, name: z.name, color: z.color, coordpol: z.coordpol })}>
+                      <div className={`zone-item ${zoneSelected.id != null ? "active" : ""}`} onClick={() => onZoneSelected({ id: z.id, name: z.name, color: z.color, coordpol: z.coordpol })}>
                         <div className="item-header">
                           <div className="item-title-group">
                             <div className={`color-dot ${dotColorClass}`}></div>

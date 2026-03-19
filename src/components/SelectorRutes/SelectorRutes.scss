@@ -2,15 +2,15 @@
 .container-selector {
     background-color: gray;
     width: 90%;
-    height: 30vh;
+    height: 50vh;
 
     .container-rute {
-        width: 90%;
+        width: 95%;
         height: 90%;
+        border-radius: 10px;
         transition: all 0.8s ease;
         &:hover{
             background-color: $primary !important;
-            border: -2px solid $light !important;
             border-radius: 5px;
         }
     }
