@@ -1,0 +1,17 @@
+@import "../../variables.scss";
+.container-selector {
+    background-color: gray;
+    width: 90%;
+    height: 30vh;
+
+    .container-rute {
+        width: 90%;
+        height: 90%;
+        transition: all 0.8s ease;
+        &:hover{
+            background-color: $primary !important;
+            border: -2px solid $light !important;
+            border-radius: 5px;
+        }
+    }
+}

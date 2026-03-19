@@ -9,8 +9,11 @@ import interestPointData from "../../assets/providence-interestPoint.json";
 import ContextMenuLocation from "../contextMenuLocation/contextMenuLocation";
 import LayerCheckboxes from "../LayerCheckboxes/LayerCheckboxes";
 import Popup from "../Popup/Popup";
+import SelectorRutes from "../SelectorRutes/SelectorRutes";
 import InfoPanel from "../../components/InfoPanel/InfoPanel";
 import { AuthContext } from "../../context/AuthContext";
+import { useZonas } from "../../hooks/useZonas";
+import { useRutas} from "../../hooks/useRutas";
 
 
 const INITIAL_CENTER = [-0.4785025754158312, 38.34963385315302];
@@ -20,8 +23,8 @@ export default function Map() {
   const mapRef = useRef();
   const mapContainerRef = useRef();
 
-  const { user} = useContext(AuthContext);
-  
+  const { user } = useContext(AuthContext);
+
   // VARIABLES DE MAPA
   const [center, setCenter] = useState(INITIAL_CENTER);
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
@@ -44,19 +47,31 @@ export default function Map() {
   //CONVERTIDORES DE DATOS
 
   const stringToJsonArray = (s) => {
-    return JSON.parse(s);
+    if (!s || s === "") return [];
+
+    try {
+      // 2. Si ya es un objeto/array (porque la API lo pre-procesó), lo devolvemos
+      if (typeof s !== 'string') return s;
+
+      // 3. Intentamos parsear
+      const resultado = JSON.parse(s);
+
+      // 4. Verificación de estructura: ¿Es realmente un array?
+      if (!Array.isArray(resultado)) return [];
+
+      return resultado;
+    } catch (e) {
+      // 5. Si el JSON está mal formado, capturamos el error aquí
+      console.warn("Dato corrupto saltado:", s);
+      return [];
+    }
   }
   // Datos que vendran de la api
 
-  //Tipo peligrosidad
-  const idToDanger = Object.freeze({
-    0: "verde",
-    1: "amarillo",
-    2: "rojo",
-  });
 
   //Zonas
-  const [zonesRef, setZonesRef] = useState([
+  const {zonas:zones,loading:loadingZones}= useZonas();
+  const [zonesRef, setZonesRef] = useState([]/*[
     {
       id: 0,
       name: "Castillo San Fernando",
@@ -69,9 +84,25 @@ export default function Map() {
       color: "amarillo",
       coordpol: stringToJsonArray("[[-0.4839169233197822, 38.348417685652805],[-0.4815677123779949, 38.351167830649786],[-0.47943497326687634, 38.352399496274614],[-0.4764586191535898, 38.352214305703114],[-0.4744590379772262, 38.3513590435428],[-0.4738797240611916, 38.350433588899364],[-0.4756391534831437, 38.34807779066267],[-0.47731673286693876, 38.34687253370336],[-0.4807042435479332, 38.346724526574945],[-0.48359247420486895, 38.347785773621325],[-0.4839169233197822, 38.348417685652805]]")
     },
-  ]);
+  ]*/
+  );
+  //CARGAR LOS DATOS DE ZONAS
+  useEffect(()=>{
+    if(zones.length>0){
+      const zonasCargadas=zones.map(z=>({
+        id:z.id,
+        name:z.nombre_zona,
+        color:dangerTranslate[z.peligrosidad.toLowerCase()],
+        coordpol:stringToJsonArray(z.mapbox_json)
+      }))
+      setZonesRef(zonasCargadas);
+    }    
+  },[zones])
+
   //Rutas
-  const [rutesRef, setRutesRef] = useState([
+  const {rutas:rutes,loading:loadingRutes}= useRutas();
+  const [rutesRef, setRutesRef] = useState([]
+    /*[
     {
       id: Date.now(),
       name: "Camino confortante",
@@ -82,7 +113,23 @@ export default function Map() {
       id_zone: 0,
       id_user_author: 0,
     },
-  ]);
+  ]*/);
+   //CARGAR LOS DATOS DE RUTAS
+   useEffect(()=>{
+    if(rutes.length>0){
+      const rutasCargadas=rutes.map(r=>({
+        id:r.id,
+        name:r.nombre_zona, 
+        coordpol:stringToJsonArray(r.mapbox_json),
+        description:r.descripcion,
+        date_update:r.fecha_pub,
+        likes_count:r.likesCount,
+        id_zone:{id:r.zona.id,nameRute:r.zona.nombre_zona},
+        id_user_author:{id:r.usuario_autor.id,nameRute:r.usuario_autor.username}       
+      }))
+      setRutesRef(rutasCargadas);
+    }    
+  },[rutes])
   //Relaciones punto interes y ruta
   const [LinesObjects, setLinesObjects] = useState([
     {
@@ -102,7 +149,7 @@ export default function Map() {
       img: "",
       coordpol: stringToJsonArray("[-0.4773503018700467, 38.34712845540338]"),
       description: "Te subira directamente hasta la suma del castillo",
-      peligrosidad: idToDanger[0],
+      peligrosidad: "AMARILLO".toLowerCase(),
       id_zone: 0,
       id_type_object: 0,
     },
@@ -175,9 +222,11 @@ export default function Map() {
     })),
   };
 
-  const [popupData, setPopupData] = useState(null);
+  
 
   // MIS VARIABLES
+
+  const [popupData, setPopupData] = useState(null);
 
   const [coords, setCoords] = useState([])
 
@@ -599,11 +648,11 @@ export default function Map() {
     mapRef.current.getSource("zones").setData(newData);
   }, [zonesRef]);
 
-  console.log("hola "+user.username)
+  console.log("hola " + user.username)
 
   return (
     <>
-      {user?.username==="admin" && ( menu.visible && (
+      {user?.username === "admin" && (menu.visible && (
         <ContextMenuLocation
           positionState={positionCreateElement}
           positionContextMenu={menu}
@@ -674,6 +723,7 @@ export default function Map() {
 
           </div>}
       </div>
+      <SelectorRutes rutesList={rutes} lineasObjetosList={LinesObjects}/>
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { useRutas } from "../../hooks/useRutas";
 import { useZonas } from "../../hooks/useZonas";
 import { useLineasObjetos } from "../../hooks/useLineasObjetos";
+import { useObjetos } from "../../hooks/useObjetos";
 
 import { useEffect, useState } from "react";
 export default function PagePrueba() {
@@ -12,6 +13,10 @@ export default function PagePrueba() {
 
   const { lineasObjetos: linesObjects, loading: loadingLinesObjects } =
     useLineasObjetos();
+
+  const { objetos: objects, loading: loadingObjects } = useObjetos();
+
+  const { tiposobjeto: typeObjects, loading: loadingTypeObjects } = useObjetos();
 
   const stringToJsonArray = (s) => {
     try {
@@ -25,9 +30,18 @@ export default function PagePrueba() {
       return []; // Devolvemos un array vacío para que el .map() de abajo no falle
     }
   };
-  console.log(rutes);
-  console.log(zones);
-  console.log(linesObjects)
+  
+    console.log("Rutas")
+    console.log( rutes);
+    console.log("Zonas")
+    console.log( zones);
+    console.log("LineasObjetos")
+    console.log(linesObjects);
+    console.log("Objetos")
+    console.log(objects);
+    console.log("TiposObjetos")
+    console.log(typeObjects)
+
 
   return (
     <>
@@ -44,6 +58,8 @@ export default function PagePrueba() {
               return (
                 <div className=" m-2">
                   <p>{r.nombreRuta}</p>
+                  <p>{r.zona.id}</p>
+                  <p>{r.usuario_autor.id}</p>
                 </div>
               );
             })}
