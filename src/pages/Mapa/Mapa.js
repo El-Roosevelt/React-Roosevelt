@@ -13,7 +13,7 @@ export default function Mapa() {
           className="d-flex flex-column align-items-center map-container min-vh-100 m-2 mb-5 mt-5"
           onContextMenu={disableContextMenuPag}
         >
-          <Map />
+          <Map/> 
         </div>
     </>
   );

@@ -67,7 +67,7 @@
       background-color:$primary-light;
       
       &.active{
-        background-color: #5f6368;
+        background-color: $primary;
       }
 
       &:hover {

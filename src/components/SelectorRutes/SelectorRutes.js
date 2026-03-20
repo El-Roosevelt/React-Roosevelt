@@ -4,7 +4,9 @@ import rampa from "../../assets/disabled.png";
 import ascensor from "../../assets/elevator.png";
 import reconst from "../../assets/building-crane.png"
 import escaleras from "../../assets/stairs.png"
-
+import personIcon from "../../assets/person-circle.svg"
+import star from "../../assets/star.png";
+import searcher from "../../assets/search.png"
 export default function SelectorRutes({ rutesList, lineasObjetosList, onSelectRute }) {
     const [rutes, setRutes] = useState(rutesList);
     const [liked, setLiked] = useState(false);
@@ -16,7 +18,16 @@ export default function SelectorRutes({ rutesList, lineasObjetosList, onSelectRu
     }, [rutesList]);
 
     const getObjectsByRute = (id) => {
-        return lineasObjetosList.filter(l => Number(l.idRuta) === Number(id));
+        const linesobjectsByRute = lineasObjetosList.filter(l => Number(l.idRuta) === Number(id));
+        const objects = linesobjectsByRute.map(l => {
+            return ({
+                id: l.objeto.id,
+                type: l.objeto.typeObject,
+                danger: (l.objeto.danger).toLowerCase()
+            })
+        })
+        const groupedObjects = Object.groupBy(objects, (obj) => obj.type)
+        return groupedObjects;
     }
     const getObjectCount = (type) => {
         return lineasObjetosList.filter(l => l.objeto.typeObject == type).length;
@@ -42,33 +53,52 @@ export default function SelectorRutes({ rutesList, lineasObjetosList, onSelectRu
         Construcción: reconst
     })
 
+    const danger = Object.freeze({
+        rojo: "danger",
+        amarillo: "secondary",
+        verde: "success"
+    })
+
     return (
-        <div className="container-selector d-flex flex-column gap-2 p-2 border rounded-2">
+        <div className="container-selector d-flex flex-column align-items-center justify-content-center gap-2 p-4 border rounded-2">
             {rutes && rutes.length > 0 ? (
                 rutes.map(rute => (
-                    <div key={rute.id} className="d-flex flex-column bg-primary">
-                        <div className="d-flex flex-row bg-light fs-3 p-2 h-75 text-dark">
-                            <p className=" w-25">{rute.name}</p>
-                            <div className=" d-flex flex-row gap-4">
-                                {getObjectsByRute(rute.id).map(obj => (
-                                    <div key={obj.objeto.id} className=" d-flex flex-row justify-content-center align-items-center">
-                                        { getObjectCount(obj.objeto.typeObject) != 0 &&
-                                            <div className=" bg-danger p-2 rounded-5">
-                                                <img style={{ height: "30px", width:"35px" }} src={icon[obj.objeto.typeObject]}></img>
+                    <div key={rute.id} className=" container-rute d-flex flex-column bg-primary rounded-2 border border-1">
+                        <div className="d-flex flex-row justify-content-around bg-light fs-3 p-2 h-75 text-dark">
+                            <p className=" w-25 p-2">{rute.name}</p>
+                            <div className=" d-flex w-50 flex-row gap-4">
+                                <p style={{fontSize:"18px"}}>puntos de interes:</p>
+                                {Object.entries(getObjectsByRute(rute.id)).map(([key, value]) => (
+                                    <div className=" d-flex flex-column justify-content-center align-items-center" >
+                                        <p style={{fontSize:"20px", margin:"-10px",left:"-12px",position:"relative"}}>{value.length}</p>
+                                        {value.length != 0 &&
+                                            <div className={`p-2 rounded-4`}>
+                                                <img style={{ height: "30px", width: "30px" }} src={icon[key]}></img>
+                                                <div className={`border border-2 rounded-2 border-${danger[value[0].danger]}`}>
+                                                </div>
                                             </div>
-                                            
-                                        }
-                                        <p className=" rounded-5 border border-1 border-black">{getObjectCount(obj.objeto.typeObject)}</p>
+                                        }                                        
                                     </div>
                                 ))}
+                            </div>
+                            <div className=" d-flex flex-row justify-content-center w-75 align-items-center gap-2">
+                                <button className=" btn btn-primary" onClick={()=>onSelectRute({id:rute.id,name:rute.name,coordpol:rute.coordpol})}>Buscar <img src={searcher} style={{width:"20px"}}/></button>
+                                <button className=" btn btn-secondary" onClick={()=>""}>Guardar en Favoritos<img src={star} style={{width:"20px", margin:"3px"}}/></button>
                             </div>
 
                         </div>
                         <div className="d-flex flex-row justify-content-lg-around">
-                            <div className="d-flex flex-column justify-content-center vw-100 m-2 text-light">
+                            <div className="d-flex flex-row align-items-center justify-content-around vw-100 m-2 text-light gap-3">
 
+                                <p className=" m-0"> descripción: {rute.description} </p>
+                                <p className=" m-0">Creación: {rute.date_update}</p>
+                                <p className=" m-0">Zona: {rute.id_zone.nameZone}</p>
+                                <div className="d-flex flex-row align-items-center justify-content-center gap-1">
+                                    <p className=" m-0">Autor: </p>
+                                    <img style={{ width: "20px", height: "auto" }} src={personIcon}/>
+                                    <p className=" m-0">{rute.id_user_author.nameUser}</p>
+                                </div>
                             </div>
-
                             <div className="d-flex flex-column justify-content-center align-items-center w-25 p-2">
                                 <button className="btn btn-light" onClick={() => onLike(rute.id)}>
                                     Me gusta {rute.likes_count}

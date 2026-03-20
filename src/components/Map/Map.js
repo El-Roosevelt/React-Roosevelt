@@ -15,9 +15,10 @@ import { AuthContext } from "../../context/AuthContext";
 import { useZonas } from "../../hooks/useZonas";
 import { useRutas } from "../../hooks/useRutas";
 import { useLineasObjetos } from "../../hooks/useLineasObjetos";
+import { useObjetos } from "../../hooks/useObjetos";
 
 
-const INITIAL_CENTER = [-0.4785025754158312, 38.34963385315302];
+const INITIAL_CENTER = [-0.4794138193936135, 38.35239601734659];
 const INITIAL_ZOOM = 16.5;
 
 export default function Map() {
@@ -34,6 +35,12 @@ export default function Map() {
   // marcadores punto a punto
   const markersRef = useRef([]);
 
+  const [dataRuteSelected, setDataRuteSelected] = useState({
+    id: null,
+    name: "",
+    coordpol: [[]]
+  })
+
   const dangerTranslate = Object.freeze({
     rojo: "red",
     amarillo: "yellow",
@@ -45,6 +52,12 @@ export default function Map() {
     amarillo: " bg-warning",
     verde: " bg-success",
   });
+  const translateToMap = {
+    "Escalera": "stairs",
+    "Ascensor": "elevator",
+    "Rampa": "ramp",
+    "Construcción": "rebuild"
+  };
   //CONVERTIDORES DE DATOS
 
   const stringToJsonArray = (s) => {
@@ -81,7 +94,7 @@ export default function Map() {
       const zonasCargadas = zones.map(z => ({
         id: z.id,
         name: z.nombre_zona,
-        color: dangerTranslate[z.peligrosidad.toLowerCase()],
+        color: dangerTranslate[(z.peligrosidad || "").toLowerCase()] || "gray",
         coordpol: stringToJsonArray(z.mapbox_json)
       }))
       setZonesRef(zonasCargadas);
@@ -94,6 +107,7 @@ export default function Map() {
   //Cargar datos rutas
   useEffect(() => {
     if (rutes.length > 0) {
+
       const rutasCargadas = rutes.map(r => ({
         id: r.id,
         name: r.nombreRuta,
@@ -101,8 +115,8 @@ export default function Map() {
         description: r.descripcion,
         date_update: r.fecha_pub,
         likes_count: r.likesCount,
-        id_zone: { id: r.zona.id, nameRute: r.zona.nombre_zona },
-        id_user_author: { id: r.usuario_autor.id, nameRute: r.usuario_autor.username }
+        id_zone: { id: r.zona.id, nameZone: r.zona.nombre_zona },
+        id_user_author: { id: r.usuario_autor.id, nameUser: r.usuario_autor.username }
       }))
       setRutesRef(rutasCargadas);
     }
@@ -149,28 +163,99 @@ export default function Map() {
 
 
   //Tipos Objecto (tipos de punto interes)
-  /*const [typeObject, setTypeObject] = useState([
-    {
-      id: 0,
-      name: "elevator",
-      icono: "",
-    },
-    {
-      id: 1,
-      name: "stairs",
-      icono: "",
-    },
-    {
-      id: 3,
-      name: "ramp",
-      icono: "",
-    },
-    {
-      id: 4,
-      name: "rebuilds",
-      icono: "",
-    },
-  ]);*/
+
+  const [objectsRef, setObjectsRef] = useState();
+  const { objetos: objects, loading: loadingObjects } = useObjetos()
+  useEffect(() => {
+    if (objects && objects.length > 0) {
+      const objetosCargados = objects.map(o => {
+        // Usamos el traductor o el nombre original si no existe en el mapa
+        const tipoOriginal = o.tipoObjeto?.nombre_tipo;
+        const tipoFiltrado = translateToMap[tipoOriginal] || tipoOriginal;
+
+        return {
+          id: o.id,
+          type: "Feature",
+          properties: {
+            name: o.nombre_objeto,
+            cuisine: tipoFiltrado // Ahora esto coincidirá con "stairs"
+          },
+          geometry: {
+            coordinates: stringToJsonArray(o.mapBoxJSON),
+            type: "Point"
+          }
+        };
+      });
+
+      setObjectsRef({
+        type: "FeatureCollection",
+        features: objetosCargados
+      });
+    }
+  }, [objects]);
+
+  useEffect(() => {
+    // 1. Verifica que la referencia al mapa exista
+    // 2. Verifica que el objeto interno de Mapbox esté creado
+    // 3. Verifica que el estilo esté cargado (importantísimo para getSource)
+    if (!mapRef.current || !mapRef.current.isStyleLoaded()) return;
+
+    const source = mapRef.current.getSource("interestPoint");
+
+    // 4. Verifica que el source realmente exista en el mapa
+    if (source && objectsRef) {
+      source.setData(objectsRef);
+    }
+  }, [objectsRef]);
+
+  useEffect(() => {
+    // 1. Validaciones de seguridad (Mapa listo y datos presentes)
+    if (!mapRef.current || !mapRef.current.isStyleLoaded() || !dataRuteSelected.coordpol) return;
+
+    const updateSelectedRoute = async () => {
+      // 2. Extraer puntos (A y B)
+      // Asumimos que coordpol es un array de coordenadas [[lng, lat], [lng, lat]]
+      const coords = dataRuteSelected.coordpol.map(p => p.join(",")).join(";");
+
+      // 3. Pedir la geometría exacta a la API de Directions (Caminando)
+      const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.code !== "Ok") return;
+
+        const routeGeometry = data.routes[0].geometry;
+        const source = mapRef.current.getSource("selected-route-source");
+
+        if (source) {
+          // Si la fuente ya existe, solo actualizamos los datos
+          source.setData({
+            type: "Feature",
+            properties: {
+              id: dataRuteSelected.id,
+              name: dataRuteSelected.name
+            },
+            geometry: routeGeometry
+          });
+
+          // Opcional: Hacer que el mapa vuele hasta la ruta
+          const coordinates = routeGeometry.coordinates;
+          const bounds = coordinates.reduce((acc, coord) => {
+            return acc.extend(coord);
+          }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+
+          mapRef.current.fitBounds(bounds, { padding: 50 });
+        }
+      } catch (error) {
+        console.error("Error al obtener la ruta seleccionada:", error);
+      }
+    };
+
+    updateSelectedRoute();
+  }, [dataRuteSelected]); // Se dispara cada vez que eliges una ruta en el panel
+
 
   const [dataNewZone, setDataNewZone] = useState({
     id: null,
@@ -188,70 +273,47 @@ export default function Map() {
     coordpol: [[]]
   })
   // Ruta a mostrar al ser seleccionada por el usuario 
-  const [dataRuteSelected, setDataRuteSelected] = useState({
-    id: null,
-    name: "",
-    coordpol: [[]]
-  })
+  
+
+  useEffect(() => {
+    console.log("datos de ruta seleccionada", dataRuteSelected)
+  }, [dataRuteSelected])
 
 
   // Datos de zonas que se convertiran en poligonos para crear zonas
-  const [dataZones, setDataZones] = useState();
+  const [dataZones, setDataZones] = useState({
+    type: "FeatureCollection",
+    features: []
+  });
 
-  useEffectEvent(() => {
-    if (zonesRef.length > 0) {
-      const dataZonesCargados = {
-        type: "FeatureCollection",
-        features: zonesRef.map((zone) => ({
-          type: "Feature",
-          geometry: {
-            type: "Polygon",
-            coordinates: [zone.coordpol],
-          },
-          properties: {
-            id: zone.id,
-            name: zone.name,
-            color: dangerTranslate[zone.color],
-          },
-        }))
-      }
-      console.log("dataZonesCargados");
-      console.log(dataZonesCargados);
-      setDataZones(dataZonesCargados)
+  useEffect(() => {
+    // 1. Si no hay mapa o el estilo no ha cargado, no hacemos nada
+    if (!mapRef.current || !mapRef.current.isStyleLoaded()) return;
+
+    // 2. Transformamos zonesRef al formato GeoJSON
+    const newData = {
+      type: "FeatureCollection",
+      features: zonesRef.map((zone) => ({
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [zone.coordpol],
+        },
+        properties: {
+          id: zone.id,
+          name: zone.name,
+          color: zone.color, // zone.color ya viene traducido del useEffect anterior
+        },
+      })),
+    };
+
+    // 3. Si la fuente ya existe, actualizamos los datos
+    const source = mapRef.current.getSource("zones");
+    if (source) {
+      source.setData(newData);
     }
-  }, [zonesRef])
-
-  
-
-
-
-  /*type: dataZoneSelected.id == null ? "FeatureCollection" : "Feature",
-  features: dataZoneSelected.id != null ? {
-    type: "Feature",
-    geometry: {
-      type: "Polygon",
-      coordinates: [dataZoneSelected.coordpol],
-    },
-    properties: {
-      id: dataZoneSelected.id,
-      name: dataZoneSelected.name,
-      color: dangerTranslate[dataZoneSelected.color],
-    },
-  } : zonesRef.map((zone) => ({
-    type: "Feature",
-    geometry: {
-      type: "Polygon",
-      coordinates: [zone.coordpol],
-    },
-    properties: {
-      id: zone.id,
-      name: zone.name,
-      color: dangerTranslate[zone.color],
-    },
-  })),*/
-
-
-
+    console.log("Cargados")
+  }, [zonesRef]); // Se activa cada vez que zonesRef cambia  
 
   // MIS VARIABLES
 
@@ -270,7 +332,7 @@ export default function Map() {
 
   const [routePoints, setRoutePoints] = useState([]);
 
-  const [geoData, setGeoData] = useState(interestPointData);
+
 
   const [layerState, setLayerState] = useState([
     {
@@ -285,12 +347,12 @@ export default function Map() {
     },
     {
       name: "stairs",
-      color: "#6a3d9a",
+      color: "#ffff99",
       isChecked: true,
     },
     {
       name: "rebuild",
-      color: "#a6cee3",
+      color: "#f80404",
       isChecked: true,
     },
   ]);
@@ -327,16 +389,13 @@ export default function Map() {
 
   // Iniciar la creacion de la zona con un punto inicial
   const handleOpenZone = (dataZone) => {
-    console.log("DATA ZONA:", dataZone);
     setAmountPointZone(1);
-
     const newZone = {
       id: Date.now(),
       name: dataZone.name,
       color: dataZone.color,
       coordpol: [[positionCreateElement.lng, positionCreateElement.lat]],
     };
-
     setZonesRef((prev) => [...prev, newZone]);
   };
   // Creando la arista de la zona en creacion
@@ -463,7 +522,7 @@ export default function Map() {
         type: "Point",
       },
     };
-    setGeoData((prev) => ({
+    setObjectsRef((prev) => ({
       ...prev,
       features: [...prev.features, newPoint],
     }));
@@ -478,6 +537,10 @@ export default function Map() {
       center: center,
       zoom: zoom,
     });
+
+
+
+
     // Al cargar, se comenzaran a crear los puntos de interes
     mapRef.current.on("load", () => {
       // load image to use as a custom marker
@@ -489,7 +552,7 @@ export default function Map() {
       // add a single source for all interestPoint
       mapRef.current.addSource("interestPoint", {
         type: "geojson",
-        data: geoData,
+        data: { type: "FeatureCollection", features: [] },
       });
 
       // add a layer for each cuisine type
@@ -544,6 +607,43 @@ export default function Map() {
           },
         });
       }
+      // Dentro del on("load")
+      mapRef.current.addSource("selected-route-source", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] }
+      });
+
+      mapRef.current.addLayer({
+        id: "selected-route-layer",
+        type: "line",
+        source: "selected-route-source",
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: {
+          "line-color": "#3bb2d0", // Un color que resalte
+          "line-width": 6,          // Más gruesa que las demás
+          "line-opacity": 0.9
+        }
+      });
+
+      mapRef.current.addSource("all-routes", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] }
+      });
+
+      mapRef.current.addLayer({
+        id: "all-routes-layer",
+        type: "line",
+        source: "all-routes",
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: {
+          "line-color": "#d9251e", // Un azul bonito para las rutas guardadas
+          "line-width": 4,
+          "line-opacity": 0.6
+        }
+      });
+
+
+
       mapRef.current.addSource("zones", {
         type: "geojson",
         data: dataZones,
@@ -589,9 +689,9 @@ export default function Map() {
   // Cuando se añada un nuevo punto de interes
   useEffect(() => {
     if (mapRef.current?.getSource("interestPoint")) {
-      mapRef.current.getSource("interestPoint").setData(geoData);
+      mapRef.current.getSource("interestPoint").setData(objectsRef);
     }
-  }, [geoData]);
+  }, [objectsRef]);
 
   // Cuando le de a un checkbox de la caja de checkboxs
   useEffect(() => {
@@ -621,7 +721,6 @@ export default function Map() {
       const data = await res.json();
       const route = data.routes[0].geometry;
 
-      // agregar o actualizar layer "route"
       if (mapRef.current.getSource("route")) {
         mapRef.current.getSource("route").setData(route);
       } else {
@@ -639,61 +738,39 @@ export default function Map() {
   }, [routePoints]);
   // creador de zonas nuevas
   useEffect(() => {
-    if (!mapRef.current?.isStyleLoaded()) return;
-    //
-    if (
-      !mapRef ||
-      !mapRef.current.isStyleLoaded() ||
-      !mapRef.current.getSource("zones")
-    )
-      return;
+    const updateMapSources = () => {
+      if (!mapRef.current) return;
 
-    const newData = {
-      type:"FeatureCollection",
-      features: zonesRef.map((zone) => ({
-        type: "Feature",
-        geometry: {
-          type: "Polygon",
-          coordinates: [zone.coordpol],
-        },
-        properties: {
-          id: zone.id,
-          name: zone.name,
-          color: dangerTranslate[zone.color],
-        },
-      })),
+      if (!mapRef.current.isStyleLoaded()) {
+        setTimeout(updateMapSources, 200);
+        return;
+      }
+
+      const source = mapRef.current.getSource("zones");
+      if (source) {
+        const newData = {
+          type: "FeatureCollection",
+          features: zonesRef.map((zone) => ({
+            type: "Feature",
+            geometry: {
+              type: "Polygon",
+              coordinates: Array.isArray(zone.coordpol[0]) ? [zone.coordpol] : [zone.coordpol],
+            },
+            properties: {
+              id: zone.id,
+              name: zone.name,
+              color: zone.color, // Ya viene traducido como 'red', 'green', etc.
+            },
+          })),
+        };
+        source.setData(newData);
+      }
     };
-    /*const newData = {
-      type: dataZoneSelected == null ? "FeatureCollection" : "Feature",
-      features: dataZoneSelected != null ? {
-        type: "Feature",
-        geometry: {
-          type: "Polygon",
-          coordinates: [dataZoneSelected.coordpol],
-        },
-        properties: {
-          id: dataZoneSelected.id,
-          name: dataZoneSelected.name,
-          color: dangerTranslate[dataZoneSelected.color],
-        },
-      } : zonesRef.map((zone) => ({
-        type: "Feature",
-        geometry: {
-          type: "Polygon",
-          coordinates: [zone.coordpol],
-        },
-        properties: {
-          id: zone.id,
-          name: zone.name,
-          color: dangerTranslate[zone.color],
-        },
-      })),
-    };*/
-    mapRef.current.getSource("zones").setData(newData);
-  }, [zonesRef]);
 
-  console.log("ZONAS")
-  console.log(zonesRef)
+    if (zonesRef.length > 0) {
+      updateMapSources();
+    }
+  }, [zonesRef]);
 
   return (
     <>
@@ -762,7 +839,8 @@ export default function Map() {
               dangerColor={dangerColor}
               typesDanger={dangerTranslate}
               zoneSelected={dataZoneSelected}
-              setZoneSelected={setDataZoneSelected}
+              onZoneSelected={setDataZoneSelected}
+              onRuteSelected={setDataRuteSelected}
             />
           </div>}
       </div>
