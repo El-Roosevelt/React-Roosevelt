@@ -6,14 +6,15 @@ export default function Mapa() {
   const disableContextMenuPag = (e) => {
     e.preventDefault();
   };
+  
   return (
     <>
-      <div
-        className="d-flex flex-column align-items-center map-container min-vh-100 m-2 mb-4 mt-4"
-        onContextMenu={disableContextMenuPag}
-      >
-        <Map/>
-      </div>
+        <div
+          className="d-flex flex-column align-items-center map-container min-vh-100 m-2 mb-5 mt-5"
+          onContextMenu={disableContextMenuPag}
+        >
+          <Map/> 
+        </div>
     </>
   );
 }

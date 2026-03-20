@@ -1,8 +1,10 @@
 @import '~mapbox-gl/dist/mapbox-gl.css';
 @import '~leaflet/dist/leaflet.css';
+@import "../../variables.scss";
 
 .map-container{
     z-index: 2000px;
+    font-family: $font-family-sans-serif;
 }
 
 .container-map{

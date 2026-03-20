@@ -1,12 +1,14 @@
-import React, { use, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import "./InfoPanel.scss";
 
 
-export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dangerColor, typesDanger, zoneSelected, setZoneSelected }) {
+export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dangerColor, typesDanger, zoneSelected, onZoneSelected,onRuteSelected}) {
 
   const [tabSwitched, setTabSwitched] = useState(false);
 
   const [selectedZoneToRemove, setSelectedZoneToRemove] = useState();
+
+  const [rutesbyZone,setRutesByZone] = useState([]);
 
   const [selectedZoneToEdit, setSelectedZoneToEdit] = useState({
     id: null,
@@ -23,6 +25,13 @@ export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dang
     amarillo: "Media",
     verde: "Baja"
   })
+
+  useEffect(()=>{
+    if(zoneSelected.id!=null){
+      const rutesFiltered=rutes.filter(r=>r.id_zone.id==zoneSelected.id)
+      setRutesByZone(rutesFiltered);
+    }
+  },[zoneSelected])
 
   const [nameZoneEdit, setNameZoneEdit] = useState();
   const [typeZoneEdit, setTypeZoneEdit] = useState();
@@ -58,9 +67,6 @@ export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dang
       coordpol: [[]]
     });
   }
-  const getOneZone = (zone) => {
-    setZoneSelected({ id: zone.id, name: zone.name, color: zone.color, coordpol: zone.coordpol })
-  }
 
   return (
     <div className="info-panel-container">
@@ -73,9 +79,9 @@ export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dang
         </button>
         <button
           className={`tab-btn ${tabSwitched ? "active" : ""}`}
-          onClick={() => setTabSwitched(true)}
+          onClick={() => setTabSwitched(true)} 
         >
-          Rutas
+          Rutas [ {rutesbyZone.length} ]
         </button>
       </div>
 
@@ -96,14 +102,15 @@ export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dang
                 <div key={z.id} >
                   {selectedZoneToRemove !== z.id ?
                     (selectedZoneToEdit.id !== z.id ?
-                      <div className={`zone-item ${zoneSelected.id != null ? "active" : ""}`} onClick={() => getOneZone({ id: z.id, name: z.name, color: z.color, coordpol: z.coordpol })}>
+                      (z.coordpol.length!=0 &&
+                      <div className={`zone-item ${zoneSelected.id != null && zoneSelected.id==z.id ? "active" : ""}`} onClick={() => onZoneSelected({ id: z.id, name: z.name, color: z.color, coordpol: z.coordpol })}>
                         <div className="item-header">
                           <div className="item-title-group">
                             <div className={`color-dot ${dotColorClass}`}></div>
                             <h4 className="item-title">{z.name || `Zona ${z.id + 1}`}</h4>
                           </div>
                           <button className=" btn-edit" onClick={() => prepareToEdit({ id: z.id, name: z.name, color: z.color, coordpol: z.coordpol })}>
-                            <i class="bi bi-pencil"></i>
+                            <i className="bi bi-pencil"></i>
                           </button>
                           <button className="btn-close" onClick={() => setSelectedZoneToRemove(z.id)}>
                             <i className="bi bi-x"></i>
@@ -138,8 +145,7 @@ export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dang
                             return null;
                           })}
                         </div>
-
-                      </div> :
+                      </div>) :
                       // Al editar una zona
                       <div>
                         <form onSubmit={editZone}>
@@ -150,8 +156,6 @@ export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dang
                             <input className=" form-control w-75" value={nameZoneEdit} onChange={e => setNameZoneEdit(e.target.value)} />
                           </div>
                           <div className=" m-1 p-2">
-
-                            <p>ID:{selectedZoneToEdit.id}</p>
                             <label className=" form-label">
                               Tipo de zona:
                             </label>
@@ -182,20 +186,24 @@ export default function InfoPanel({ zones, rutes, onRemoveZone, onEditZone, dang
                   }
                 </div>
               );
-            })) : (rutes.length == 0 ? 
-            <div>
+            })) : (rutesbyZone.length == 0 ? 
+            <div className=" d-flex flex-column align-items-center mt-2">
               <h5>No hay rutas disponibles</h5>
             </div> :
-              rutes.map((r) => {
+              rutesbyZone.map((r) => {
                 return (
-                  <div key={r.id}>
+                  <div key={r.id} onClick={()=>onRuteSelected({
+                    id:r.id,
+                    name:r.name,
+                    coordpol:r.coordpol
+                  })}>
                     <div className="zone-item">
                       <div className="item-header">
                         <div className="item-title-group p-2">
                           <h4 className="item-title">{r.name}</h4>
                         </div>
                         <button className=" btn-edit">
-                          <i class="bi bi-pencil"></i>
+                          <i className="bi bi-pencil"></i>
                         </button>
                         <button className="btn-close">
                           <i className="bi bi-x"></i>

@@ -1,0 +1,17 @@
+@import "../../variables.scss";
+.container-selector {
+    width: 90%;
+    max-height: 80vh;
+
+    .container-rute {
+        width: 95%;
+        height: 90%;
+        border-radius: 10px;
+        transition: all 0.8s ease;
+        &:hover{
+            transform: translateY(-4px);
+            box-shadow: 2px 5px 10px 10px rgba(0, 0, 0, 0.2);
+        }
+    }
+}
+
