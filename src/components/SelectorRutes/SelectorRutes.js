@@ -60,14 +60,14 @@ export default function SelectorRutes({ rutesList, lineasObjetosList, onSelectRu
     })
 
     return (
-        <div className="container-selector d-flex flex-column align-items-center justify-content-center gap-2 p-4 border rounded-2">
+        <div className="container-selector d-flex flex-column align-items-center justify-content-center gap-2 p-1 ">
             {rutes && rutes.length > 0 ? (
                 rutes.map(rute => (
                     <div key={rute.id} className=" container-rute d-flex flex-column bg-primary rounded-2 border border-1">
-                        <div className="d-flex flex-row justify-content-around bg-light fs-3 p-2 h-75 text-dark">
-                            <p className=" w-25 p-2">{rute.name}</p>
-                            <div className=" d-flex w-50 flex-row gap-4">
-                                <p style={{fontSize:"18px"}}>puntos de interes:</p>
+                        <div className="d-flex flex-row justify-content-around bg-light fs-3 p-1 h-75 text-dark">
+                            <p className=" text-primary w-25 p-2">{rute.name}</p>
+                            <div className=" d-flex flex-row align-items-center w-50 flex-row gap-4">
+                                <p className=" text-primary fw-bold" style={{fontSize:"18px"}}>puntos de interes:</p>
                                 {Object.entries(getObjectsByRute(rute.id)).map(([key, value]) => (
                                     <div className=" d-flex flex-column justify-content-center align-items-center" >
                                         <p style={{fontSize:"20px", margin:"-10px",left:"-12px",position:"relative"}}>{value.length}</p>
@@ -81,9 +81,9 @@ export default function SelectorRutes({ rutesList, lineasObjetosList, onSelectRu
                                     </div>
                                 ))}
                             </div>
-                            <div className=" d-flex flex-row justify-content-center w-75 align-items-center gap-2">
+                            <div className=" div_buttons d-flex flex-row justify-content-center w-75 align-items-center gap-2">
                                 <button className=" btn btn-primary" onClick={()=>onSelectRute({id:rute.id,name:rute.name,coordpol:rute.coordpol})}>Buscar <img src={searcher} style={{width:"20px"}}/></button>
-                                <button className=" btn btn-secondary" onClick={()=>""}>Guardar en Favoritos<img src={star} style={{width:"20px", margin:"3px"}}/></button>
+                                <button className=" btn btn-guardar-favorito" onClick={()=>""}>Guardar en Favoritos<img src={star} style={{width:"20px"}}/></button>
                             </div>
 
                         </div>
@@ -99,8 +99,8 @@ export default function SelectorRutes({ rutesList, lineasObjetosList, onSelectRu
                                     <p className=" m-0">{rute.id_user_author.nameUser}</p>
                                 </div>
                             </div>
-                            <div className="d-flex flex-column justify-content-center align-items-center w-25 p-2">
-                                <button className="btn btn-light" onClick={() => onLike(rute.id)}>
+                            <div className="d-flex  w-25 p-2">
+                                <button className="btn btn-like btn-light" onClick={() => onLike(rute.id)}>
                                     Me gusta {rute.likes_count}
                                     {!liked || ruteliked !== rute.id ?
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-hand-thumbs-up" viewBox="0 0 16 16">

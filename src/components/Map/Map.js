@@ -22,44 +22,73 @@ const INITIAL_CENTER = [-0.4794138193936135, 38.35239601734659];
 const INITIAL_ZOOM = 16.5;
 
 export default function Map() {
+
+  const disableContextMenuPag = (e) => {
+    e.preventDefault();
+  };
+
   const mapRef = useRef();
   const mapContainerRef = useRef();
 
   const { user } = useContext(AuthContext);
 
   // VARIABLES DE MAPA
+
+  // Estado para controlar los datos del popup, se actualiza al hacer click en un punto de interes y se utiliza para mostrar la informacion del punto de interes en el popup
+  const [popupData, setPopupData] = useState(null);
+
+  // Estado para controlar el centro del mapa
   const [center, setCenter] = useState(INITIAL_CENTER);
+
+  // Estado para controlar el nivel de zoom del mapa
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
+
+  // Estado para posicionar la vista del mouse dentro del mapa
   const [centerMouse, setCenterMouse] = useState(INITIAL_CENTER);
+
+  // Estado para inicializar los datos de las zonas
+  const [dataZones, setDataZones] = useState({
+    type: "FeatureCollection",
+    features: []
+  });
 
   // marcadores punto a punto
   const markersRef = useRef([]);
 
+  // Estado para controlar los datos de la ruta seleccionada, se actualiza al seleccionar una ruta en el panel de rutas y se utiliza para mostrar la ruta seleccionada en el mapa
   const [dataRuteSelected, setDataRuteSelected] = useState({
     id: null,
     name: "",
     coordpol: [[]]
   })
 
+  // #region Mapas de traduccion
+  // Mapas de traduccion para convertir los datos de la api a los datos que necesita el mapa para mostrar las zonas y los puntos de interes con el color y el icono correspondiente
   const dangerTranslate = Object.freeze({
     rojo: "red",
     amarillo: "yellow",
     verde: "green",
   });
 
+  // Mapa de traduccion para convertir los tipos de punto de interes de la api a los colores que necesita el mapa para mostrar el icono correspondiente
   const dangerColor = Object.freeze({
     rojo: " bg-danger",
     amarillo: " bg-warning",
     verde: " bg-success",
   });
+
+  // Mapa de traduccion para convertir los tipos de punto de interes de la api a los nombres que necesita el mapa para mostrar el icono correspondiente
   const translateToMap = {
     "Escalera": "stairs",
     "Ascensor": "elevator",
     "Rampa": "ramp",
     "Construcción": "rebuild"
   };
-  //CONVERTIDORES DE DATOS
+  // #endregion
 
+  // #region Convertidores de datos
+
+  // Función para convertir un string a un array de coordenadas, se utiliza para convertir los datos de la api a los datos que necesita el mapa para mostrar las zonas y los puntos de interes en la posicion correcta
   const stringToJsonArray = (s) => {
     if (!s || s === "") return [];
 
@@ -80,11 +109,13 @@ export default function Map() {
       return [];
     }
   }
+  // #endregion
 
-  //DATOS DE API
 
+  //DATOS DE API  
+  // #region Variables para almacenar los datos de la API(OCURRE SOLO 1 VEZ) 
 
-  //Zonas
+  // #region Zonas
   const { zonas: zones, loading: loadingZones } = useZonas();
   const [zonesRef, setZonesRef] = useState([]);
 
@@ -100,8 +131,9 @@ export default function Map() {
       setZonesRef(zonasCargadas);
     }
   }, [zones])
+  // #endregion
 
-  //Rutas
+  // #region Rutas
   const { rutas: rutes, loading: loadingRutes } = useRutas();
   const [rutesRef, setRutesRef] = useState([]);
   //Cargar datos rutas
@@ -121,6 +153,10 @@ export default function Map() {
       setRutesRef(rutasCargadas);
     }
   }, [rutes])
+
+  // #endregion
+
+  // #region Lineas objetos
   //Relaciones punto interes y ruta
   const [linesObjectsRef, setLinesObjectsRef] = useState([]);
   const { lineasObjetos: linesObjects, loading: loadingLinesObjects } = useLineasObjetos();
@@ -144,25 +180,10 @@ export default function Map() {
     }
 
   }, [linesObjects])
+  // #endregion
 
-
-  //Objectos ruta (puntos de interes)
-  /*const [objectRute, setObjectRute] = useState([
-    {
-      id: 0,
-      name: "Elevador del castillo",
-      img: "",
-      coordpol: stringToJsonArray("[-0.4773503018700467, 38.34712845540338]"),
-      description: "Te subira directamente hasta la suma del castillo",
-      peligrosidad: "AMARILLO".toLowerCase(),
-      id_zone: 0,
-      id_type_object: 0,
-    },
-  ]);*/
-
-
-
-  //Tipos Objecto (tipos de punto interes)
+  // #region Objetos
+  //Tipos Objeto (tipos de punto interes)
 
   const [objectsRef, setObjectsRef] = useState();
   const { objetos: objects, loading: loadingObjects } = useObjetos()
@@ -193,7 +214,11 @@ export default function Map() {
       });
     }
   }, [objects]);
+  // #endregion
 
+  // #endregion
+
+  // #region Al agregar un nuevo punto de interes, se actualiza el source de los puntos de interes y se muestra el nuevo punto de interes en el mapa
   useEffect(() => {
     // 1. Verifica que la referencia al mapa exista
     // 2. Verifica que el objeto interno de Mapbox esté creado
@@ -208,54 +233,7 @@ export default function Map() {
     }
   }, [objectsRef]);
 
-  useEffect(() => {
-    // 1. Validaciones de seguridad (Mapa listo y datos presentes)
-    if (!mapRef.current || !mapRef.current.isStyleLoaded() || !dataRuteSelected.coordpol) return;
-
-    const updateSelectedRoute = async () => {
-      // 2. Extraer puntos (A y B)
-      // Asumimos que coordpol es un array de coordenadas [[lng, lat], [lng, lat]]
-      const coords = dataRuteSelected.coordpol.map(p => p.join(",")).join(";");
-
-      // 3. Pedir la geometría exacta a la API de Directions (Caminando)
-      const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
-
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (data.code !== "Ok") return;
-
-        const routeGeometry = data.routes[0].geometry;
-        const source = mapRef.current.getSource("selected-route-source");
-
-        if (source) {
-          // Si la fuente ya existe, solo actualizamos los datos
-          source.setData({
-            type: "Feature",
-            properties: {
-              id: dataRuteSelected.id,
-              name: dataRuteSelected.name
-            },
-            geometry: routeGeometry
-          });
-
-          // Opcional: Hacer que el mapa vuele hasta la ruta
-          const coordinates = routeGeometry.coordinates;
-          const bounds = coordinates.reduce((acc, coord) => {
-            return acc.extend(coord);
-          }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
-
-          mapRef.current.fitBounds(bounds, { padding: 50 });
-        }
-      } catch (error) {
-        console.error("Error al obtener la ruta seleccionada:", error);
-      }
-    };
-
-    updateSelectedRoute();
-  }, [dataRuteSelected]); // Se dispara cada vez que eliges una ruta en el panel
-
+  // #endregion
 
   const [dataNewZone, setDataNewZone] = useState({
     id: null,
@@ -272,69 +250,39 @@ export default function Map() {
     color: "",
     coordpol: [[]]
   })
-  // Ruta a mostrar al ser seleccionada por el usuario 
-  
 
+  // Ruta a mostrar al ser seleccionada por el usuario
   useEffect(() => {
     console.log("datos de ruta seleccionada", dataRuteSelected)
   }, [dataRuteSelected])
 
 
-  // Datos de zonas que se convertiran en poligonos para crear zonas
-  const [dataZones, setDataZones] = useState({
-    type: "FeatureCollection",
-    features: []
-  });
 
-  useEffect(() => {
-    // 1. Si no hay mapa o el estilo no ha cargado, no hacemos nada
-    if (!mapRef.current || !mapRef.current.isStyleLoaded()) return;
 
-    // 2. Transformamos zonesRef al formato GeoJSON
-    const newData = {
-      type: "FeatureCollection",
-      features: zonesRef.map((zone) => ({
-        type: "Feature",
-        geometry: {
-          type: "Polygon",
-          coordinates: [zone.coordpol],
-        },
-        properties: {
-          id: zone.id,
-          name: zone.name,
-          color: zone.color, // zone.color ya viene traducido del useEffect anterior
-        },
-      })),
-    };
 
-    // 3. Si la fuente ya existe, actualizamos los datos
-    const source = mapRef.current.getSource("zones");
-    if (source) {
-      source.setData(newData);
-    }
-    console.log("Cargados")
-  }, [zonesRef]); // Se activa cada vez que zonesRef cambia  
 
-  // MIS VARIABLES
+  //const [coords, setCoords] = useState([])
 
-  const [popupData, setPopupData] = useState(null);
-
-  const [coords, setCoords] = useState([])
-
+  // Estado para indicar punto de partida de una ruta
   const [init, setInit] = useState(false);
+
+  // Estado para indicar punto de llegada de una ruta
   const [goal, setGoal] = useState(false);
 
+  // Estado para controlar la creacion de zonas, se actualiza al iniciar la creacion de una zona y se utiliza para mostrar el menu contextual con las opciones de crear zona o añadir vertices a la zona en creacion
   const [amountPointZone, setAmountPointZone] = useState(0);
 
+  // Estado para la creacion de nuevos elementos, se actualiza al hacer click derecho en el mapa y se utiliza para colocar el nuevo elemento en la posicion correcta
   const [positionCreateElement, setPositionCreateElement] = useState({
     lng: 0,
     lat: 0,
   });
 
+  // Estado para los puntos de la ruta, se añaden las coordenadas de cada punto creado y al tener dos puntos, se llama a la api de direcciones para crear la ruta entre ambos puntos
   const [routePoints, setRoutePoints] = useState([]);
 
 
-
+  // #region Tipos de punto de interes
   const [layerState, setLayerState] = useState([
     {
       name: "elevator",
@@ -357,23 +305,96 @@ export default function Map() {
       isChecked: true,
     },
   ]);
+  // #endregion
 
+  // #region Posicion del menu contextual
   // State para controlar la visibilidad y posicion del menu contextual
   const [menu, setMenu] = useState({
     visible: false,
     x: 0,
     y: 0,
   });
+  // #endregion
 
-  // Funcion para desaparecer el menu al hacer click en el mapa
-  const handleCloseContextMenuMap = () => {
-    setMenu({ ...menu, visible: false });
+  // FUNCIONES
+  // #region FUNCIONES
+
+
+  // #region BOTONES DE MAPA
+
+  // #region [Funcion] para resetear el mapa a su posicion inicial y eliminar los marcadores
+  const handleButtonClick = () => {
+    mapRef.current.flyTo({
+      center: INITIAL_CENTER,
+      zoom: INITIAL_ZOOM,
+    });
     clearMarkers();
-    setInit(false)
-    setGoal(false)
   };
+  // #endregion
 
-  // Funcion para mostrar el menu al hacer click derecho en el mapa
+  //  |
+  //  |      Lo utiliza
+  //  V
+
+  // #region [Funcion] para eliminar los marcadores y la ruta del mapa, se llama al resetear el mapa o al cerrar el menu contextual
+  const clearMarkers = () => {
+    markersRef.current.forEach((marker) => marker.remove());
+    markersRef.current = [];
+    setRoutePoints([]);
+    if (mapRef.current.getLayer("route")) {
+      mapRef.current.removeLayer("route");
+      mapRef.current.removeSource("route");
+    }
+  };
+  // #endregion
+
+  // #endregion
+
+
+  // #region CRUD ZONAS
+
+  // #region [Funcion] para eliminar una zona ya creada, se elimina de la lista de zonas y se actualiza el mapa eliminando el poligono correspondiente
+  function handleRemoveZone(id) {
+    setZonesRef((prev) => prev.filter((e) => e.id != id));
+  }
+  // #endregion
+
+  // #region [Funcion] para editar una zona ya creada, se actualiza la zona en la lista de zonas y se actualiza el mapa con los nuevos datos de la zona
+
+
+  function handleEditZone(zone) {
+    setZonesRef((prev) =>
+      prev.map((z) =>
+        z.id == zone.id
+          ? {
+            id: zone.id,
+            name: zone.name,
+            color: zone.color,
+            coordpol: zone.coordpol,
+          }
+          : z,
+      ),
+    );
+  }
+  // #endregion
+
+
+  // #endregion
+
+
+  // #region CRUD DE RUTAS
+
+  // #region [Funcion] para guardar la ruta creada, se muestra un alert de confirmacion pero se deberia guardar en la base de datos y mostrarla en el mapa como una ruta mas
+  const handleCreateRute = () => {
+    alert("guardada ruta")
+  }
+  // #endregion
+
+  // #endregion
+
+
+  // #region CONTROL DE MENU CONTEXTUAL
+  // #region [Funcion] para mostrar el menu al hacer click derecho en el mapa
   const handleContentMenu = (e) => {
     setMenu({
       visible: true,
@@ -382,16 +403,23 @@ export default function Map() {
     });
     setPositionCreateElement({ lng: centerMouse[0], lat: centerMouse[1] });
   };
+  // #endregion
 
-  const handleButtonClick = () => {
-    mapRef.current.flyTo({
-      center: INITIAL_CENTER,
-      zoom: INITIAL_ZOOM,
-    });
+  // #region [Funcion] para cerrar el menu contextual, se llama al hacer click izquierdo en el mapa o al finalizar la creacion de una zona
+  const handleCloseContextMenuMap = () => {
+    setMenu({ ...menu, visible: false });
     clearMarkers();
+    setInit(false)
+    setGoal(false)
   };
+  // #endregion
 
-  // Iniciar la creacion de la zona con un punto inicial
+  // #endregion
+
+
+  // #region CRECION DE ZONAS
+
+  // #region [Funcion] para iniciar la creacion de la zona con un punto inicial
   const handleOpenZone = (dataZone) => {
     setAmountPointZone(1);
     const newZone = {
@@ -402,7 +430,9 @@ export default function Map() {
     };
     setZonesRef((prev) => [...prev, newZone]);
   };
-  // Creando la arista de la zona en creacion
+  // #endregion
+
+  // #region [Funcion] para crear la arista de la zona en creacion
   const handleCreatEdgeZone = () => {
     setAmountPointZone(amountPointZone + 1);
     const coords = [positionCreateElement.lng, positionCreateElement.lat];
@@ -415,10 +445,9 @@ export default function Map() {
       return newZones;
     });
   };
+  // #endregion
 
-  const handleCreateRute=()=>{
-    alert("guardada ruta")
-  }
+  // #region [Funcion] para crear el ultimo vertice de la zona, se cierra la zona y se muestra en el mapa como un nuevo poligono, ademas de cerrar el menu contextual
   // Terminar de cerrar la zona en creacion y cierra el contextmenu
   const handleCloseZone = () => {
     setAmountPointZone(0);
@@ -448,45 +477,43 @@ export default function Map() {
       color: "",
     });
   };
+  // #endregion
 
-  // Eliminar zona
+  // #endregion
 
-  function handleRemoveZone(id) {
-    setZonesRef((prev) => prev.filter((e) => e.id != id));
-  }
 
-  function handleEditZone(zone) {
-    setZonesRef((prev) =>
-      prev.map((z) =>
-        z.id == zone.id
-          ? {
-            id: zone.id,
-            name: zone.name,
-            color: zone.color,
-            coordpol: zone.coordpol,
-          }
-          : z,
-      ),
-    );
-  }
-  const handleMouseMoveMap = (e) => {
-    setCenterMouse([e.lngLat.lng, e.lngLat.lat]);
-  };
 
+  // #region INTERACION EN EL MAPA
+
+  // #region [Funcion] para mostrar el popup al hacer click en un punto de interes, se muestra el nombre del punto de interes y su tipo, ademas de un boton para eliminarlo si el usuario es admin
   const handleMarkerClick = (e) => {
     setPopupData({
       lngLat: e.feature.geometry.coordinates,
       properties: e.feature.properties,
     });
   };
+  // #endregion
 
+
+
+
+
+  // #region [Funcion] para actualizar el estado del centro del mouse, se llama al mover el mouse por el mapa y se utiliza para colocar los nuevos puntos de interes, zonas o rutas en la posicion correcta
+  const handleMouseMoveMap = (e) => {
+    setCenterMouse([e.lngLat.lng, e.lngLat.lat]);
+  };
+  // #endregion
+
+
+
+  // #region [Funcion] para crear un nuevo marcador en el mapa, se añaden las coordenadas a la lista de puntos de la ruta y se dibuja la ruta si hay suficientes puntos, ademas de cerrar el menu contextual
   const handleCreateMark = () => {
     const coords = [positionCreateElement.lng, positionCreateElement.lat];
 
     if (!mapRef.current) return;
 
     // Limpia todos los marcadores si ve que son mas de dos
-    if(routePoints.length ===1) setInit(true)
+    if (routePoints.length === 1) setInit(true)
     if (routePoints.length === 2) {
       clearMarkers();
       setGoal(false);
@@ -498,7 +525,6 @@ export default function Map() {
       .addTo(mapRef.current);
 
     markersRef.current.push(marker);
-
     //mete coordenadas para luego formar la ruta, al tener dos pares de coordenadas, se dibuja la ruta
     setRoutePoints((prev) => {
       if (prev.length === 2) {
@@ -507,17 +533,11 @@ export default function Map() {
       return [...prev, coords];
     });
   };
+  // #endregion
 
-  const clearMarkers = () => {
-    markersRef.current.forEach((marker) => marker.remove());
-    markersRef.current = [];
-    setRoutePoints([]);
-    if (mapRef.current.getLayer("route")) {
-      mapRef.current.removeLayer("route");
-      mapRef.current.removeSource("route");
-    }
-  };
 
+
+  // #region [Funcion] para crear un nuevo punto de interes, se añade a la lista de puntos de interes y se muestra en el mapa
   const handleCreateInteresPoint = (e) => {
     const newPoint = {
       id: 999,
@@ -536,7 +556,15 @@ export default function Map() {
       features: [...prev.features, newPoint],
     }));
   };
+  // #endregion
 
+  // #endregion 
+
+  // #endregion
+
+  // USEFFECTS
+  // #region USEFFECTS
+  // #region useEffects para cargar el mapa, los puntos de interes, las zonas y las rutas
   //Para crear o inicializar el mapa
   useEffect(() => {
     mapboxgl.accessToken = `${process.env.REACT_APP_MY_KEY}`;
@@ -628,7 +656,7 @@ export default function Map() {
         source: "selected-route-source",
         layout: { "line-join": "round", "line-cap": "round" },
         paint: {
-          "line-color": "#3bb2d0", // Un color que resalte
+          "line-color": "black", // Un color que resalte
           "line-width": 6,          // Más gruesa que las demás
           "line-opacity": 0.9
         }
@@ -695,13 +723,18 @@ export default function Map() {
       mapRef.current.remove();
     };
   }, []);
-  // Cuando se añada un nuevo punto de interes
+  // #endregion
+
+  // #region useEffect para añadir punto interes a la lista de puntos de interes y mostrarlo en el mapa
   useEffect(() => {
     if (mapRef.current?.getSource("interestPoint")) {
       mapRef.current.getSource("interestPoint").setData(objectsRef);
     }
   }, [objectsRef]);
+  // #endregion
 
+
+  // #region useEffect para mostrar u ocultar los puntos de interes dependiendo del checkbox seleccionado
   // Cuando le de a un checkbox de la caja de checkboxs
   useEffect(() => {
     if (!mapRef.current) return;
@@ -718,6 +751,10 @@ export default function Map() {
       }
     });
   }, [layerState]);
+
+  // #endregion
+
+  // #region useEffect para crear la ruta entre dos punto o mas seleccionados por el usuario
   // Cuando hayan suficientes puntos para crear una ruta
   useEffect(() => {
     const fetchRoute = async () => {
@@ -745,6 +782,9 @@ export default function Map() {
     };
     fetchRoute();
   }, [routePoints]);
+  // #endregion
+
+  // #region useEffect para crear zonas nuevas, cada vez que se añada un nuevo punto a la zona en creacion, se actualizara el source de las zonas y se dibujara el nuevo poligono o se actualizara el existente
   // creador de zonas nuevas
   useEffect(() => {
     const updateMapSources = () => {
@@ -780,9 +820,97 @@ export default function Map() {
       updateMapSources();
     }
   }, [zonesRef]);
+  // #endregion
+
+  // #region useEffect para mostrar la ruta seleccionada en el mapa, se dispara cada vez que eliges una ruta en el panel de rutas
+  useEffect(() => {
+    // 1. Validaciones de seguridad (Mapa listo y datos presentes)
+    if (!mapRef.current || !mapRef.current.isStyleLoaded() || !dataRuteSelected.coordpol) return;
+
+    const updateSelectedRoute = async () => {
+      // 2. Extraer puntos (A y B)
+      // Asumimos que coordpol es un array de coordenadas [[lng, lat], [lng, lat]]
+      const coords = dataRuteSelected.coordpol.map(p => p.join(",")).join(";");
+
+      // 3. Pedir la geometría exacta a la API de Directions (Caminando)
+      const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.code !== "Ok") return;
+
+        const routeGeometry = data.routes[0].geometry;
+        const source = mapRef.current.getSource("selected-route-source");
+
+        if (source) {
+          // Si la fuente ya existe, solo actualizamos los datos
+          source.setData({
+            type: "Feature",
+            properties: {
+              id: dataRuteSelected.id,
+              name: dataRuteSelected.name
+            },
+            geometry: routeGeometry
+          });
+
+          // Opcional: Hacer que el mapa vuele hasta la ruta
+          const coordinates = routeGeometry.coordinates;
+          const bounds = coordinates.reduce((acc, coord) => {
+            return acc.extend(coord);
+          }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+
+          mapRef.current.fitBounds(bounds, { padding: 50 });
+        }
+      } catch (error) {
+        console.error("Error al obtener la ruta seleccionada:", error);
+      }
+    };
+
+    updateSelectedRoute();
+  }, [dataRuteSelected]); // Se dispara cada vez que eliges una ruta en el panel
+  // #endregion
+
+  // #region Cada vez que se añade una nueva zona, se actualizara el source de las zonas y se dibujara el nuevo poligono o se actualizara el existente
+  useEffect(() => {
+    // 1. Si no hay mapa o el estilo no ha cargado, no hacemos nada
+    if (!mapRef.current || !mapRef.current.isStyleLoaded()) return;
+
+    // 2. Transformamos zonesRef al formato GeoJSON
+    const newData = {
+      type: "FeatureCollection",
+      features: zonesRef.map((zone) => ({
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [zone.coordpol],
+        },
+        properties: {
+          id: zone.id,
+          name: zone.name,
+          color: zone.color, // zone.color ya viene traducido del useEffect anterior
+        },
+      })),
+    };
+
+    // 3. Si la fuente ya existe, actualizamos los datos
+    const source = mapRef.current.getSource("zones");
+    if (source) {
+      source.setData(newData);
+    }
+    console.log("Cargados")
+  }, [zonesRef]); // Se activa cada vez que zonesRef cambia  
+  // #endregion
+
+  // #endregion
+
 
   return (
-    <>
+    <div
+      className=" container-map "
+      onContextMenu={disableContextMenuPag}
+    >
       {user?.username === "admin" && (menu.visible && (
         <ContextMenuLocation
           positionState={positionCreateElement}
@@ -804,20 +932,13 @@ export default function Map() {
           onSaveRute={handleCreateRute}
         />
       ))}
-      <div>
-        <p>
-          {positionCreateElement.lng} {positionCreateElement.lat}
-        </p>
-        <p>Zona Seleccionada: {dataZoneSelected.id}</p>
-        <p>Ruta Seleccionada: {dataRuteSelected.id}</p>
-      </div>
-
+      
       <div
         id="map-container"
         ref={mapContainerRef}
         onContextMenu={handleContentMenu}
         onClick={handleCloseContextMenuMap}
-      >
+      >        
         {user?.username === "admin" &&
           <Popup popupData={popupData} mapRef={mapRef} />
         }
@@ -856,6 +977,6 @@ export default function Map() {
           </div>}
       </div>
       <SelectorRutes rutesList={rutesRef} lineasObjetosList={linesObjectsRef} onSelectRute={setDataRuteSelected} />
-    </>
+    </div>
   );
 }
